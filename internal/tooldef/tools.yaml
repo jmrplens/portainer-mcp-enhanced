@@ -1263,3 +1263,359 @@ tools:
       destructiveHint: false
       idempotentHint: true
       openWorldHint: false
+  - name: updateSettings
+    description: Update the Portainer settings. Accepts a JSON string containing the settings fields to update (partial update supported). Fields include authenticationMethod, enableEdgeComputeFeatures, edge configuration, and more.
+    parameters:
+      - name: settings
+        description: A JSON string containing the settings fields to update
+        type: string
+        required: true
+    annotations:
+      title: Update Settings
+      readOnlyHint: false
+      destructiveHint: false
+      idempotentHint: true
+      openWorldHint: false
+  - name: getPublicSettings
+    description: Get the public settings of the Portainer instance. These settings are available without authentication and include authentication method, logo URL, OAuth configuration, and feature flags.
+    annotations:
+      title: Get Public Settings
+      readOnlyHint: true
+      destructiveHint: false
+      idempotentHint: true
+      openWorldHint: false
+  - name: getSSLSettings
+    description: Get the SSL settings of the Portainer instance, including certificate paths, HTTP enabled status, and self-signed flag.
+    annotations:
+      title: Get SSL Settings
+      readOnlyHint: true
+      destructiveHint: false
+      idempotentHint: true
+      openWorldHint: false
+  - name: updateSSLSettings
+    description: Update the SSL settings of the Portainer instance. Allows updating the SSL certificate, key, and whether HTTP is enabled.
+    parameters:
+      - name: cert
+        description: The SSL certificate content (PEM format)
+        type: string
+        required: false
+      - name: key
+        description: The SSL private key content (PEM format)
+        type: string
+        required: false
+      - name: httpEnabled
+        description: Whether HTTP is enabled (true/false)
+        type: boolean
+        required: false
+    annotations:
+      title: Update SSL Settings
+      readOnlyHint: false
+      destructiveHint: false
+      idempotentHint: true
+      openWorldHint: false
+  - name: listAppTemplates
+    description: List all available application templates in Portainer. Returns template ID, title, description, type, image, categories, platform, and other metadata.
+    annotations:
+      title: List App Templates
+      readOnlyHint: true
+      destructiveHint: false
+      idempotentHint: true
+      openWorldHint: false
+  - name: getAppTemplateFile
+    description: Get the file content (e.g., docker-compose.yml) of a specific application template by its ID.
+    parameters:
+      - name: id
+        description: The ID of the application template
+        type: number
+        required: true
+    annotations:
+      title: Get App Template File
+      readOnlyHint: true
+      destructiveHint: false
+      idempotentHint: true
+      openWorldHint: false
+  - name: listEdgeJobs
+    description: List all edge jobs configured in Portainer. Returns job ID, name, cron expression, recurring status, and edge groups
+    annotations:
+      title: List Edge Jobs
+      readOnlyHint: true
+      destructiveHint: false
+      idempotentHint: true
+      openWorldHint: false
+  - name: getEdgeJob
+    description: Get details of a specific edge job by ID, including name, cron expression, recurring status, and edge groups
+    inputSchema:
+      - name: id
+        description: The ID of the edge job
+        type: number
+        required: true
+    annotations:
+      title: Get Edge Job
+      readOnlyHint: true
+      destructiveHint: false
+      idempotentHint: true
+      openWorldHint: false
+  - name: getEdgeJobFile
+    description: Get the script file content of a specific edge job by ID
+    inputSchema:
+      - name: id
+        description: The ID of the edge job
+        type: number
+        required: true
+    annotations:
+      title: Get Edge Job File
+      readOnlyHint: true
+      destructiveHint: false
+      idempotentHint: true
+      openWorldHint: false
+  - name: createEdgeJob
+    description: Create a new edge job with script content, cron schedule, and target environments or edge groups
+    inputSchema:
+      - name: name
+        description: The name of the edge job
+        type: string
+        required: true
+      - name: cronExpression
+        description: The cron expression for job scheduling
+        type: string
+        required: true
+      - name: fileContent
+        description: The script content of the edge job
+        type: string
+        required: true
+      - name: recurring
+        description: Whether the job should run on a recurring schedule
+        type: boolean
+        required: false
+      - name: endpoints
+        description: Array of environment IDs to target
+        type: array
+        required: false
+      - name: edgeGroups
+        description: Array of edge group IDs to target
+        type: array
+        required: false
+    annotations:
+      title: Create Edge Job
+      readOnlyHint: false
+      destructiveHint: false
+      idempotentHint: false
+      openWorldHint: true
+  - name: deleteEdgeJob
+    description: Delete an edge job by its ID
+    inputSchema:
+      - name: id
+        description: The ID of the edge job to delete
+        type: number
+        required: true
+    annotations:
+      title: Delete Edge Job
+      readOnlyHint: false
+      destructiveHint: true
+      idempotentHint: false
+      openWorldHint: false
+  - name: listEdgeUpdateSchedules
+    description: List all edge update schedules configured in Portainer. Returns schedule ID, name, type, status, scheduled time, and edge groups
+    annotations:
+      title: List Edge Update Schedules
+      readOnlyHint: true
+      destructiveHint: false
+      idempotentHint: true
+      openWorldHint: false
+  ## Auth
+  ## ------------------------------------------------------------
+  - name: authenticate
+    description: Authenticate a user against Portainer using a username and password. Returns a JWT token that can be used for subsequent API calls
+    parameters:
+      - name: username
+        description: The username for authentication
+        type: string
+        required: true
+      - name: password
+        description: The password for authentication
+        type: string
+        required: true
+    annotations:
+      title: Authenticate User
+      readOnlyHint: true
+      destructiveHint: false
+      idempotentHint: true
+      openWorldHint: true
+  - name: logout
+    description: Log out the current user session from Portainer
+    annotations:
+      title: Logout
+      readOnlyHint: false
+      destructiveHint: false
+      idempotentHint: true
+      openWorldHint: true
+  ## Helm
+  ## ------------------------------------------------------------
+  - name: listHelmRepositories
+    description: List all Helm repositories configured for a user
+    inputSchema:
+      - name: userId
+        description: The ID of the user
+        type: number
+        required: true
+    annotations:
+      title: List Helm Repositories
+      readOnlyHint: true
+      destructiveHint: false
+      idempotentHint: true
+      openWorldHint: false
+  - name: addHelmRepository
+    description: Add a Helm repository for a user
+    inputSchema:
+      - name: userId
+        description: The ID of the user
+        type: number
+        required: true
+      - name: url
+        description: The URL of the Helm repository to add
+        type: string
+        required: true
+    annotations:
+      title: Add Helm Repository
+      readOnlyHint: false
+      destructiveHint: false
+      idempotentHint: false
+      openWorldHint: true
+  - name: removeHelmRepository
+    description: Remove a Helm repository for a user
+    inputSchema:
+      - name: userId
+        description: The ID of the user
+        type: number
+        required: true
+      - name: repositoryId
+        description: The ID of the Helm repository to remove
+        type: number
+        required: true
+    annotations:
+      title: Remove Helm Repository
+      readOnlyHint: false
+      destructiveHint: true
+      idempotentHint: false
+      openWorldHint: false
+  - name: searchHelmCharts
+    description: Search for Helm charts in a repository
+    inputSchema:
+      - name: repo
+        description: The URL of the Helm repository to search
+        type: string
+        required: true
+      - name: chart
+        description: The name of the chart to search for
+        type: string
+        required: false
+    annotations:
+      title: Search Helm Charts
+      readOnlyHint: true
+      destructiveHint: false
+      idempotentHint: true
+      openWorldHint: true
+  - name: installHelmChart
+    description: Install a Helm chart on an environment
+    inputSchema:
+      - name: environmentId
+        description: The ID of the environment to install the chart on
+        type: number
+        required: true
+      - name: chart
+        description: The name of the chart to install
+        type: string
+        required: true
+      - name: name
+        description: The release name for the installed chart
+        type: string
+        required: true
+      - name: repo
+        description: The URL of the Helm repository containing the chart
+        type: string
+        required: true
+      - name: namespace
+        description: The Kubernetes namespace to install the chart in
+        type: string
+        required: false
+      - name: values
+        description: Custom values for the chart in YAML format
+        type: string
+        required: false
+      - name: version
+        description: The version of the chart to install
+        type: string
+        required: false
+    annotations:
+      title: Install Helm Chart
+      readOnlyHint: false
+      destructiveHint: false
+      idempotentHint: false
+      openWorldHint: true
+  - name: listHelmReleases
+    description: List all Helm releases on an environment
+    inputSchema:
+      - name: environmentId
+        description: The ID of the environment
+        type: number
+        required: true
+      - name: namespace
+        description: Filter releases by Kubernetes namespace
+        type: string
+        required: false
+      - name: filter
+        description: Filter releases by name pattern
+        type: string
+        required: false
+      - name: selector
+        description: Filter releases by label selector
+        type: string
+        required: false
+    annotations:
+      title: List Helm Releases
+      readOnlyHint: true
+      destructiveHint: false
+      idempotentHint: true
+      openWorldHint: false
+  - name: deleteHelmRelease
+    description: Delete a Helm release from an environment
+    inputSchema:
+      - name: environmentId
+        description: The ID of the environment
+        type: number
+        required: true
+      - name: release
+        description: The name of the release to delete
+        type: string
+        required: true
+      - name: namespace
+        description: The Kubernetes namespace of the release
+        type: string
+        required: false
+    annotations:
+      title: Delete Helm Release
+      readOnlyHint: false
+      destructiveHint: true
+      idempotentHint: false
+      openWorldHint: false
+  - name: getHelmReleaseHistory
+    description: Get the revision history of a Helm release
+    inputSchema:
+      - name: environmentId
+        description: The ID of the environment
+        type: number
+        required: true
+      - name: name
+        description: The name of the Helm release
+        type: string
+        required: true
+      - name: namespace
+        description: The Kubernetes namespace of the release
+        type: string
+        required: false
+    annotations:
+      title: Get Helm Release History
+      readOnlyHint: true
+      destructiveHint: false
+      idempotentHint: true
+      openWorldHint: false

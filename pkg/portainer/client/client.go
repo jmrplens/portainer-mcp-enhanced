@@ -28,6 +28,12 @@ type PortainerAPIClient interface {
 	SnapshotEndpoint(id int64) error
 	SnapshotAllEndpoints() error
 	GetSettings() (*apimodels.PortainereeSettings, error)
+	UpdateSettings(payload *apimodels.SettingsSettingsUpdatePayload) error
+	GetPublicSettings() (*apimodels.SettingsPublicSettingsResponse, error)
+	GetSSLSettings() (*apimodels.PortainereeSSLSettings, error)
+	UpdateSSLSettings(payload *apimodels.SslSslUpdatePayload) error
+	ListAppTemplates() ([]*apimodels.PortainerTemplate, error)
+	GetAppTemplateFile(id int64) (string, error)
 	ListTags() ([]*apimodels.PortainerTag, error)
 	CreateTag(name string) (int64, error)
 	DeleteTag(id int64) error
@@ -65,9 +71,25 @@ type PortainerAPIClient interface {
 	RestoreFromS3(body *apimodels.BackupRestoreS3Settings) error
 	ListRoles() ([]*apimodels.PortainereeRole, error)
 	GetMOTD() (*apimodels.MotdMotdResponse, error)
+	AuthenticateUser(username, password string) (*apimodels.AuthAuthenticateResponse, error)
+	Logout() error
 	ListWebhooks() ([]*apimodels.PortainerWebhook, error)
 	CreateWebhook(resourceId string, endpointId int64, webhookType int64) (int64, error)
 	DeleteWebhook(id int64) error
+	ListEdgeJobs() ([]*apimodels.PortainerEdgeJob, error)
+	GetEdgeJob(id int64) (*apimodels.PortainerEdgeJob, error)
+	GetEdgeJobFile(id int64) (string, error)
+	CreateEdgeJob(payload *apimodels.EdgejobsEdgeJobCreateFromFileContentPayload) (int64, error)
+	DeleteEdgeJob(id int64) error
+	ListEdgeUpdateSchedules() ([]*apimodels.EdgeupdateschedulesDecoratedUpdateSchedule, error)
+	ListHelmRepositories(userId int64) (*apimodels.UsersHelmUserRepositoryResponse, error)
+	CreateHelmRepository(userId int64, url string) (*apimodels.PortainerHelmUserRepository, error)
+	DeleteHelmRepository(userId int64, repositoryId int64) error
+	SearchHelmCharts(repo string, chart *string) (string, error)
+	InstallHelmChart(environmentId int64, payload *apimodels.HelmInstallChartPayload) (*apimodels.ReleaseRelease, error)
+	ListHelmReleases(environmentId int64, namespace *string, filter *string, selector *string) ([]*apimodels.ReleaseReleaseElement, error)
+	DeleteHelmRelease(environmentId int64, release string, namespace *string) error
+	GetHelmReleaseHistory(environmentId int64, name string, namespace *string) ([]*apimodels.ReleaseRelease, error)
 }
 
 // PortainerClient is a wrapper around the Portainer SDK client

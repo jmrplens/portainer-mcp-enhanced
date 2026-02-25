@@ -295,6 +295,45 @@ func (m *MockPortainerClient) GetSettings() (models.PortainerSettings, error) {
 	return args.Get(0).(models.PortainerSettings), args.Error(1)
 }
 
+func (m *MockPortainerClient) UpdateSettings(settings map[string]interface{}) error {
+	args := m.Called(settings)
+	return args.Error(0)
+}
+
+func (m *MockPortainerClient) GetPublicSettings() (models.PublicSettings, error) {
+	args := m.Called()
+	if args.Get(0) == nil {
+		return models.PublicSettings{}, args.Error(1)
+	}
+	return args.Get(0).(models.PublicSettings), args.Error(1)
+}
+
+func (m *MockPortainerClient) GetSSLSettings() (models.SSLSettings, error) {
+	args := m.Called()
+	if args.Get(0) == nil {
+		return models.SSLSettings{}, args.Error(1)
+	}
+	return args.Get(0).(models.SSLSettings), args.Error(1)
+}
+
+func (m *MockPortainerClient) UpdateSSLSettings(cert, key string, httpEnabled *bool) error {
+	args := m.Called(cert, key, httpEnabled)
+	return args.Error(0)
+}
+
+func (m *MockPortainerClient) GetAppTemplates() ([]models.AppTemplate, error) {
+	args := m.Called()
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
+	return args.Get(0).([]models.AppTemplate), args.Error(1)
+}
+
+func (m *MockPortainerClient) GetAppTemplateFile(id int) (string, error) {
+	args := m.Called(id)
+	return args.Get(0).(string), args.Error(1)
+}
+
 func (m *MockPortainerClient) GetVersion() (string, error) {
 	args := m.Called()
 	if args.Get(0) == nil {
@@ -452,4 +491,107 @@ func (m *MockPortainerClient) GetMOTD() (models.MOTD, error) {
 		return models.MOTD{}, args.Error(1)
 	}
 	return args.Get(0).(models.MOTD), args.Error(1)
+}
+
+// Edge Job methods
+
+func (m *MockPortainerClient) GetEdgeJobs() ([]models.EdgeJob, error) {
+	args := m.Called()
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
+	return args.Get(0).([]models.EdgeJob), args.Error(1)
+}
+
+func (m *MockPortainerClient) GetEdgeJob(id int) (models.EdgeJob, error) {
+	args := m.Called(id)
+	if args.Get(0) == nil {
+		return models.EdgeJob{}, args.Error(1)
+	}
+	return args.Get(0).(models.EdgeJob), args.Error(1)
+}
+
+func (m *MockPortainerClient) GetEdgeJobFile(id int) (string, error) {
+	args := m.Called(id)
+	return args.String(0), args.Error(1)
+}
+
+func (m *MockPortainerClient) CreateEdgeJob(name, cronExpression, fileContent string, endpoints []int, edgeGroups []int, recurring bool) (int, error) {
+	args := m.Called(name, cronExpression, fileContent, endpoints, edgeGroups, recurring)
+	return args.Int(0), args.Error(1)
+}
+
+func (m *MockPortainerClient) DeleteEdgeJob(id int) error {
+	args := m.Called(id)
+	return args.Error(0)
+}
+
+// Edge Update Schedule methods
+
+func (m *MockPortainerClient) GetEdgeUpdateSchedules() ([]models.EdgeUpdateSchedule, error) {
+	args := m.Called()
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
+	return args.Get(0).([]models.EdgeUpdateSchedule), args.Error(1)
+}
+
+// Auth methods
+
+func (m *MockPortainerClient) AuthenticateUser(username, password string) (models.AuthResponse, error) {
+	args := m.Called(username, password)
+	return args.Get(0).(models.AuthResponse), args.Error(1)
+}
+
+func (m *MockPortainerClient) Logout() error {
+	args := m.Called()
+	return args.Error(0)
+}
+
+// Helm methods
+
+func (m *MockPortainerClient) GetHelmRepositories(userId int) (models.HelmRepositoryList, error) {
+	args := m.Called(userId)
+	return args.Get(0).(models.HelmRepositoryList), args.Error(1)
+}
+
+func (m *MockPortainerClient) CreateHelmRepository(userId int, url string) (models.HelmRepository, error) {
+	args := m.Called(userId, url)
+	return args.Get(0).(models.HelmRepository), args.Error(1)
+}
+
+func (m *MockPortainerClient) DeleteHelmRepository(userId int, repositoryId int) error {
+	args := m.Called(userId, repositoryId)
+	return args.Error(0)
+}
+
+func (m *MockPortainerClient) SearchHelmCharts(repo string, chart string) (string, error) {
+	args := m.Called(repo, chart)
+	return args.String(0), args.Error(1)
+}
+
+func (m *MockPortainerClient) InstallHelmChart(environmentId int, chart, name, namespace, repo, values, version string) (models.HelmReleaseDetails, error) {
+	args := m.Called(environmentId, chart, name, namespace, repo, values, version)
+	return args.Get(0).(models.HelmReleaseDetails), args.Error(1)
+}
+
+func (m *MockPortainerClient) GetHelmReleases(environmentId int, namespace, filter, selector string) ([]models.HelmRelease, error) {
+	args := m.Called(environmentId, namespace, filter, selector)
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
+	return args.Get(0).([]models.HelmRelease), args.Error(1)
+}
+
+func (m *MockPortainerClient) DeleteHelmRelease(environmentId int, release, namespace string) error {
+	args := m.Called(environmentId, release, namespace)
+	return args.Error(0)
+}
+
+func (m *MockPortainerClient) GetHelmReleaseHistory(environmentId int, name, namespace string) ([]models.HelmReleaseDetails, error) {
+	args := m.Called(environmentId, name, namespace)
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
+	return args.Get(0).([]models.HelmReleaseDetails), args.Error(1)
 }

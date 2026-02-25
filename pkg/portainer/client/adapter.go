@@ -10,10 +10,17 @@ import (
 	"github.com/go-openapi/strfmt"
 	sdkclient "github.com/portainer/client-api-go/v2/client"
 	swaggerclient "github.com/portainer/client-api-go/v2/pkg/client"
+	"github.com/portainer/client-api-go/v2/pkg/client/auth"
 	"github.com/portainer/client-api-go/v2/pkg/client/backup"
 	"github.com/portainer/client-api-go/v2/pkg/client/custom_templates"
+	"github.com/portainer/client-api-go/v2/pkg/client/edge_jobs"
+	"github.com/portainer/client-api-go/v2/pkg/client/edge_update_schedules"
 	"github.com/portainer/client-api-go/v2/pkg/client/endpoints"
+	"github.com/portainer/client-api-go/v2/pkg/client/helm"
 	"github.com/portainer/client-api-go/v2/pkg/client/motd"
+	"github.com/portainer/client-api-go/v2/pkg/client/settings"
+	"github.com/portainer/client-api-go/v2/pkg/client/ssl"
+	"github.com/portainer/client-api-go/v2/pkg/client/templates"
 	"github.com/portainer/client-api-go/v2/pkg/client/registries"
 	"github.com/portainer/client-api-go/v2/pkg/client/roles"
 	"github.com/portainer/client-api-go/v2/pkg/client/tags"
@@ -320,6 +327,248 @@ func (a *portainerAPIAdapter) GetMOTD() (*apimodels.MotdMotdResponse, error) {
 	resp, err := a.swagger.Motd.MOTD(params, nil)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get MOTD: %w", err)
+	}
+	return resp.Payload, nil
+}
+
+// ListEdgeJobs lists all edge jobs.
+func (a *portainerAPIAdapter) ListEdgeJobs() ([]*apimodels.PortainerEdgeJob, error) {
+	params := edge_jobs.NewEdgeJobListParams()
+	resp, err := a.swagger.EdgeJobs.EdgeJobList(params, nil)
+	if err != nil {
+		return nil, fmt.Errorf("failed to list edge jobs: %w", err)
+	}
+	return resp.Payload, nil
+}
+
+// GetEdgeJob retrieves an edge job by ID.
+func (a *portainerAPIAdapter) GetEdgeJob(id int64) (*apimodels.PortainerEdgeJob, error) {
+	params := edge_jobs.NewEdgeJobInspectParams().WithID(id)
+	resp, err := a.swagger.EdgeJobs.EdgeJobInspect(params, nil)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get edge job: %w", err)
+	}
+	return resp.Payload, nil
+}
+
+// GetEdgeJobFile retrieves the file content of an edge job.
+func (a *portainerAPIAdapter) GetEdgeJobFile(id int64) (string, error) {
+	params := edge_jobs.NewEdgeJobFileParams().WithID(id)
+	resp, err := a.swagger.EdgeJobs.EdgeJobFile(params, nil)
+	if err != nil {
+		return "", fmt.Errorf("failed to get edge job file: %w", err)
+	}
+	return resp.Payload.FileContent, nil
+}
+
+// CreateEdgeJob creates a new edge job from file content.
+func (a *portainerAPIAdapter) CreateEdgeJob(payload *apimodels.EdgejobsEdgeJobCreateFromFileContentPayload) (int64, error) {
+	params := edge_jobs.NewEdgeJobCreateStringParams().WithBody(payload)
+	resp, err := a.swagger.EdgeJobs.EdgeJobCreateString(params, nil)
+	if err != nil {
+		return 0, fmt.Errorf("failed to create edge job: %w", err)
+	}
+	return resp.Payload.ID, nil
+}
+
+// DeleteEdgeJob deletes an edge job by ID.
+func (a *portainerAPIAdapter) DeleteEdgeJob(id int64) error {
+	params := edge_jobs.NewEdgeJobDeleteParams().WithID(id)
+	_, err := a.swagger.EdgeJobs.EdgeJobDelete(params, nil)
+	if err != nil {
+		return fmt.Errorf("failed to delete edge job: %w", err)
+	}
+	return nil
+}
+
+// UpdateSettings updates the Portainer settings using the provided payload.
+func (a *portainerAPIAdapter) UpdateSettings(payload *apimodels.SettingsSettingsUpdatePayload) error {
+	params := settings.NewSettingsUpdateParams().WithBody(payload)
+	_, err := a.swagger.Settings.SettingsUpdate(params, nil)
+	if err != nil {
+		return fmt.Errorf("failed to update settings: %w", err)
+	}
+	return nil
+}
+
+// GetPublicSettings retrieves the public settings from the Portainer server.
+func (a *portainerAPIAdapter) GetPublicSettings() (*apimodels.SettingsPublicSettingsResponse, error) {
+	params := settings.NewSettingsPublicParams()
+	resp, err := a.swagger.Settings.SettingsPublic(params)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get public settings: %w", err)
+	}
+	return resp.Payload, nil
+}
+
+// GetSSLSettings retrieves the SSL settings from the Portainer server.
+func (a *portainerAPIAdapter) GetSSLSettings() (*apimodels.PortainereeSSLSettings, error) {
+	params := ssl.NewSSLInspectParams()
+	resp, err := a.swagger.Ssl.SSLInspect(params, nil)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get SSL settings: %w", err)
+	}
+	return resp.Payload, nil
+}
+
+// UpdateSSLSettings updates the SSL settings.
+func (a *portainerAPIAdapter) UpdateSSLSettings(payload *apimodels.SslSslUpdatePayload) error {
+	params := ssl.NewSSLUpdateParams().WithBody(payload)
+	_, err := a.swagger.Ssl.SSLUpdate(params, nil)
+	if err != nil {
+		return fmt.Errorf("failed to update SSL settings: %w", err)
+	}
+	return nil
+}
+
+// ListAppTemplates lists all application templates.
+func (a *portainerAPIAdapter) ListAppTemplates() ([]*apimodels.PortainerTemplate, error) {
+	params := templates.NewTemplateListParams()
+	resp, err := a.swagger.Templates.TemplateList(params, nil)
+	if err != nil {
+		return nil, fmt.Errorf("failed to list app templates: %w", err)
+	}
+	return resp.Payload.Templates, nil
+}
+
+// GetAppTemplateFile retrieves the file content of an application template.
+func (a *portainerAPIAdapter) GetAppTemplateFile(id int64) (string, error) {
+	params := templates.NewTemplateFileParams().WithID(id)
+	resp, err := a.swagger.Templates.TemplateFile(params, nil)
+	if err != nil {
+		return "", fmt.Errorf("failed to get app template file: %w", err)
+	}
+	return resp.Payload.FileContent, nil
+}
+
+// ListEdgeUpdateSchedules lists all edge update schedules.
+func (a *portainerAPIAdapter) ListEdgeUpdateSchedules() ([]*apimodels.EdgeupdateschedulesDecoratedUpdateSchedule, error) {
+	params := edge_update_schedules.NewEdgeUpdateScheduleListParams()
+	resp, err := a.swagger.EdgeUpdateSchedules.EdgeUpdateScheduleList(params, nil)
+	if err != nil {
+		return nil, fmt.Errorf("failed to list edge update schedules: %w", err)
+	}
+	return resp.Payload, nil
+}
+
+// AuthenticateUser authenticates a user using the Swagger client.
+func (a *portainerAPIAdapter) AuthenticateUser(username, password string) (*apimodels.AuthAuthenticateResponse, error) {
+	params := auth.NewAuthenticateUserParams()
+	params.Body = &apimodels.AuthAuthenticatePayload{
+		Username: &username,
+		Password: &password,
+	}
+	resp, err := a.swagger.Auth.AuthenticateUser(params)
+	if err != nil {
+		return nil, fmt.Errorf("failed to authenticate user: %w", err)
+	}
+	return resp.Payload, nil
+}
+
+// Logout logs out the current user session.
+func (a *portainerAPIAdapter) Logout() error {
+	params := auth.NewLogoutParams()
+	_, err := a.swagger.Auth.Logout(params, nil)
+	if err != nil {
+		return fmt.Errorf("failed to logout: %w", err)
+	}
+	return nil
+}
+
+// ListHelmRepositories lists helm repositories for a user.
+func (a *portainerAPIAdapter) ListHelmRepositories(userId int64) (*apimodels.UsersHelmUserRepositoryResponse, error) {
+	params := helm.NewHelmUserRepositoriesListParams().WithID(userId)
+	resp, err := a.swagger.Helm.HelmUserRepositoriesList(params, nil)
+	if err != nil {
+		return nil, fmt.Errorf("failed to list helm repositories: %w", err)
+	}
+	return resp.Payload, nil
+}
+
+// CreateHelmRepository creates a helm repository for a user.
+func (a *portainerAPIAdapter) CreateHelmRepository(userId int64, url string) (*apimodels.PortainerHelmUserRepository, error) {
+	params := helm.NewHelmUserRepositoryCreateParams().WithID(userId).WithPayload(&apimodels.UsersAddHelmRepoURLPayload{URL: url})
+	resp, err := a.swagger.Helm.HelmUserRepositoryCreate(params, nil)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create helm repository: %w", err)
+	}
+	return resp.Payload, nil
+}
+
+// DeleteHelmRepository deletes a helm repository for a user.
+func (a *portainerAPIAdapter) DeleteHelmRepository(userId int64, repositoryId int64) error {
+	params := helm.NewHelmUserRepositoryDeleteParams().WithID(userId).WithRepositoryID(repositoryId)
+	_, err := a.swagger.Helm.HelmUserRepositoryDelete(params, nil)
+	if err != nil {
+		return fmt.Errorf("failed to delete helm repository: %w", err)
+	}
+	return nil
+}
+
+// SearchHelmCharts searches for helm charts in a repository.
+func (a *portainerAPIAdapter) SearchHelmCharts(repo string, chart *string) (string, error) {
+	params := helm.NewHelmRepoSearchParams().WithRepo(repo)
+	if chart != nil {
+		params = params.WithChart(chart)
+	}
+	resp, err := a.swagger.Helm.HelmRepoSearch(params, nil)
+	if err != nil {
+		return "", fmt.Errorf("failed to search helm charts: %w", err)
+	}
+	return resp.Payload, nil
+}
+
+// InstallHelmChart installs a helm chart on an environment.
+func (a *portainerAPIAdapter) InstallHelmChart(environmentId int64, payload *apimodels.HelmInstallChartPayload) (*apimodels.ReleaseRelease, error) {
+	params := helm.NewHelmInstallParams().WithID(environmentId).WithPayload(payload)
+	resp, err := a.swagger.Helm.HelmInstall(params, nil)
+	if err != nil {
+		return nil, fmt.Errorf("failed to install helm chart: %w", err)
+	}
+	return resp.Payload, nil
+}
+
+// ListHelmReleases lists helm releases on an environment.
+func (a *portainerAPIAdapter) ListHelmReleases(environmentId int64, namespace *string, filter *string, selector *string) ([]*apimodels.ReleaseReleaseElement, error) {
+	params := helm.NewHelmListParams().WithID(environmentId)
+	if namespace != nil {
+		params = params.WithNamespace(namespace)
+	}
+	if filter != nil {
+		params = params.WithFilter(filter)
+	}
+	if selector != nil {
+		params = params.WithSelector(selector)
+	}
+	resp, err := a.swagger.Helm.HelmList(params, nil)
+	if err != nil {
+		return nil, fmt.Errorf("failed to list helm releases: %w", err)
+	}
+	return resp.Payload, nil
+}
+
+// DeleteHelmRelease deletes a helm release from an environment.
+func (a *portainerAPIAdapter) DeleteHelmRelease(environmentId int64, release string, namespace *string) error {
+	params := helm.NewHelmDeleteParams().WithID(environmentId).WithRelease(release)
+	if namespace != nil {
+		params = params.WithNamespace(namespace)
+	}
+	_, err := a.swagger.Helm.HelmDelete(params, nil)
+	if err != nil {
+		return fmt.Errorf("failed to delete helm release: %w", err)
+	}
+	return nil
+}
+
+// GetHelmReleaseHistory gets the history of a helm release.
+func (a *portainerAPIAdapter) GetHelmReleaseHistory(environmentId int64, name string, namespace *string) ([]*apimodels.ReleaseRelease, error) {
+	params := helm.NewHelmGetHistoryParams().WithID(environmentId).WithName(name)
+	if namespace != nil {
+		params = params.WithNamespace(namespace)
+	}
+	resp, err := a.swagger.Helm.HelmGetHistory(params, nil)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get helm release history: %w", err)
 	}
 	return resp.Payload, nil
 }

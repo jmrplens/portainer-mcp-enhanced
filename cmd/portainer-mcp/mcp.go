@@ -70,6 +70,7 @@ func main() {
 	server.AddTagFeatures()
 	server.AddStackFeatures()
 	server.AddSettingsFeatures()
+	server.AddSSLFeatures()
 	server.AddUserFeatures()
 	server.AddTeamFeatures()
 	server.AddAccessGroupFeatures()
@@ -82,6 +83,11 @@ func main() {
 	server.AddBackupFeatures()
 	server.AddRoleFeatures()
 	server.AddMotdFeatures()
+	server.AddAuthFeatures()
+	server.AddEdgeJobFeatures()
+	server.AddEdgeUpdateScheduleFeatures()
+	server.AddAppTemplateFeatures()
+	server.AddHelmFeatures()
 
 	err = server.Start()
 	if err != nil {

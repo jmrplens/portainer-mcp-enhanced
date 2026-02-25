@@ -75,6 +75,16 @@ type PortainerClient interface {
 
 	// Settings methods
 	GetSettings() (models.PortainerSettings, error)
+	UpdateSettings(settingsJSON map[string]interface{}) error
+	GetPublicSettings() (models.PublicSettings, error)
+
+	// SSL methods
+	GetSSLSettings() (models.SSLSettings, error)
+	UpdateSSLSettings(cert, key string, httpEnabled *bool) error
+
+	// App Template methods
+	GetAppTemplates() ([]models.AppTemplate, error)
+	GetAppTemplateFile(id int) (string, error)
 
 	// Version methods
 	GetVersion() (string, error)
@@ -118,6 +128,30 @@ type PortainerClient interface {
 
 	// MOTD methods
 	GetMOTD() (models.MOTD, error)
+
+	// Edge Job methods
+	GetEdgeJobs() ([]models.EdgeJob, error)
+	GetEdgeJob(id int) (models.EdgeJob, error)
+	GetEdgeJobFile(id int) (string, error)
+	CreateEdgeJob(name, cronExpression, fileContent string, endpoints []int, edgeGroups []int, recurring bool) (int, error)
+	DeleteEdgeJob(id int) error
+
+	// Edge Update Schedule methods
+	GetEdgeUpdateSchedules() ([]models.EdgeUpdateSchedule, error)
+
+	// Auth methods
+	AuthenticateUser(username, password string) (models.AuthResponse, error)
+	Logout() error
+
+	// Helm methods
+	GetHelmRepositories(userId int) (models.HelmRepositoryList, error)
+	CreateHelmRepository(userId int, url string) (models.HelmRepository, error)
+	DeleteHelmRepository(userId int, repositoryId int) error
+	SearchHelmCharts(repo string, chart string) (string, error)
+	InstallHelmChart(environmentId int, chart, name, namespace, repo, values, version string) (models.HelmReleaseDetails, error)
+	GetHelmReleases(environmentId int, namespace, filter, selector string) ([]models.HelmRelease, error)
+	DeleteHelmRelease(environmentId int, release, namespace string) error
+	GetHelmReleaseHistory(environmentId int, name, namespace string) ([]models.HelmReleaseDetails, error)
 }
 
 // PortainerMCPServer is the main server that handles MCP protocol communication

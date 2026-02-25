@@ -185,6 +185,45 @@ func (m *MockPortainerAPI) GetSettings() (*apimodels.PortainereeSettings, error)
 	return args.Get(0).(*apimodels.PortainereeSettings), args.Error(1)
 }
 
+func (m *MockPortainerAPI) UpdateSettings(payload *apimodels.SettingsSettingsUpdatePayload) error {
+	args := m.Called(payload)
+	return args.Error(0)
+}
+
+func (m *MockPortainerAPI) GetPublicSettings() (*apimodels.SettingsPublicSettingsResponse, error) {
+	args := m.Called()
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
+	return args.Get(0).(*apimodels.SettingsPublicSettingsResponse), args.Error(1)
+}
+
+func (m *MockPortainerAPI) GetSSLSettings() (*apimodels.PortainereeSSLSettings, error) {
+	args := m.Called()
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
+	return args.Get(0).(*apimodels.PortainereeSSLSettings), args.Error(1)
+}
+
+func (m *MockPortainerAPI) UpdateSSLSettings(payload *apimodels.SslSslUpdatePayload) error {
+	args := m.Called(payload)
+	return args.Error(0)
+}
+
+func (m *MockPortainerAPI) ListAppTemplates() ([]*apimodels.PortainerTemplate, error) {
+	args := m.Called()
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
+	return args.Get(0).([]*apimodels.PortainerTemplate), args.Error(1)
+}
+
+func (m *MockPortainerAPI) GetAppTemplateFile(id int64) (string, error) {
+	args := m.Called(id)
+	return args.Get(0).(string), args.Error(1)
+}
+
 // ListTags mocks the ListTags method
 func (m *MockPortainerAPI) ListTags() ([]*apimodels.PortainerTag, error) {
 	args := m.Called()
@@ -480,4 +519,121 @@ func (m *MockPortainerAPI) GetMOTD() (*apimodels.MotdMotdResponse, error) {
 		return nil, args.Error(1)
 	}
 	return args.Get(0).(*apimodels.MotdMotdResponse), args.Error(1)
+}
+
+// ListEdgeJobs mocks the ListEdgeJobs method
+func (m *MockPortainerAPI) ListEdgeJobs() ([]*apimodels.PortainerEdgeJob, error) {
+	args := m.Called()
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
+	return args.Get(0).([]*apimodels.PortainerEdgeJob), args.Error(1)
+}
+
+// GetEdgeJob mocks the GetEdgeJob method
+func (m *MockPortainerAPI) GetEdgeJob(id int64) (*apimodels.PortainerEdgeJob, error) {
+	args := m.Called(id)
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
+	return args.Get(0).(*apimodels.PortainerEdgeJob), args.Error(1)
+}
+
+// GetEdgeJobFile mocks the GetEdgeJobFile method
+func (m *MockPortainerAPI) GetEdgeJobFile(id int64) (string, error) {
+	args := m.Called(id)
+	return args.String(0), args.Error(1)
+}
+
+// CreateEdgeJob mocks the CreateEdgeJob method
+func (m *MockPortainerAPI) CreateEdgeJob(payload *apimodels.EdgejobsEdgeJobCreateFromFileContentPayload) (int64, error) {
+	args := m.Called(payload)
+	return int64(args.Int(0)), args.Error(1)
+}
+
+// DeleteEdgeJob mocks the DeleteEdgeJob method
+func (m *MockPortainerAPI) DeleteEdgeJob(id int64) error {
+	args := m.Called(id)
+	return args.Error(0)
+}
+
+// ListEdgeUpdateSchedules mocks the ListEdgeUpdateSchedules method
+func (m *MockPortainerAPI) ListEdgeUpdateSchedules() ([]*apimodels.EdgeupdateschedulesDecoratedUpdateSchedule, error) {
+	args := m.Called()
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
+	return args.Get(0).([]*apimodels.EdgeupdateschedulesDecoratedUpdateSchedule), args.Error(1)
+}
+
+// AuthenticateUser mocks the AuthenticateUser method
+func (m *MockPortainerAPI) AuthenticateUser(username, password string) (*apimodels.AuthAuthenticateResponse, error) {
+	args := m.Called(username, password)
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
+	return args.Get(0).(*apimodels.AuthAuthenticateResponse), args.Error(1)
+}
+
+// Logout mocks the Logout method
+func (m *MockPortainerAPI) Logout() error {
+	args := m.Called()
+	return args.Error(0)
+}
+
+// Helm methods
+
+func (m *MockPortainerAPI) ListHelmRepositories(userId int64) (*apimodels.UsersHelmUserRepositoryResponse, error) {
+	args := m.Called(userId)
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
+	return args.Get(0).(*apimodels.UsersHelmUserRepositoryResponse), args.Error(1)
+}
+
+func (m *MockPortainerAPI) CreateHelmRepository(userId int64, url string) (*apimodels.PortainerHelmUserRepository, error) {
+	args := m.Called(userId, url)
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
+	return args.Get(0).(*apimodels.PortainerHelmUserRepository), args.Error(1)
+}
+
+func (m *MockPortainerAPI) DeleteHelmRepository(userId int64, repositoryId int64) error {
+	args := m.Called(userId, repositoryId)
+	return args.Error(0)
+}
+
+func (m *MockPortainerAPI) SearchHelmCharts(repo string, chart *string) (string, error) {
+	args := m.Called(repo, chart)
+	return args.String(0), args.Error(1)
+}
+
+func (m *MockPortainerAPI) InstallHelmChart(environmentId int64, payload *apimodels.HelmInstallChartPayload) (*apimodels.ReleaseRelease, error) {
+	args := m.Called(environmentId, payload)
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
+	return args.Get(0).(*apimodels.ReleaseRelease), args.Error(1)
+}
+
+func (m *MockPortainerAPI) ListHelmReleases(environmentId int64, namespace *string, filter *string, selector *string) ([]*apimodels.ReleaseReleaseElement, error) {
+	args := m.Called(environmentId, namespace, filter, selector)
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
+	return args.Get(0).([]*apimodels.ReleaseReleaseElement), args.Error(1)
+}
+
+func (m *MockPortainerAPI) DeleteHelmRelease(environmentId int64, release string, namespace *string) error {
+	args := m.Called(environmentId, release, namespace)
+	return args.Error(0)
+}
+
+func (m *MockPortainerAPI) GetHelmReleaseHistory(environmentId int64, name string, namespace *string) ([]*apimodels.ReleaseRelease, error) {
+	args := m.Called(environmentId, name, namespace)
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
+	return args.Get(0).([]*apimodels.ReleaseRelease), args.Error(1)
 }

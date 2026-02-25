@@ -6,10 +6,16 @@ import (
 
 	"github.com/mark3labs/mcp-go/mcp"
 	"github.com/mark3labs/mcp-go/server"
+	"github.com/portainer/portainer-mcp/pkg/toolgen"
 )
 
 func (s *PortainerMCPServer) AddSettingsFeatures() {
 	s.addToolIfExists(ToolGetSettings, s.HandleGetSettings())
+	s.addToolIfExists(ToolGetPublicSettings, s.HandleGetPublicSettings())
+
+	if !s.readOnly {
+		s.addToolIfExists(ToolUpdateSettings, s.HandleUpdateSettings())
+	}
 }
 
 func (s *PortainerMCPServer) HandleGetSettings() server.ToolHandlerFunc {
@@ -22,6 +28,47 @@ func (s *PortainerMCPServer) HandleGetSettings() server.ToolHandlerFunc {
 		data, err := json.Marshal(settings)
 		if err != nil {
 			return mcp.NewToolResultErrorFromErr("failed to marshal settings", err), nil
+		}
+
+		return mcp.NewToolResultText(string(data)), nil
+	}
+}
+
+// HandleUpdateSettings handles the updateSettings tool call.
+// It accepts a JSON string parameter containing the settings fields to update.
+func (s *PortainerMCPServer) HandleUpdateSettings() server.ToolHandlerFunc {
+	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
+		parser := toolgen.NewParameterParser(request)
+
+		settingsJSON, err := parser.GetString("settings", true)
+		if err != nil {
+			return mcp.NewToolResultErrorFromErr("invalid settings parameter", err), nil
+		}
+
+		var settingsMap map[string]interface{}
+		if err := json.Unmarshal([]byte(settingsJSON), &settingsMap); err != nil {
+			return mcp.NewToolResultErrorFromErr("failed to parse settings JSON", err), nil
+		}
+
+		if err := s.cli.UpdateSettings(settingsMap); err != nil {
+			return mcp.NewToolResultErrorFromErr("failed to update settings", err), nil
+		}
+
+		return mcp.NewToolResultText("Settings updated successfully"), nil
+	}
+}
+
+// HandleGetPublicSettings handles the getPublicSettings tool call.
+func (s *PortainerMCPServer) HandleGetPublicSettings() server.ToolHandlerFunc {
+	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
+		publicSettings, err := s.cli.GetPublicSettings()
+		if err != nil {
+			return mcp.NewToolResultErrorFromErr("failed to get public settings", err), nil
+		}
+
+		data, err := json.Marshal(publicSettings)
+		if err != nil {
+			return mcp.NewToolResultErrorFromErr("failed to marshal public settings", err), nil
 		}
 
 		return mcp.NewToolResultText(string(data)), nil
