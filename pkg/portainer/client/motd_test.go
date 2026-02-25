@@ -1,10 +1,10 @@
 package client
 
 import (
+	"encoding/json"
 	"errors"
 	"testing"
 
-	apimodels "github.com/portainer/client-api-go/v2/pkg/models"
 	"github.com/portainer/portainer-mcp/pkg/portainer/models"
 	"github.com/stretchr/testify/assert"
 )
@@ -12,19 +12,19 @@ import (
 func TestGetMOTD(t *testing.T) {
 	tests := []struct {
 		name          string
-		mockMOTD      *apimodels.MotdMotdResponse
+		mockMOTD      map[string]any
 		mockError     error
 		expected      models.MOTD
 		expectedError bool
 	}{
 		{
 			name: "successful retrieval",
-			mockMOTD: &apimodels.MotdMotdResponse{
-				Title:   "Welcome",
-				Message: "Hello World",
-				Style:   "info",
-				Hash:    []int64{1, 2, 3},
-				ContentLayout: map[string]string{
+			mockMOTD: map[string]any{
+				"Title":   "Welcome",
+				"Message": "Hello World",
+				"Style":   "info",
+				"Hash":    "/L63mbIXZxetD/T6xFz3pQ==",
+				"ContentLayout": map[string]any{
 					"key": "value",
 				},
 			},
@@ -32,7 +32,7 @@ func TestGetMOTD(t *testing.T) {
 				Title:   "Welcome",
 				Message: "Hello World",
 				Style:   "info",
-				Hash:    []int64{1, 2, 3},
+				Hash:    json.RawMessage(`"/L63mbIXZxetD/T6xFz3pQ=="`),
 				ContentLayout: map[string]string{
 					"key": "value",
 				},

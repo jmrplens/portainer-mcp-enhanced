@@ -24,7 +24,7 @@ func TestHandleGetMOTD(t *testing.T) {
 				Title:   "Welcome",
 				Message: "Hello World",
 				Style:   "info",
-				Hash:    []int64{1, 2, 3},
+				Hash:    json.RawMessage(`"/L63mbIXZxetD/T6xFz3pQ=="`),
 				ContentLayout: map[string]string{
 					"key": "value",
 				},

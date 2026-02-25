@@ -148,18 +148,18 @@ func TestBackupToS3(t *testing.T) {
 		{
 			name: "successful backup to S3",
 			settings: models.S3BackupSettings{
-				AccessKeyID:    "AKID123",
+				AccessKeyID:     "AKID123",
 				SecretAccessKey: "secret",
-				BucketName:     "my-bucket",
-				Region:         "us-east-1",
+				BucketName:      "my-bucket",
+				Region:          "us-east-1",
 			},
 		},
 		{
 			name: "api error",
 			settings: models.S3BackupSettings{
-				AccessKeyID:    "AKID123",
+				AccessKeyID:     "AKID123",
 				SecretAccessKey: "secret",
-				BucketName:     "my-bucket",
+				BucketName:      "my-bucket",
 			},
 			mockError:     errors.New("api error"),
 			expectedError: true,
@@ -170,13 +170,13 @@ func TestBackupToS3(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			mockAPI := new(MockPortainerAPI)
 			expectedBody := &apimodels.BackupS3BackupPayload{
-				AccessKeyID:    tt.settings.AccessKeyID,
-				SecretAccessKey: tt.settings.SecretAccessKey,
-				BucketName:     tt.settings.BucketName,
-				Region:         tt.settings.Region,
+				AccessKeyID:      tt.settings.AccessKeyID,
+				SecretAccessKey:  tt.settings.SecretAccessKey,
+				BucketName:       tt.settings.BucketName,
+				Region:           tt.settings.Region,
 				S3CompatibleHost: tt.settings.S3CompatibleHost,
-				Password:       tt.settings.Password,
-				CronRule:       tt.settings.CronRule,
+				Password:         tt.settings.Password,
+				CronRule:         tt.settings.CronRule,
 			}
 			mockAPI.On("BackupToS3", expectedBody).Return(tt.mockError)
 
@@ -213,12 +213,12 @@ func TestRestoreFromS3(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			mockAPI := new(MockPortainerAPI)
 			expectedBody := &apimodels.BackupRestoreS3Settings{
-				AccessKeyID:    "AKID123",
-				SecretAccessKey: "secret",
-				BucketName:     "my-bucket",
-				Filename:       "backup.tar.gz",
-				Password:       "pass",
-				Region:         "us-east-1",
+				AccessKeyID:      "AKID123",
+				SecretAccessKey:  "secret",
+				BucketName:       "my-bucket",
+				Filename:         "backup.tar.gz",
+				Password:         "pass",
+				Region:           "us-east-1",
 				S3CompatibleHost: "minio.example.com",
 			}
 			mockAPI.On("RestoreFromS3", expectedBody).Return(tt.mockError)

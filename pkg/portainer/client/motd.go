@@ -11,5 +11,5 @@ func (c *PortainerClient) GetMOTD() (models.MOTD, error) {
 		return models.MOTD{}, err
 	}
 
-	return models.ConvertToMOTD(raw), nil
+	return models.ConvertToMOTDFromMap(raw), nil
 }

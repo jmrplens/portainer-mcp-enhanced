@@ -70,7 +70,7 @@ type PortainerAPIClient interface {
 	BackupToS3(body *apimodels.BackupS3BackupPayload) error
 	RestoreFromS3(body *apimodels.BackupRestoreS3Settings) error
 	ListRoles() ([]*apimodels.PortainereeRole, error)
-	GetMOTD() (*apimodels.MotdMotdResponse, error)
+	GetMOTD() (map[string]any, error)
 	AuthenticateUser(username, password string) (*apimodels.AuthAuthenticateResponse, error)
 	Logout() error
 	ListWebhooks() ([]*apimodels.PortainerWebhook, error)

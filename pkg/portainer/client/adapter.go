@@ -15,19 +15,18 @@ import (
 	"github.com/portainer/client-api-go/v2/pkg/client/custom_templates"
 	"github.com/portainer/client-api-go/v2/pkg/client/docker"
 	"github.com/portainer/client-api-go/v2/pkg/client/edge_jobs"
-	"github.com/portainer/client-api-go/v2/pkg/client/kubernetes"
 	"github.com/portainer/client-api-go/v2/pkg/client/edge_update_schedules"
 	"github.com/portainer/client-api-go/v2/pkg/client/endpoints"
 	"github.com/portainer/client-api-go/v2/pkg/client/helm"
-	"github.com/portainer/client-api-go/v2/pkg/client/motd"
+	"github.com/portainer/client-api-go/v2/pkg/client/kubernetes"
+	"github.com/portainer/client-api-go/v2/pkg/client/registries"
+	"github.com/portainer/client-api-go/v2/pkg/client/roles"
 	"github.com/portainer/client-api-go/v2/pkg/client/settings"
 	"github.com/portainer/client-api-go/v2/pkg/client/ssl"
 	"github.com/portainer/client-api-go/v2/pkg/client/stacks"
-	"github.com/portainer/client-api-go/v2/pkg/client/templates"
-	"github.com/portainer/client-api-go/v2/pkg/client/registries"
-	"github.com/portainer/client-api-go/v2/pkg/client/roles"
 	"github.com/portainer/client-api-go/v2/pkg/client/tags"
 	"github.com/portainer/client-api-go/v2/pkg/client/teams"
+	"github.com/portainer/client-api-go/v2/pkg/client/templates"
 	"github.com/portainer/client-api-go/v2/pkg/client/users"
 	"github.com/portainer/client-api-go/v2/pkg/client/webhooks"
 	apimodels "github.com/portainer/client-api-go/v2/pkg/models"
@@ -38,7 +37,8 @@ import (
 // by the SDK's high-level client (e.g., delete operations).
 type portainerAPIAdapter struct {
 	*sdkclient.PortainerClient
-	swagger *swaggerclient.PortainerClientAPI
+	swagger       *swaggerclient.PortainerClientAPI
+	httpTransport *httptransport.Runtime
 }
 
 // newPortainerAPIAdapter creates a new adapter that embeds the SDK high-level
@@ -63,6 +63,7 @@ func newPortainerAPIAdapter(host, apiKey string, skipTLSVerify bool) *portainerA
 	return &portainerAPIAdapter{
 		PortainerClient: sdkCli,
 		swagger:         swaggerclient.New(transport, nil),
+		httpTransport:   transport,
 	}
 }
 
@@ -325,13 +326,33 @@ func (a *portainerAPIAdapter) ListRoles() ([]*apimodels.PortainereeRole, error) 
 }
 
 // GetMOTD retrieves the message of the day.
-func (a *portainerAPIAdapter) GetMOTD() (*apimodels.MotdMotdResponse, error) {
-	params := motd.NewMOTDParams()
-	resp, err := a.swagger.Motd.MOTD(params, nil)
+func (a *portainerAPIAdapter) GetMOTD() (map[string]any, error) {
+	// Use raw HTTP to avoid SDK Hash type mismatch
+	// (SDK defines Hash as []int64, but newer API versions return a string).
+	op := &runtime.ClientOperation{
+		ID:                 "MOTD",
+		Method:             "GET",
+		PathPattern:        "/motd",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"https"},
+		Params: runtime.ClientRequestWriterFunc(func(req runtime.ClientRequest, reg strfmt.Registry) error {
+			return nil
+		}),
+		AuthInfo: a.httpTransport.DefaultAuthentication,
+		Reader: runtime.ClientResponseReaderFunc(func(resp runtime.ClientResponse, consumer runtime.Consumer) (any, error) {
+			var result map[string]any
+			if err := consumer.Consume(resp.Body(), &result); err != nil {
+				return nil, err
+			}
+			return result, nil
+		}),
+	}
+	res, err := a.httpTransport.Submit(op)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get MOTD: %w", err)
 	}
-	return resp.Payload, nil
+	return res.(map[string]any), nil
 }
 
 // ListEdgeJobs lists all edge jobs.

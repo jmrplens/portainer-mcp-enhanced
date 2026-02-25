@@ -513,12 +513,12 @@ func (m *MockPortainerAPI) ListRoles() ([]*apimodels.PortainereeRole, error) {
 }
 
 // GetMOTD mocks the GetMOTD method
-func (m *MockPortainerAPI) GetMOTD() (*apimodels.MotdMotdResponse, error) {
+func (m *MockPortainerAPI) GetMOTD() (map[string]any, error) {
 	args := m.Called()
 	if args.Get(0) == nil {
 		return nil, args.Error(1)
 	}
-	return args.Get(0).(*apimodels.MotdMotdResponse), args.Error(1)
+	return args.Get(0).(map[string]any), args.Error(1)
 }
 
 // ListEdgeJobs mocks the ListEdgeJobs method

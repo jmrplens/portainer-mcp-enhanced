@@ -26,7 +26,7 @@ func TestConvertEdgeStackToStack(t *testing.T) {
 			want: Stack{
 				ID:                  1,
 				Name:                "Web Application Stack",
-				CreatedAt:           "2021-01-01T00:00:00Z",
+				CreatedAt:           time.Unix(1609459200, 0).Format(time.RFC3339),
 				EnvironmentGroupIds: []int{1, 2, 3},
 			},
 		},
@@ -41,7 +41,7 @@ func TestConvertEdgeStackToStack(t *testing.T) {
 			want: Stack{
 				ID:                  2,
 				Name:                "Empty Stack",
-				CreatedAt:           "2022-01-01T00:00:00Z",
+				CreatedAt:           time.Unix(1640995200, 0).Format(time.RFC3339),
 				EnvironmentGroupIds: []int{},
 			},
 		},
@@ -56,7 +56,7 @@ func TestConvertEdgeStackToStack(t *testing.T) {
 			want: Stack{
 				ID:                  3,
 				Name:                "Single Group Stack",
-				CreatedAt:           "2023-01-01T00:00:00Z",
+				CreatedAt:           time.Unix(1672531200, 0).Format(time.RFC3339),
 				EnvironmentGroupIds: []int{4},
 			},
 		},

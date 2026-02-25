@@ -67,7 +67,7 @@ func TestHandleGetBackupStatus(t *testing.T) {
 
 func TestHandleGetBackupS3Settings(t *testing.T) {
 	tests := []struct {
-		name        string
+		name         string
 		mockSettings models.S3BackupSettings
 		mockError    error
 		expectError  bool
@@ -189,10 +189,10 @@ func TestHandleBackupToS3(t *testing.T) {
 		{
 			name: "successful backup to S3",
 			args: map[string]any{
-				"accessKeyID":    "AKID123",
+				"accessKeyID":     "AKID123",
 				"secretAccessKey": "secret",
-				"bucketName":     "my-bucket",
-				"region":         "us-east-1",
+				"bucketName":      "my-bucket",
+				"region":          "us-east-1",
 			},
 			expectError: false,
 		},
@@ -204,9 +204,9 @@ func TestHandleBackupToS3(t *testing.T) {
 		{
 			name: "api error",
 			args: map[string]any{
-				"accessKeyID":    "AKID123",
+				"accessKeyID":     "AKID123",
 				"secretAccessKey": "secret",
-				"bucketName":     "my-bucket",
+				"bucketName":      "my-bucket",
 			},
 			mockError:   fmt.Errorf("api error"),
 			expectError: true,
@@ -219,17 +219,17 @@ func TestHandleBackupToS3(t *testing.T) {
 
 			if _, ok := tt.args["accessKeyID"]; ok && tt.mockError != nil {
 				mockClient.On("BackupToS3", models.S3BackupSettings{
-					AccessKeyID:    tt.args["accessKeyID"].(string),
+					AccessKeyID:     tt.args["accessKeyID"].(string),
 					SecretAccessKey: tt.args["secretAccessKey"].(string),
-					BucketName:     tt.args["bucketName"].(string),
+					BucketName:      tt.args["bucketName"].(string),
 				}).Return(tt.mockError)
 			} else if _, ok := tt.args["accessKeyID"]; ok {
 				region, _ := tt.args["region"].(string)
 				mockClient.On("BackupToS3", models.S3BackupSettings{
-					AccessKeyID:    tt.args["accessKeyID"].(string),
+					AccessKeyID:     tt.args["accessKeyID"].(string),
 					SecretAccessKey: tt.args["secretAccessKey"].(string),
-					BucketName:     tt.args["bucketName"].(string),
-					Region:         region,
+					BucketName:      tt.args["bucketName"].(string),
+					Region:          region,
 				}).Return(tt.mockError)
 			}
 
@@ -264,10 +264,10 @@ func TestHandleRestoreFromS3(t *testing.T) {
 		{
 			name: "successful restore from S3",
 			args: map[string]any{
-				"accessKeyID":    "AKID123",
+				"accessKeyID":     "AKID123",
 				"secretAccessKey": "secret",
-				"bucketName":     "my-bucket",
-				"filename":       "backup.tar.gz",
+				"bucketName":      "my-bucket",
+				"filename":        "backup.tar.gz",
 			},
 			expectError: false,
 		},
@@ -279,10 +279,10 @@ func TestHandleRestoreFromS3(t *testing.T) {
 		{
 			name: "api error",
 			args: map[string]any{
-				"accessKeyID":    "AKID123",
+				"accessKeyID":     "AKID123",
 				"secretAccessKey": "secret",
-				"bucketName":     "my-bucket",
-				"filename":       "backup.tar.gz",
+				"bucketName":      "my-bucket",
+				"filename":        "backup.tar.gz",
 			},
 			mockError:   fmt.Errorf("api error"),
 			expectError: true,
