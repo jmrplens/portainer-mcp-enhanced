@@ -43,16 +43,12 @@ func (c *PortainerClient) ProxyKubernetesRequest(opts models.KubernetesProxyRequ
 //   - A KubernetesDashboard with resource counts
 //   - An error if the operation fails
 func (c *PortainerClient) GetKubernetesDashboard(environmentId int) (models.KubernetesDashboard, error) {
-	dashboards, err := c.cli.GetKubernetesDashboard(int64(environmentId))
+	dashboard, err := c.cli.GetKubernetesDashboard(int64(environmentId))
 	if err != nil {
 		return models.KubernetesDashboard{}, fmt.Errorf("failed to get kubernetes dashboard: %w", err)
 	}
 
-	if len(dashboards) == 0 {
-		return models.KubernetesDashboard{}, fmt.Errorf("no kubernetes dashboard data returned")
-	}
-
-	return models.ConvertK8sDashboard(dashboards[0]), nil
+	return models.ConvertK8sDashboard(dashboard), nil
 }
 
 // GetKubernetesNamespaces retrieves the Kubernetes namespaces for a specific environment.

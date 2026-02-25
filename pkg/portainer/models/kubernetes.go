@@ -34,7 +34,7 @@ type KubernetesDashboard struct {
 }
 
 // ConvertK8sDashboard converts a raw SDK dashboard model to a local model.
-func ConvertK8sDashboard(raw *apimodels.ModelsK8sDashboard) KubernetesDashboard {
+func ConvertK8sDashboard(raw *apimodels.KubernetesK8sDashboard) KubernetesDashboard {
 	return KubernetesDashboard{
 		ApplicationsCount: int(raw.ApplicationsCount),
 		ConfigMapsCount:   int(raw.ConfigMapsCount),

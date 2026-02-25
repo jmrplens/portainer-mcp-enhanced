@@ -92,7 +92,7 @@ type PortainerAPIClient interface {
 	DeleteHelmRelease(environmentId int64, release string, namespace *string) error
 	GetHelmReleaseHistory(environmentId int64, name string, namespace *string) ([]*apimodels.ReleaseRelease, error)
 	GetDockerDashboard(environmentId int64) (*apimodels.DockerDashboardResponse, error)
-	GetKubernetesDashboard(environmentId int64) ([]*apimodels.ModelsK8sDashboard, error)
+	GetKubernetesDashboard(environmentId int64) (*apimodels.KubernetesK8sDashboard, error)
 	GetKubernetesNamespaces(environmentId int64) ([]*apimodels.PortainerK8sNamespaceInfo, error)
 	GetKubernetesConfig(environmentId int64) (interface{}, error)
 	StackInspect(id int64) (*apimodels.PortainereeStack, error)

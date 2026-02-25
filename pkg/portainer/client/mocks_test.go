@@ -663,12 +663,12 @@ func (m *MockPortainerAPI) GetKubernetesConfig(environmentId int64) (interface{}
 	return args.Get(0), args.Error(1)
 }
 
-func (m *MockPortainerAPI) GetKubernetesDashboard(environmentId int64) ([]*apimodels.ModelsK8sDashboard, error) {
+func (m *MockPortainerAPI) GetKubernetesDashboard(environmentId int64) (*apimodels.KubernetesK8sDashboard, error) {
 	args := m.Called(environmentId)
 	if args.Get(0) == nil {
 		return nil, args.Error(1)
 	}
-	return args.Get(0).([]*apimodels.ModelsK8sDashboard), args.Error(1)
+	return args.Get(0).(*apimodels.KubernetesK8sDashboard), args.Error(1)
 }
 
 func (m *MockPortainerAPI) GetKubernetesNamespaces(environmentId int64) ([]*apimodels.PortainerK8sNamespaceInfo, error) {

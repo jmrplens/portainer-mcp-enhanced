@@ -626,13 +626,32 @@ func (a *portainerAPIAdapter) GetDockerDashboard(environmentId int64) (*apimodel
 }
 
 // GetKubernetesDashboard retrieves the Kubernetes dashboard data for a specific environment.
-func (a *portainerAPIAdapter) GetKubernetesDashboard(environmentId int64) ([]*apimodels.ModelsK8sDashboard, error) {
-	params := kubernetes.NewGetKubernetesDashboardParams().WithID(environmentId)
-	resp, err := a.swagger.Kubernetes.GetKubernetesDashboard(params, nil)
+// Uses raw HTTP GET because the SDK expects an array but the API returns a single object.
+func (a *portainerAPIAdapter) GetKubernetesDashboard(environmentId int64) (*apimodels.KubernetesK8sDashboard, error) {
+	op := &runtime.ClientOperation{
+		ID:                 "KubernetesDashboard",
+		Method:             "GET",
+		PathPattern:        fmt.Sprintf("/kubernetes/%d/dashboard", environmentId),
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"https"},
+		Params: runtime.ClientRequestWriterFunc(func(req runtime.ClientRequest, reg strfmt.Registry) error {
+			return nil
+		}),
+		AuthInfo: a.httpTransport.DefaultAuthentication,
+		Reader: runtime.ClientResponseReaderFunc(func(resp runtime.ClientResponse, consumer runtime.Consumer) (any, error) {
+			var result apimodels.KubernetesK8sDashboard
+			if err := consumer.Consume(resp.Body(), &result); err != nil {
+				return nil, err
+			}
+			return &result, nil
+		}),
+	}
+	res, err := a.httpTransport.Submit(op)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get kubernetes dashboard: %w", err)
 	}
-	return resp.Payload, nil
+	return res.(*apimodels.KubernetesK8sDashboard), nil
 }
 
 // GetKubernetesNamespaces retrieves the Kubernetes namespaces for a specific environment.
