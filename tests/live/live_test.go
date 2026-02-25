@@ -910,13 +910,29 @@ func TestLive_Helm(t *testing.T) {
 		text := callHandler(t, env, env.server.HandleSearchHelmCharts, map[string]any{
 			"repo": "https://charts.bitnami.com/bitnami",
 		})
-		var arr []any
-		err := json.Unmarshal([]byte(text), &arr)
-		if err != nil {
-			t.Logf("Helm search may not be available: %s", text[:min(len(text), 200)])
-			t.Skip("Helm search not available")
-		}
-		t.Logf("Found %d helm charts", len(arr))
+		// Helm search returns a Helm index JSON: {"apiVersion":"v1","entries":{...},"generated":"..."}
+		var index map[string]any
+		err := json.Unmarshal([]byte(text), &index)
+		require.NoError(t, err, "expected JSON object from helm search")
+		entries, ok := index["entries"].(map[string]any)
+		require.True(t, ok, "expected 'entries' map in helm index")
+		t.Logf("Found %d chart names in helm index", len(entries))
+		assert.Greater(t, len(entries), 0, "expected at least one chart")
+	})
+
+	t.Run("searchHelmChartsFiltered", func(t *testing.T) {
+		text := callHandler(t, env, env.server.HandleSearchHelmCharts, map[string]any{
+			"repo":  "https://charts.bitnami.com/bitnami",
+			"chart": "nginx",
+		})
+		var index map[string]any
+		err := json.Unmarshal([]byte(text), &index)
+		require.NoError(t, err, "expected JSON object from filtered helm search")
+		entries, ok := index["entries"].(map[string]any)
+		require.True(t, ok, "expected 'entries' map")
+		_, hasNginx := entries["nginx"]
+		assert.True(t, hasNginx, "expected 'nginx' chart in filtered results")
+		t.Logf("Filtered search returned %d chart names", len(entries))
 	})
 }
 
