@@ -74,6 +74,26 @@ func (m *MockPortainerClient) GetEnvironments() ([]models.Environment, error) {
 	return args.Get(0).([]models.Environment), args.Error(1)
 }
 
+func (m *MockPortainerClient) GetEnvironment(id int) (models.Environment, error) {
+	args := m.Called(id)
+	return args.Get(0).(models.Environment), args.Error(1)
+}
+
+func (m *MockPortainerClient) DeleteEnvironment(id int) error {
+	args := m.Called(id)
+	return args.Error(0)
+}
+
+func (m *MockPortainerClient) SnapshotEnvironment(id int) error {
+	args := m.Called(id)
+	return args.Error(0)
+}
+
+func (m *MockPortainerClient) SnapshotAllEnvironments() error {
+	args := m.Called()
+	return args.Error(0)
+}
+
 func (m *MockPortainerClient) UpdateEnvironmentTags(id int, tagIds []int) error {
 	args := m.Called(id, tagIds)
 	return args.Error(0)
@@ -299,4 +319,137 @@ func (m *MockPortainerClient) ProxyKubernetesRequest(opts models.KubernetesProxy
 		return nil, args.Error(1)
 	}
 	return args.Get(0).(*http.Response), args.Error(1)
+}
+
+// Custom Template methods
+
+func (m *MockPortainerClient) GetCustomTemplates() ([]models.CustomTemplate, error) {
+	args := m.Called()
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
+	return args.Get(0).([]models.CustomTemplate), args.Error(1)
+}
+
+func (m *MockPortainerClient) GetCustomTemplate(id int) (models.CustomTemplate, error) {
+	args := m.Called(id)
+	return args.Get(0).(models.CustomTemplate), args.Error(1)
+}
+
+func (m *MockPortainerClient) GetCustomTemplateFile(id int) (string, error) {
+	args := m.Called(id)
+	return args.String(0), args.Error(1)
+}
+
+func (m *MockPortainerClient) CreateCustomTemplate(title, description, note, logo, fileContent string, platform, templateType int) (int, error) {
+	args := m.Called(title, description, note, logo, fileContent, platform, templateType)
+	return args.Int(0), args.Error(1)
+}
+
+func (m *MockPortainerClient) DeleteCustomTemplate(id int) error {
+	args := m.Called(id)
+	return args.Error(0)
+}
+
+// Webhook methods
+
+func (m *MockPortainerClient) GetWebhooks() ([]models.Webhook, error) {
+	args := m.Called()
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
+	return args.Get(0).([]models.Webhook), args.Error(1)
+}
+
+func (m *MockPortainerClient) CreateWebhook(resourceId string, endpointId int, webhookType int) (int, error) {
+	args := m.Called(resourceId, endpointId, webhookType)
+	return args.Int(0), args.Error(1)
+}
+
+func (m *MockPortainerClient) DeleteWebhook(id int) error {
+	args := m.Called(id)
+	return args.Error(0)
+}
+
+// Registry methods
+
+func (m *MockPortainerClient) GetRegistries() ([]models.Registry, error) {
+	args := m.Called()
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
+	return args.Get(0).([]models.Registry), args.Error(1)
+}
+
+func (m *MockPortainerClient) GetRegistry(id int) (models.Registry, error) {
+	args := m.Called(id)
+	return args.Get(0).(models.Registry), args.Error(1)
+}
+
+func (m *MockPortainerClient) CreateRegistry(name string, registryType int, url string, authentication bool, username string, password string, baseURL string) (int, error) {
+	args := m.Called(name, registryType, url, authentication, username, password, baseURL)
+	return args.Int(0), args.Error(1)
+}
+
+func (m *MockPortainerClient) UpdateRegistry(id int, name *string, url *string, authentication *bool, username *string, password *string, baseURL *string) error {
+	args := m.Called(id, name, url, authentication, username, password, baseURL)
+	return args.Error(0)
+}
+
+func (m *MockPortainerClient) DeleteRegistry(id int) error {
+	args := m.Called(id)
+	return args.Error(0)
+}
+
+// Backup methods
+
+func (m *MockPortainerClient) GetBackupStatus() (models.BackupStatus, error) {
+	args := m.Called()
+	if args.Get(0) == nil {
+		return models.BackupStatus{}, args.Error(1)
+	}
+	return args.Get(0).(models.BackupStatus), args.Error(1)
+}
+
+func (m *MockPortainerClient) GetBackupS3Settings() (models.S3BackupSettings, error) {
+	args := m.Called()
+	if args.Get(0) == nil {
+		return models.S3BackupSettings{}, args.Error(1)
+	}
+	return args.Get(0).(models.S3BackupSettings), args.Error(1)
+}
+
+func (m *MockPortainerClient) CreateBackup(password string) error {
+	args := m.Called(password)
+	return args.Error(0)
+}
+
+func (m *MockPortainerClient) BackupToS3(settings models.S3BackupSettings) error {
+	args := m.Called(settings)
+	return args.Error(0)
+}
+
+func (m *MockPortainerClient) RestoreFromS3(accessKeyID, bucketName, filename, password, region, s3CompatibleHost, secretAccessKey string) error {
+	args := m.Called(accessKeyID, bucketName, filename, password, region, s3CompatibleHost, secretAccessKey)
+	return args.Error(0)
+}
+
+// Role methods
+
+func (m *MockPortainerClient) GetRoles() ([]models.Role, error) {
+	args := m.Called()
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
+	return args.Get(0).([]models.Role), args.Error(1)
+}
+
+// MOTD methods
+
+func (m *MockPortainerClient) GetMOTD() (models.MOTD, error) {
+	args := m.Called()
+	if args.Get(0) == nil {
+		return models.MOTD{}, args.Error(1)
+	}
+	return args.Get(0).(models.MOTD), args.Error(1)
 }

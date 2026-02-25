@@ -11,8 +11,12 @@ import (
 
 func (s *PortainerMCPServer) AddEnvironmentFeatures() {
 	s.addToolIfExists(ToolListEnvironments, s.HandleGetEnvironments())
+	s.addToolIfExists(ToolGetEnvironment, s.HandleGetEnvironment())
 
 	if !s.readOnly {
+		s.addToolIfExists(ToolDeleteEnvironment, s.HandleDeleteEnvironment())
+		s.addToolIfExists(ToolSnapshotEnvironment, s.HandleSnapshotEnvironment())
+		s.addToolIfExists(ToolSnapshotAllEnvironments, s.HandleSnapshotAllEnvironments())
 		s.addToolIfExists(ToolUpdateEnvironmentTags, s.HandleUpdateEnvironmentTags())
 		s.addToolIfExists(ToolUpdateEnvironmentUserAccesses, s.HandleUpdateEnvironmentUserAccesses())
 		s.addToolIfExists(ToolUpdateEnvironmentTeamAccesses, s.HandleUpdateEnvironmentTeamAccesses())
@@ -32,6 +36,76 @@ func (s *PortainerMCPServer) HandleGetEnvironments() server.ToolHandlerFunc {
 		}
 
 		return mcp.NewToolResultText(string(data)), nil
+	}
+}
+
+func (s *PortainerMCPServer) HandleGetEnvironment() server.ToolHandlerFunc {
+	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
+		parser := toolgen.NewParameterParser(request)
+
+		id, err := parser.GetInt("id", true)
+		if err != nil {
+			return mcp.NewToolResultErrorFromErr("invalid id parameter", err), nil
+		}
+
+		environment, err := s.cli.GetEnvironment(id)
+		if err != nil {
+			return mcp.NewToolResultErrorFromErr("failed to get environment", err), nil
+		}
+
+		data, err := json.Marshal(environment)
+		if err != nil {
+			return mcp.NewToolResultErrorFromErr("failed to marshal environment", err), nil
+		}
+
+		return mcp.NewToolResultText(string(data)), nil
+	}
+}
+
+func (s *PortainerMCPServer) HandleDeleteEnvironment() server.ToolHandlerFunc {
+	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
+		parser := toolgen.NewParameterParser(request)
+
+		id, err := parser.GetInt("id", true)
+		if err != nil {
+			return mcp.NewToolResultErrorFromErr("invalid id parameter", err), nil
+		}
+
+		err = s.cli.DeleteEnvironment(id)
+		if err != nil {
+			return mcp.NewToolResultErrorFromErr("failed to delete environment", err), nil
+		}
+
+		return mcp.NewToolResultText("Environment deleted successfully"), nil
+	}
+}
+
+func (s *PortainerMCPServer) HandleSnapshotEnvironment() server.ToolHandlerFunc {
+	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
+		parser := toolgen.NewParameterParser(request)
+
+		id, err := parser.GetInt("id", true)
+		if err != nil {
+			return mcp.NewToolResultErrorFromErr("invalid id parameter", err), nil
+		}
+
+		err = s.cli.SnapshotEnvironment(id)
+		if err != nil {
+			return mcp.NewToolResultErrorFromErr("failed to snapshot environment", err), nil
+		}
+
+		return mcp.NewToolResultText("Environment snapshot created successfully"), nil
+	}
+}
+
+func (s *PortainerMCPServer) HandleSnapshotAllEnvironments() server.ToolHandlerFunc {
+	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
+		err := s.cli.SnapshotAllEnvironments()
+		if err != nil {
+			return mcp.NewToolResultErrorFromErr("failed to snapshot all environments", err), nil
+		}
+
+		return mcp.NewToolResultText("All environment snapshots created successfully"), nil
 	}
 }
 

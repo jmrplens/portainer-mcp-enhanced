@@ -28,6 +28,10 @@ type PortainerClient interface {
 
 	// Environment methods
 	GetEnvironments() ([]models.Environment, error)
+	GetEnvironment(id int) (models.Environment, error)
+	DeleteEnvironment(id int) error
+	SnapshotEnvironment(id int) error
+	SnapshotAllEnvironments() error
 	UpdateEnvironmentTags(id int, tagIds []int) error
 	UpdateEnvironmentUserAccesses(id int, userAccesses map[int]string) error
 	UpdateEnvironmentTeamAccesses(id int, teamAccesses map[int]string) error
@@ -81,8 +85,39 @@ type PortainerClient interface {
 	// Kubernetes Proxy methods
 	ProxyKubernetesRequest(opts models.KubernetesProxyRequestOptions) (*http.Response, error)
 
+	GetWebhooks() ([]models.Webhook, error)
+	CreateWebhook(resourceId string, endpointId int, webhookType int) (int, error)
+	DeleteWebhook(id int) error
+
 	// System methods
 	GetSystemStatus() (models.SystemStatus, error)
+
+	// Custom Template methods
+	GetCustomTemplates() ([]models.CustomTemplate, error)
+	GetCustomTemplate(id int) (models.CustomTemplate, error)
+	GetCustomTemplateFile(id int) (string, error)
+	CreateCustomTemplate(title, description, note, logo, fileContent string, platform, templateType int) (int, error)
+	DeleteCustomTemplate(id int) error
+
+	// Registry methods
+	GetRegistries() ([]models.Registry, error)
+	GetRegistry(id int) (models.Registry, error)
+	CreateRegistry(name string, registryType int, url string, authentication bool, username string, password string, baseURL string) (int, error)
+	UpdateRegistry(id int, name *string, url *string, authentication *bool, username *string, password *string, baseURL *string) error
+	DeleteRegistry(id int) error
+
+	// Backup methods
+	GetBackupStatus() (models.BackupStatus, error)
+	GetBackupS3Settings() (models.S3BackupSettings, error)
+	CreateBackup(password string) error
+	BackupToS3(settings models.S3BackupSettings) error
+	RestoreFromS3(accessKeyID, bucketName, filename, password, region, s3CompatibleHost, secretAccessKey string) error
+
+	// Role methods
+	GetRoles() ([]models.Role, error)
+
+	// MOTD methods
+	GetMOTD() (models.MOTD, error)
 }
 
 // PortainerMCPServer is the main server that handles MCP protocol communication

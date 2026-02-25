@@ -24,6 +24,9 @@ type PortainerAPIClient interface {
 	ListEndpoints() ([]*apimodels.PortainereeEndpoint, error)
 	GetEndpoint(id int64) (*apimodels.PortainereeEndpoint, error)
 	UpdateEndpoint(id int64, tagIds *[]int64, userAccesses *map[int64]string, teamAccesses *map[int64]string) error
+	DeleteEndpoint(id int64) error
+	SnapshotEndpoint(id int64) error
+	SnapshotAllEndpoints() error
 	GetSettings() (*apimodels.PortainereeSettings, error)
 	ListTags() ([]*apimodels.PortainerTag, error)
 	CreateTag(name string) (int64, error)
@@ -43,8 +46,28 @@ type PortainerAPIClient interface {
 	UpdateUserRole(id int, role int64) error
 	GetVersion() (string, error)
 	GetSystemStatus() (*apimodels.GithubComPortainerPortainerEeAPIHTTPHandlerSystemStatus, error)
+	ListRegistries() ([]*apimodels.PortainereeRegistry, error)
+	GetRegistryByID(id int64) (*apimodels.PortainereeRegistry, error)
+	CreateRegistry(body *apimodels.RegistriesRegistryCreatePayload) (int64, error)
+	UpdateRegistry(id int64, body *apimodels.RegistriesRegistryUpdatePayload) error
+	DeleteRegistry(id int64) error
 	ProxyDockerRequest(environmentId int, opts client.ProxyRequestOptions) (*http.Response, error)
 	ProxyKubernetesRequest(environmentId int, opts client.ProxyRequestOptions) (*http.Response, error)
+	ListCustomTemplates() ([]*apimodels.PortainereeCustomTemplate, error)
+	GetCustomTemplate(id int64) (*apimodels.PortainereeCustomTemplate, error)
+	GetCustomTemplateFile(id int64) (string, error)
+	CreateCustomTemplate(payload *apimodels.CustomtemplatesCustomTemplateFromFileContentPayload) (*apimodels.PortainereeCustomTemplate, error)
+	DeleteCustomTemplate(id int64) error
+	GetBackupStatus() (*apimodels.BackupBackupStatus, error)
+	GetBackupSettings() (*apimodels.PortainereeS3BackupSettings, error)
+	CreateBackup(password string) error
+	BackupToS3(body *apimodels.BackupS3BackupPayload) error
+	RestoreFromS3(body *apimodels.BackupRestoreS3Settings) error
+	ListRoles() ([]*apimodels.PortainereeRole, error)
+	GetMOTD() (*apimodels.MotdMotdResponse, error)
+	ListWebhooks() ([]*apimodels.PortainerWebhook, error)
+	CreateWebhook(resourceId string, endpointId int64, webhookType int64) (int64, error)
+	DeleteWebhook(id int64) error
 }
 
 // PortainerClient is a wrapper around the Portainer SDK client

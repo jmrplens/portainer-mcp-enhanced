@@ -26,6 +26,65 @@ func (c *PortainerClient) GetEnvironments() ([]models.Environment, error) {
 	return environments, nil
 }
 
+// GetEnvironment retrieves a single environment by ID from the Portainer server.
+//
+// Parameters:
+//   - id: The ID of the environment to retrieve
+//
+// Returns:
+//   - An Environment object
+//   - An error if the operation fails
+func (c *PortainerClient) GetEnvironment(id int) (models.Environment, error) {
+	endpoint, err := c.cli.GetEndpoint(int64(id))
+	if err != nil {
+		return models.Environment{}, fmt.Errorf("failed to get endpoint: %w", err)
+	}
+
+	return models.ConvertEndpointToEnvironment(endpoint), nil
+}
+
+// DeleteEnvironment deletes an environment by ID.
+//
+// Parameters:
+//   - id: The ID of the environment to delete
+//
+// Returns:
+//   - An error if the operation fails
+func (c *PortainerClient) DeleteEnvironment(id int) error {
+	err := c.cli.DeleteEndpoint(int64(id))
+	if err != nil {
+		return fmt.Errorf("failed to delete endpoint: %w", err)
+	}
+	return nil
+}
+
+// SnapshotEnvironment triggers a snapshot for a single environment.
+//
+// Parameters:
+//   - id: The ID of the environment to snapshot
+//
+// Returns:
+//   - An error if the operation fails
+func (c *PortainerClient) SnapshotEnvironment(id int) error {
+	err := c.cli.SnapshotEndpoint(int64(id))
+	if err != nil {
+		return fmt.Errorf("failed to snapshot endpoint: %w", err)
+	}
+	return nil
+}
+
+// SnapshotAllEnvironments triggers a snapshot for all environments.
+//
+// Returns:
+//   - An error if the operation fails
+func (c *PortainerClient) SnapshotAllEnvironments() error {
+	err := c.cli.SnapshotAllEndpoints()
+	if err != nil {
+		return fmt.Errorf("failed to snapshot all endpoints: %w", err)
+	}
+	return nil
+}
+
 // UpdateEnvironmentTags updates the tags associated with an environment.
 //
 // Parameters:

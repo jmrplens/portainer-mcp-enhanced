@@ -158,6 +158,24 @@ func (m *MockPortainerAPI) UpdateEndpoint(id int64, tagIds *[]int64, userAccesse
 	return args.Error(0)
 }
 
+// DeleteEndpoint mocks the DeleteEndpoint method
+func (m *MockPortainerAPI) DeleteEndpoint(id int64) error {
+	args := m.Called(id)
+	return args.Error(0)
+}
+
+// SnapshotEndpoint mocks the SnapshotEndpoint method
+func (m *MockPortainerAPI) SnapshotEndpoint(id int64) error {
+	args := m.Called(id)
+	return args.Error(0)
+}
+
+// SnapshotAllEndpoints mocks the SnapshotAllEndpoints method
+func (m *MockPortainerAPI) SnapshotAllEndpoints() error {
+	args := m.Called()
+	return args.Error(0)
+}
+
 // GetSettings mocks the GetSettings method
 func (m *MockPortainerAPI) GetSettings() (*apimodels.PortainereeSettings, error) {
 	args := m.Called()
@@ -312,4 +330,154 @@ func (m *MockPortainerAPI) ProxyKubernetesRequest(environmentId int, opts client
 		return nil, args.Error(1)
 	}
 	return args.Get(0).(*http.Response), args.Error(1)
+}
+
+// ListCustomTemplates mocks the ListCustomTemplates method
+func (m *MockPortainerAPI) ListCustomTemplates() ([]*apimodels.PortainereeCustomTemplate, error) {
+	args := m.Called()
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
+	return args.Get(0).([]*apimodels.PortainereeCustomTemplate), args.Error(1)
+}
+
+// GetCustomTemplate mocks the GetCustomTemplate method
+func (m *MockPortainerAPI) GetCustomTemplate(id int64) (*apimodels.PortainereeCustomTemplate, error) {
+	args := m.Called(id)
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
+	return args.Get(0).(*apimodels.PortainereeCustomTemplate), args.Error(1)
+}
+
+// GetCustomTemplateFile mocks the GetCustomTemplateFile method
+func (m *MockPortainerAPI) GetCustomTemplateFile(id int64) (string, error) {
+	args := m.Called(id)
+	return args.String(0), args.Error(1)
+}
+
+// CreateCustomTemplate mocks the CreateCustomTemplate method
+func (m *MockPortainerAPI) CreateCustomTemplate(payload *apimodels.CustomtemplatesCustomTemplateFromFileContentPayload) (*apimodels.PortainereeCustomTemplate, error) {
+	args := m.Called(payload)
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
+	return args.Get(0).(*apimodels.PortainereeCustomTemplate), args.Error(1)
+}
+
+// DeleteCustomTemplate mocks the DeleteCustomTemplate method
+func (m *MockPortainerAPI) DeleteCustomTemplate(id int64) error {
+	args := m.Called(id)
+	return args.Error(0)
+}
+
+// ListWebhooks mocks the ListWebhooks method
+func (m *MockPortainerAPI) ListWebhooks() ([]*apimodels.PortainerWebhook, error) {
+	args := m.Called()
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
+	return args.Get(0).([]*apimodels.PortainerWebhook), args.Error(1)
+}
+
+// CreateWebhook mocks the CreateWebhook method
+func (m *MockPortainerAPI) CreateWebhook(resourceId string, endpointId int64, webhookType int64) (int64, error) {
+	args := m.Called(resourceId, endpointId, webhookType)
+	return args.Get(0).(int64), args.Error(1)
+}
+
+// DeleteWebhook mocks the DeleteWebhook method
+func (m *MockPortainerAPI) DeleteWebhook(id int64) error {
+	args := m.Called(id)
+	return args.Error(0)
+}
+
+// ListRegistries mocks the ListRegistries method
+func (m *MockPortainerAPI) ListRegistries() ([]*apimodels.PortainereeRegistry, error) {
+	args := m.Called()
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
+	return args.Get(0).([]*apimodels.PortainereeRegistry), args.Error(1)
+}
+
+// GetRegistryByID mocks the GetRegistryByID method
+func (m *MockPortainerAPI) GetRegistryByID(id int64) (*apimodels.PortainereeRegistry, error) {
+	args := m.Called(id)
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
+	return args.Get(0).(*apimodels.PortainereeRegistry), args.Error(1)
+}
+
+// CreateRegistry mocks the CreateRegistry method
+func (m *MockPortainerAPI) CreateRegistry(body *apimodels.RegistriesRegistryCreatePayload) (int64, error) {
+	args := m.Called(body)
+	return args.Get(0).(int64), args.Error(1)
+}
+
+// UpdateRegistry mocks the UpdateRegistry method
+func (m *MockPortainerAPI) UpdateRegistry(id int64, body *apimodels.RegistriesRegistryUpdatePayload) error {
+	args := m.Called(id, body)
+	return args.Error(0)
+}
+
+// DeleteRegistry mocks the DeleteRegistry method
+func (m *MockPortainerAPI) DeleteRegistry(id int64) error {
+	args := m.Called(id)
+	return args.Error(0)
+}
+
+// GetBackupStatus mocks the GetBackupStatus method
+func (m *MockPortainerAPI) GetBackupStatus() (*apimodels.BackupBackupStatus, error) {
+	args := m.Called()
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
+	return args.Get(0).(*apimodels.BackupBackupStatus), args.Error(1)
+}
+
+// GetBackupSettings mocks the GetBackupSettings method
+func (m *MockPortainerAPI) GetBackupSettings() (*apimodels.PortainereeS3BackupSettings, error) {
+	args := m.Called()
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
+	return args.Get(0).(*apimodels.PortainereeS3BackupSettings), args.Error(1)
+}
+
+// CreateBackup mocks the CreateBackup method
+func (m *MockPortainerAPI) CreateBackup(password string) error {
+	args := m.Called(password)
+	return args.Error(0)
+}
+
+// BackupToS3 mocks the BackupToS3 method
+func (m *MockPortainerAPI) BackupToS3(body *apimodels.BackupS3BackupPayload) error {
+	args := m.Called(body)
+	return args.Error(0)
+}
+
+// RestoreFromS3 mocks the RestoreFromS3 method
+func (m *MockPortainerAPI) RestoreFromS3(body *apimodels.BackupRestoreS3Settings) error {
+	args := m.Called(body)
+	return args.Error(0)
+}
+
+// ListRoles mocks the ListRoles method
+func (m *MockPortainerAPI) ListRoles() ([]*apimodels.PortainereeRole, error) {
+	args := m.Called()
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
+	return args.Get(0).([]*apimodels.PortainereeRole), args.Error(1)
+}
+
+// GetMOTD mocks the GetMOTD method
+func (m *MockPortainerAPI) GetMOTD() (*apimodels.MotdMotdResponse, error) {
+	args := m.Called()
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
+	return args.Get(0).(*apimodels.MotdMotdResponse), args.Error(1)
 }

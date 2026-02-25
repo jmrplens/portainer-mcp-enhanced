@@ -132,6 +132,174 @@ func TestGetEnvironments(t *testing.T) {
 	}
 }
 
+func TestGetEnvironment(t *testing.T) {
+	tests := []struct {
+		name          string
+		envID         int
+		mockEndpoint  *apimodels.PortainereeEndpoint
+		mockError     error
+		expected      models.Environment
+		expectedError bool
+	}{
+		{
+			name:  "successful retrieval",
+			envID: 1,
+			mockEndpoint: &apimodels.PortainereeEndpoint{
+				ID:     1,
+				Name:   "env1",
+				Status: 1,
+				Type:   1,
+				TagIds: []int64{1, 2},
+			},
+			expected: models.Environment{
+				ID:           1,
+				Name:         "env1",
+				Status:       "active",
+				Type:         "docker-local",
+				TagIds:       []int{1, 2},
+				UserAccesses: map[int]string{},
+				TeamAccesses: map[int]string{},
+			},
+		},
+		{
+			name:          "get error",
+			envID:         1,
+			mockError:     errors.New("failed to get endpoint"),
+			expectedError: true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			mockAPI := new(MockPortainerAPI)
+			mockAPI.On("GetEndpoint", int64(tt.envID)).Return(tt.mockEndpoint, tt.mockError)
+
+			client := &PortainerClient{cli: mockAPI}
+
+			environment, err := client.GetEnvironment(tt.envID)
+
+			if tt.expectedError {
+				assert.Error(t, err)
+				return
+			}
+			assert.NoError(t, err)
+			assert.Equal(t, tt.expected, environment)
+			mockAPI.AssertExpectations(t)
+		})
+	}
+}
+
+func TestDeleteEnvironment(t *testing.T) {
+	tests := []struct {
+		name          string
+		envID         int
+		mockError     error
+		expectedError bool
+	}{
+		{
+			name:  "successful deletion",
+			envID: 1,
+		},
+		{
+			name:          "delete error",
+			envID:         1,
+			mockError:     errors.New("failed to delete endpoint"),
+			expectedError: true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			mockAPI := new(MockPortainerAPI)
+			mockAPI.On("DeleteEndpoint", int64(tt.envID)).Return(tt.mockError)
+
+			client := &PortainerClient{cli: mockAPI}
+
+			err := client.DeleteEnvironment(tt.envID)
+
+			if tt.expectedError {
+				assert.Error(t, err)
+				return
+			}
+			assert.NoError(t, err)
+			mockAPI.AssertExpectations(t)
+		})
+	}
+}
+
+func TestSnapshotEnvironment(t *testing.T) {
+	tests := []struct {
+		name          string
+		envID         int
+		mockError     error
+		expectedError bool
+	}{
+		{
+			name:  "successful snapshot",
+			envID: 1,
+		},
+		{
+			name:          "snapshot error",
+			envID:         1,
+			mockError:     errors.New("failed to snapshot endpoint"),
+			expectedError: true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			mockAPI := new(MockPortainerAPI)
+			mockAPI.On("SnapshotEndpoint", int64(tt.envID)).Return(tt.mockError)
+
+			client := &PortainerClient{cli: mockAPI}
+
+			err := client.SnapshotEnvironment(tt.envID)
+
+			if tt.expectedError {
+				assert.Error(t, err)
+				return
+			}
+			assert.NoError(t, err)
+			mockAPI.AssertExpectations(t)
+		})
+	}
+}
+
+func TestSnapshotAllEnvironments(t *testing.T) {
+	tests := []struct {
+		name          string
+		mockError     error
+		expectedError bool
+	}{
+		{
+			name: "successful snapshot all",
+		},
+		{
+			name:          "snapshot all error",
+			mockError:     errors.New("failed to snapshot all endpoints"),
+			expectedError: true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			mockAPI := new(MockPortainerAPI)
+			mockAPI.On("SnapshotAllEndpoints").Return(tt.mockError)
+
+			client := &PortainerClient{cli: mockAPI}
+
+			err := client.SnapshotAllEnvironments()
+
+			if tt.expectedError {
+				assert.Error(t, err)
+				return
+			}
+			assert.NoError(t, err)
+			mockAPI.AssertExpectations(t)
+		})
+	}
+}
+
 func TestUpdateEnvironmentTags(t *testing.T) {
 	tests := []struct {
 		name          string

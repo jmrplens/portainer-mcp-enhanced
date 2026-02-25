@@ -76,6 +76,12 @@ func main() {
 	server.AddDockerProxyFeatures()
 	server.AddKubernetesProxyFeatures()
 	server.AddSystemFeatures()
+	server.AddWebhookFeatures()
+	server.AddCustomTemplateFeatures()
+	server.AddRegistryFeatures()
+	server.AddBackupFeatures()
+	server.AddRoleFeatures()
+	server.AddMotdFeatures()
 
 	err = server.Start()
 	if err != nil {

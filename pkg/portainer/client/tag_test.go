@@ -121,39 +121,39 @@ func TestCreateEnvironmentTag(t *testing.T) {
 }
 
 func TestDeleteEnvironmentTag(t *testing.T) {
-tests := []struct {
-name          string
-tagID         int
-mockError     error
-expectedError bool
-}{
-{
-name:  "successful deletion",
-tagID: 1,
-},
-{
-name:          "delete error",
-tagID:         1,
-mockError:     errors.New("failed to delete tag"),
-expectedError: true,
-},
-}
+	tests := []struct {
+		name          string
+		tagID         int
+		mockError     error
+		expectedError bool
+	}{
+		{
+			name:  "successful deletion",
+			tagID: 1,
+		},
+		{
+			name:          "delete error",
+			tagID:         1,
+			mockError:     errors.New("failed to delete tag"),
+			expectedError: true,
+		},
+	}
 
-for _, tt := range tests {
-t.Run(tt.name, func(t *testing.T) {
-mockAPI := new(MockPortainerAPI)
-mockAPI.On("DeleteTag", int64(tt.tagID)).Return(tt.mockError)
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			mockAPI := new(MockPortainerAPI)
+			mockAPI.On("DeleteTag", int64(tt.tagID)).Return(tt.mockError)
 
-client := &PortainerClient{cli: mockAPI}
+			client := &PortainerClient{cli: mockAPI}
 
-err := client.DeleteEnvironmentTag(tt.tagID)
+			err := client.DeleteEnvironmentTag(tt.tagID)
 
-if tt.expectedError {
-assert.Error(t, err)
-return
-}
-assert.NoError(t, err)
-mockAPI.AssertExpectations(t)
-})
-}
+			if tt.expectedError {
+				assert.Error(t, err)
+				return
+			}
+			assert.NoError(t, err)
+			mockAPI.AssertExpectations(t)
+		})
+	}
 }
