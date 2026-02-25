@@ -8,7 +8,29 @@ Portainer MCP Enhanced connects your AI assistant directly to your Portainer env
 
 Manage stacks, users, teams, registries, templates, environments, edge computing, Kubernetes, Helm, backups, settings, and more — all through natural language via your AI assistant.
 
-![portainer-mcp-enhanced-demo](docs/demo.webp)
+<details open>
+<summary><b>🖥️ System & Docker Dashboard</b></summary>
+
+![System & Docker Dashboard demo](docs/demo-1-system-docker.webp)
+</details>
+
+<details>
+<summary><b>👥 Users, Teams & Stacks</b></summary>
+
+![Users, Teams & Stacks demo](docs/demo-2-users-stacks.webp)
+</details>
+
+<details>
+<summary><b>🌐 Edge & Kubernetes</b></summary>
+
+![Edge & Kubernetes demo](docs/demo-3-edge-helm.webp)
+</details>
+
+<details>
+<summary><b>💾 Backup & Docker Proxy</b></summary>
+
+![Backup & Docker Proxy demo](docs/demo-4-backup-proxy.webp)
+</details>
 
 ## Overview
 
