@@ -10,6 +10,9 @@ type PortainerSettings struct {
 		Enabled   bool   `json:"enabled"`
 		ServerURL string `json:"server_url"`
 	} `json:"edge"`
+	LogoURL                string `json:"logo_url,omitempty"`
+	EnableTelemetry        bool   `json:"enable_telemetry"`
+	RequiredPasswordLength int    `json:"required_password_length"`
 }
 
 const (
@@ -25,6 +28,11 @@ func ConvertSettingsToPortainerSettings(rawSettings *apimodels.PortainereeSettin
 	s.Authentication.Method = convertAuthenticationMethod(rawSettings.AuthenticationMethod)
 	s.Edge.Enabled = rawSettings.EnableEdgeComputeFeatures
 	s.Edge.ServerURL = rawSettings.Edge.TunnelServerAddress
+	s.LogoURL = rawSettings.LogoURL
+	s.EnableTelemetry = rawSettings.EnableTelemetry
+	if rawSettings.InternalAuthSettings != nil {
+		s.RequiredPasswordLength = int(rawSettings.InternalAuthSettings.RequiredPasswordLength)
+	}
 
 	return s
 }
