@@ -189,6 +189,14 @@ func (m *MockPortainerClient) GetStacks() ([]models.Stack, error) {
 	return args.Get(0).([]models.Stack), args.Error(1)
 }
 
+func (m *MockPortainerClient) GetRegularStacks() ([]models.RegularStack, error) {
+	args := m.Called()
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
+	return args.Get(0).([]models.RegularStack), args.Error(1)
+}
+
 func (m *MockPortainerClient) GetStackFile(id int) (string, error) {
 	args := m.Called(id)
 	return args.String(0), args.Error(1)

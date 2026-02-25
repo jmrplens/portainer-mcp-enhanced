@@ -202,9 +202,27 @@ func TestLive_ReadOnly(t *testing.T) {
 		}
 	})
 
+	t.Run("listRegularStacks", func(t *testing.T) {
+		h := env.server.HandleListRegularStacks()
+		result, err := h(env.ctx, mcp.CreateMCPRequest(nil))
+		require.NoError(t, err, "Handler returned error")
+		require.NotNil(t, result)
+		require.NotEmpty(t, result.Content)
+		tc, ok := result.Content[0].(mcpgo.TextContent)
+		require.True(t, ok)
+
+		var arr []map[string]any
+		require.NoError(t, json.Unmarshal([]byte(tc.Text), &arr), "Failed to parse regular stacks")
+		t.Logf("Found %d regular stacks", len(arr))
+		for _, s := range arr[:min(len(arr), 5)] {
+			t.Logf("Regular Stack: ID=%v Name=%v Type=%v Status=%v EndpointID=%v",
+				s["id"], s["name"], s["type"], s["status"], s["endpoint_id"])
+		}
+	})
+
 	t.Run("getStack", func(t *testing.T) {
-		// First check if stacks are available (edge stacks need edge compute)
-		h := env.server.HandleGetStacks()
+		// Use regular stacks (edge stacks require edge compute)
+		h := env.server.HandleListRegularStacks()
 		result, err := h(env.ctx, mcp.CreateMCPRequest(nil))
 		require.NoError(t, err)
 		require.NotNil(t, result)
@@ -212,23 +230,12 @@ func TestLive_ReadOnly(t *testing.T) {
 		require.True(t, ok)
 
 		var arr []map[string]any
-		if err := json.Unmarshal([]byte(tc.Text), &arr); err != nil {
-			t.Skip("Stacks not available (edge compute may be disabled)")
-		}
-
-		// Find a regular stack (not edge)
-		var stackID, endpointID float64
-		for _, s := range arr {
-			sType, _ := s["type"].(float64)
-			if sType == 2 { // Regular compose stack
-				stackID, _ = s["id"].(float64)
-				endpointID, _ = s["endpointId"].(float64)
-				break
-			}
-		}
-		if stackID == 0 {
+		if err := json.Unmarshal([]byte(tc.Text), &arr); err != nil || len(arr) == 0 {
 			t.Skip("No regular stacks found")
 		}
+
+		stackID := arr[0]["id"]
+		endpointID := arr[0]["endpoint_id"]
 
 		text := callHandler(t, env, env.server.HandleInspectStack, map[string]any{
 			"id":            stackID,
@@ -240,8 +247,8 @@ func TestLive_ReadOnly(t *testing.T) {
 	})
 
 	t.Run("getStackFile", func(t *testing.T) {
-		// First check if stacks are available
-		h := env.server.HandleGetStacks()
+		// Use regular stacks
+		h := env.server.HandleListRegularStacks()
 		result, err := h(env.ctx, mcp.CreateMCPRequest(nil))
 		require.NoError(t, err)
 		require.NotNil(t, result)
@@ -249,21 +256,11 @@ func TestLive_ReadOnly(t *testing.T) {
 		require.True(t, ok)
 
 		var arr []map[string]any
-		if err := json.Unmarshal([]byte(tc.Text), &arr); err != nil {
-			t.Skip("Stacks not available (edge compute may be disabled)")
-		}
-
-		var stackID float64
-		for _, s := range arr {
-			sType, _ := s["type"].(float64)
-			if sType == 2 {
-				stackID, _ = s["id"].(float64)
-				break
-			}
-		}
-		if stackID == 0 {
+		if err := json.Unmarshal([]byte(tc.Text), &arr); err != nil || len(arr) == 0 {
 			t.Skip("No regular stacks found")
 		}
+
+		stackID := arr[0]["id"]
 
 		text := callHandler(t, env, env.server.HandleInspectStackFile, map[string]any{
 			"id": stackID,

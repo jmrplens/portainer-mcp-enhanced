@@ -21,6 +21,7 @@ const (
 	ToolGetStackFile                       = "getStackFile"
 	ToolCreateStack                        = "createStack"
 	ToolListStacks                         = "listStacks"
+	ToolListRegularStacks                  = "listRegularStacks"
 	ToolUpdateStack                        = "updateStack"
 	ToolGetStack                           = "getStack"
 	ToolDeleteStack                        = "deleteStack"

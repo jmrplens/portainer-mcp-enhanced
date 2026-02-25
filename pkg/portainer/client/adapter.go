@@ -13,7 +13,6 @@ import (
 	"github.com/portainer/client-api-go/v2/pkg/client/auth"
 	"github.com/portainer/client-api-go/v2/pkg/client/backup"
 	"github.com/portainer/client-api-go/v2/pkg/client/custom_templates"
-	"github.com/portainer/client-api-go/v2/pkg/client/docker"
 	"github.com/portainer/client-api-go/v2/pkg/client/edge_jobs"
 	"github.com/portainer/client-api-go/v2/pkg/client/edge_update_schedules"
 	"github.com/portainer/client-api-go/v2/pkg/client/endpoints"
@@ -598,13 +597,32 @@ func (a *portainerAPIAdapter) GetHelmReleaseHistory(environmentId int64, name st
 }
 
 // GetDockerDashboard retrieves the Docker dashboard data for a specific environment.
+// Uses raw HTTP GET because the SDK sends POST but newer Portainer versions require GET.
 func (a *portainerAPIAdapter) GetDockerDashboard(environmentId int64) (*apimodels.DockerDashboardResponse, error) {
-	params := docker.NewDockerDashboardParams().WithEnvironmentID(environmentId)
-	resp, err := a.swagger.Docker.DockerDashboard(params, nil)
+	op := &runtime.ClientOperation{
+		ID:                 "DockerDashboard",
+		Method:             "GET",
+		PathPattern:        fmt.Sprintf("/docker/%d/dashboard", environmentId),
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"https"},
+		Params: runtime.ClientRequestWriterFunc(func(req runtime.ClientRequest, reg strfmt.Registry) error {
+			return nil
+		}),
+		AuthInfo: a.httpTransport.DefaultAuthentication,
+		Reader: runtime.ClientResponseReaderFunc(func(resp runtime.ClientResponse, consumer runtime.Consumer) (any, error) {
+			var result apimodels.DockerDashboardResponse
+			if err := consumer.Consume(resp.Body(), &result); err != nil {
+				return nil, err
+			}
+			return &result, nil
+		}),
+	}
+	res, err := a.httpTransport.Submit(op)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get docker dashboard: %w", err)
 	}
-	return resp.Payload, nil
+	return res.(*apimodels.DockerDashboardResponse), nil
 }
 
 // GetKubernetesDashboard retrieves the Kubernetes dashboard data for a specific environment.
@@ -633,6 +651,19 @@ func (a *portainerAPIAdapter) GetKubernetesConfig(environmentId int64) (interfac
 	resp, err := a.swagger.Kubernetes.GetKubernetesConfig(params, nil)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get kubernetes config: %w", err)
+	}
+	return resp.Payload, nil
+}
+
+// ListRegularStacks retrieves all regular (non-edge) stacks.
+func (a *portainerAPIAdapter) ListRegularStacks() ([]*apimodels.PortainereeStack, error) {
+	params := stacks.NewStackListParams()
+	resp, respNoContent, err := a.swagger.Stacks.StackList(params, nil)
+	if err != nil {
+		return nil, fmt.Errorf("failed to list regular stacks: %w", err)
+	}
+	if respNoContent != nil {
+		return []*apimodels.PortainereeStack{}, nil
 	}
 	return resp.Payload, nil
 }

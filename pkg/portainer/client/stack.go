@@ -28,6 +28,26 @@ func (c *PortainerClient) GetStacks() ([]models.Stack, error) {
 	return stacks, nil
 }
 
+// GetRegularStacks retrieves all regular (non-edge) stacks from the Portainer server.
+// Regular stacks are Docker Compose or Swarm stacks deployed to specific environments.
+//
+// Returns:
+//   - A slice of RegularStack objects
+//   - An error if the operation fails
+func (c *PortainerClient) GetRegularStacks() ([]models.RegularStack, error) {
+	rawStacks, err := c.cli.ListRegularStacks()
+	if err != nil {
+		return nil, fmt.Errorf("failed to list regular stacks: %w", err)
+	}
+
+	result := make([]models.RegularStack, len(rawStacks))
+	for i, s := range rawStacks {
+		result[i] = models.ConvertRegularStack(s)
+	}
+
+	return result, nil
+}
+
 // GetStackFile retrieves the file content of a stack from the Portainer server.
 // Stacks are the equivalent of Edge Stacks in Portainer.
 //

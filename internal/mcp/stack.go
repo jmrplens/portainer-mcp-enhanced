@@ -12,6 +12,7 @@ import (
 
 func (s *PortainerMCPServer) AddStackFeatures() {
 	s.addToolIfExists(ToolListStacks, s.HandleGetStacks())
+	s.addToolIfExists(ToolListRegularStacks, s.HandleListRegularStacks())
 	s.addToolIfExists(ToolGetStackFile, s.HandleGetStackFile())
 	s.addToolIfExists(ToolGetStack, s.HandleInspectStack())
 	s.addToolIfExists(ToolInspectStackFile, s.HandleInspectStackFile())
@@ -38,6 +39,22 @@ func (s *PortainerMCPServer) HandleGetStacks() server.ToolHandlerFunc {
 		data, err := json.Marshal(stacks)
 		if err != nil {
 			return mcp.NewToolResultErrorFromErr("failed to marshal stacks", err), nil
+		}
+
+		return mcp.NewToolResultText(string(data)), nil
+	}
+}
+
+func (s *PortainerMCPServer) HandleListRegularStacks() server.ToolHandlerFunc {
+	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
+		stacks, err := s.cli.GetRegularStacks()
+		if err != nil {
+			return mcp.NewToolResultErrorFromErr("failed to list regular stacks", err), nil
+		}
+
+		data, err := json.Marshal(stacks)
+		if err != nil {
+			return mcp.NewToolResultErrorFromErr("failed to marshal regular stacks", err), nil
 		}
 
 		return mcp.NewToolResultText(string(data)), nil

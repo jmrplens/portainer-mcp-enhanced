@@ -83,6 +83,15 @@ func (m *MockPortainerAPI) ListEdgeStacks() ([]*apimodels.PortainereeEdgeStack, 
 	return args.Get(0).([]*apimodels.PortainereeEdgeStack), args.Error(1)
 }
 
+// ListRegularStacks mocks the ListRegularStacks method
+func (m *MockPortainerAPI) ListRegularStacks() ([]*apimodels.PortainereeStack, error) {
+	args := m.Called()
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
+	return args.Get(0).([]*apimodels.PortainereeStack), args.Error(1)
+}
+
 // CreateEdgeStack mocks the CreateEdgeStack method
 func (m *MockPortainerAPI) CreateEdgeStack(name string, file string, environmentGroupIds []int64) (int64, error) {
 	args := m.Called(name, file, environmentGroupIds)

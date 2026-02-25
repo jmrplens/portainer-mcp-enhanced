@@ -59,6 +59,7 @@ type PortainerClient interface {
 	UpdateStack(id int, file string, environmentGroupIds []int) error
 
 	// Regular stack methods
+	GetRegularStacks() ([]models.RegularStack, error)
 	InspectStack(id int) (models.RegularStack, error)
 	DeleteStack(id int, endpointID int, removeVolumes bool) error
 	InspectStackFile(id int) (string, error)

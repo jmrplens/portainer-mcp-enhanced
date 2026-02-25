@@ -424,9 +424,17 @@ tools:
   ## Stacks
   ## ------------------------------------------------------------
   - name: listStacks
-    description: List all available stacks
+    description: List all edge stacks. Edge stacks are deployed to Edge environments via Edge Groups. For regular Docker Compose or Swarm stacks deployed to specific environments, use listRegularStacks instead.
     annotations:
-      title: List Stacks
+      title: List Edge Stacks
+      readOnlyHint: true
+      destructiveHint: false
+      idempotentHint: true
+      openWorldHint: false
+  - name: listRegularStacks
+    description: List all regular (non-edge) stacks. These are Docker Compose or Swarm stacks deployed directly to specific environments. Returns stack ID, name, type, status, endpoint ID, entry point, creation info, and filesystem path. For edge stacks deployed via Edge Groups, use listStacks instead.
+    annotations:
+      title: List Regular Stacks
       readOnlyHint: true
       destructiveHint: false
       idempotentHint: true
