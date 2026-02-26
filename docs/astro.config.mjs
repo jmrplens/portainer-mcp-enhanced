@@ -52,7 +52,24 @@ export default defineConfig({
         },
         {
           label: "Development",
-          items: [{ label: "Contributing", slug: "development/contributing" }],
+          items: [
+            { label: "Contributing", slug: "development/contributing" },
+            {
+              label: "Project Structure",
+              slug: "development/project-structure",
+            },
+            {
+              label: "Development Workflow",
+              slug: "development/workflow",
+            },
+            { label: "Adding Tools", slug: "development/adding-tools" },
+            { label: "Testing Guide", slug: "development/testing" },
+            {
+              label: "Dependencies & Toolchain",
+              slug: "development/dependencies",
+            },
+            { label: "CI/CD & Releases", slug: "development/ci-cd" },
+          ],
         },
       ],
       customCss: ["./src/styles/custom.css"],

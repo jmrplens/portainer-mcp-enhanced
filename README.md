@@ -212,7 +212,11 @@ make test-all                 # All tests
 make inspector                # Launch MCP Inspector UI
 ```
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for development guidelines and the full project structure.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for development guidelines. The [Developer Documentation](https://portainer.github.io/portainer-mcp/development/contributing/) covers project structure, adding tools, testing, dependencies, and CI/CD in detail.
+
+### Security
+
+To report a vulnerability, see [SECURITY.md](SECURITY.md). Please use **private disclosure** — do not open public issues for security bugs.
 
 ## License
 

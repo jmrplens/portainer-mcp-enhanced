@@ -1,189 +1,77 @@
 ---
 title: Contributing
-description: How to contribute to the Portainer MCP project.
+description: How to contribute to the Portainer MCP project — overview and quick links.
 ---
 
-import { Aside, Steps } from '@astrojs/starlight/components';
+import { Aside, LinkCard, CardGrid, Steps } from '@astrojs/starlight/components';
 
-## Development Setup
+Welcome! We're glad you want to contribute. This page is a quick orientation — detailed guides are linked below.
+
+## Quick Start
 
 <Steps>
-1. **Prerequisites**: Go 1.24+, Make, Docker (for integration tests)
-
-2. **Clone the repository**:
+1. **Clone and build**:
    ```bash
    git clone https://github.com/portainer/portainer-mcp.git
    cd portainer-mcp
+   make build          # → dist/portainer-mcp
    ```
 
-3. **Build**:
+2. **Run tests**:
    ```bash
-   make build
-   # Binary output: dist/portainer-mcp
+   make test           # Unit tests
+   make test-all       # Unit + integration (requires Docker)
    ```
 
-4. **Run tests**:
-   ```bash
-   go test -v ./...
-   ```
-
-5. **Format and lint**:
+3. **Format and lint**:
    ```bash
    gofmt -s -w .
    go vet ./...
    ```
 </Steps>
 
-## Project Structure
+## Developer Guides
 
-```
-portainer-mcp/
-├── cmd/portainer-mcp/     # Entry point
-├── internal/
-│   ├── mcp/               # MCP server + handlers
-│   └── k8sutil/           # Kubernetes utilities
-├── pkg/
-│   ├── portainer/
-│   │   ├── client/        # Wrapper client
-│   │   └── models/        # Local models
-│   └── toolgen/           # YAML tool loader
-├── tests/integration/     # Integration tests
-├── tools.yaml             # Tool definitions
-└── docs/                  # Documentation (Starlight)
-```
+<CardGrid>
+  <LinkCard title="Project Structure" href="/portainer-mcp/development/project-structure/" description="File layout, layer diagram, and key source files" />
+  <LinkCard title="Development Workflow" href="/portainer-mcp/development/workflow/" description="Setup, build, test, debug, and release" />
+  <LinkCard title="Adding Tools" href="/portainer-mcp/development/adding-tools/" description="Step-by-step guide from YAML definition to meta-tool integration" />
+  <LinkCard title="Testing Guide" href="/portainer-mcp/development/testing/" description="Unit tests, integration tests, mocking, and coverage" />
+  <LinkCard title="Dependencies & Toolchain" href="/portainer-mcp/development/dependencies/" description="Go modules, build tools, and CI/CD infrastructure" />
+  <LinkCard title="CI/CD & Releases" href="/portainer-mcp/development/ci-cd/" description="GitHub Actions, GoReleaser, Docker images, Homebrew" />
+</CardGrid>
 
-## Code Style
+## Key Conventions
 
-- **Naming**: PascalCase for exported symbols, camelCase for private
-- **Error handling**: Always wrap errors with context: `fmt.Errorf("failed to X: %w", err)`
-- **Imports**: Group standard library, external packages, and internal packages (separated by blank lines)
-- **Documentation**: All exported functions must have godoc comments with `Parameters` and `Returns` sections
-- **Tests**: Use table-driven tests with descriptive case names
+| Area | Convention |
+|------|-----------|
+| Naming | `PascalCase` exported, `camelCase` private |
+| Errors | `fmt.Errorf("context: %w", err)` — always wrap with context |
+| Imports | Standard lib → external → internal (blank line separated) |
+| Tests | Table-driven with descriptive case names |
+| Models | Raw SDK → Local models (never expose raw to handlers) |
+| Logging | `zerolog` to stderr; never log to stdout (MCP transport) |
+| Commits | [Conventional Commits](https://www.conventionalcommits.org/) — `feat:`, `fix:`, `docs:`, etc. |
 
-## Adding a New Tool
+## Pull Request Process
 
-### 1. Define the tool in `tools.yaml`
+1. **Fork** and create a branch: `feat/my-feature` or `fix/my-fix`
+2. **Implement** with tests
+3. **Verify**: `go build ./... && go vet ./... && make test-all`
+4. **Submit** with a clear title and description
 
-```yaml
-- name: myNewTool
-  description: "Description of what the tool does"
-  parameters:
-    - name: id
-      type: number
-      description: "Resource identifier"
-      required: true
-  annotations:
-    readOnlyHint: true
-    idempotentHint: true
-```
-
-### 2. Add the tool constant in `internal/mcp/schema.go`
-
-```go
-const ToolMyNewTool = "myNewTool"
-```
-
-### 3. Create or update the handler
-
-Add a handler function in the appropriate domain file (e.g., `internal/mcp/environments.go`):
-
-```go
-func (s *Server) HandleMyNewTool(params map[string]interface{}) (*mcp.CallToolResult, error) {
-    id, err := toolgen.GetRequiredInt(params, "id")
-    if err != nil {
-        return nil, fmt.Errorf("invalid id parameter: %w", err)
-    }
-
-    result, err := s.client.MyNewMethod(id)
-    if err != nil {
-        return nil, fmt.Errorf("failed to get resource: %w", err)
-    }
-
-    return toolResultJSON(result)
-}
-```
-
-### 4. Register the handler
-
-In the appropriate `AddXxxFeatures()` function:
-
-```go
-func (s *Server) AddMyDomainFeatures(reg ToolRegistrar) {
-    reg.AddTool(tools[ToolMyNewTool], s.HandleMyNewTool)
-}
-```
-
-### 5. Add to a meta-tool group
-
-In `internal/mcp/metatool_registry.go`, add the action to the relevant meta-tool:
-
-```go
-{
-    ActionName:  "my_new_tool",
-    HandlerFunc: s.HandleMyNewTool,
-    ReadOnly:    true,
-},
-```
-
-### 6. Add tests
-
-Write unit tests following the table-driven pattern:
-
-```go
-func TestHandleMyNewTool(t *testing.T) {
-    tests := []struct {
-        name    string
-        params  map[string]interface{}
-        want    *models.MyResource
-        wantErr bool
-    }{
-        {
-            name:   "valid request",
-            params: map[string]interface{}{"id": float64(1)},
-            want:   &models.MyResource{ID: 1, Name: "test"},
-        },
-        {
-            name:    "missing id",
-            params:  map[string]interface{}{},
-            wantErr: true,
-        },
-    }
-    // ...
-}
-```
-
-## Integration Tests
-
-Integration tests use real Portainer instances via Docker:
-
-```bash
-make test-integration
-```
-
-These tests:
-- Spin up a Portainer container
-- Create both a raw SDK client and an MCP server
-- Call MCP handlers and compare results with direct API calls
-- Clean up all resources after tests
-
-<Aside type="note">
-Integration tests require Docker to be running on the host.
+<Aside type="tip">
+See the full [CONTRIBUTING.md](https://github.com/portainer/portainer-mcp/blob/main/CONTRIBUTING.md) for the complete checklist and guidelines.
 </Aside>
 
-## Pull Request Guidelines
+## Architecture Reference
 
-1. **One concern per PR** — keep changes focused
-2. **Tests required** — add or update tests for all code changes
-3. **Linting clean** — `go vet ./...` must pass
-4. **Build clean** — `go build ./...` must succeed
-5. **Descriptive commits** — use clear commit messages
+<CardGrid>
+  <LinkCard title="Architecture" href="/portainer-mcp/reference/architecture/" description="Server layers, client model, tool registration" />
+  <LinkCard title="Clients & Models" href="/portainer-mcp/reference/clients-and-models/" description="Two-layer model architecture and conventions" />
+  <LinkCard title="Design Decisions" href="/portainer-mcp/reference/design-decisions/" description="Architectural records and decision log" />
+</CardGrid>
 
-## Makefile Targets
+## Security
 
-| Target | Description |
-|:-------|:-----------|
-| `make build` | Build for current platform |
-| `make test-all` | Run all tests (unit + integration) |
-| `make test-integration` | Run only integration tests |
-| `make inspector` | Launch MCP Inspector for debugging |
-| `make PLATFORM=linux ARCH=arm64 build` | Cross-compile |
+Report vulnerabilities privately — see the [Security Policy](https://github.com/portainer/portainer-mcp/blob/main/SECURITY.md) for details.

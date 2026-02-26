@@ -1,227 +1,142 @@
 # Contributing to Portainer MCP Server
 
-Thank you for your interest in contributing! This guide will help you get started.
+Thank you for your interest in contributing! Whether you're fixing a bug, adding a feature, or improving documentation, this guide covers everything you need to know.
 
-## Development Setup
+> 📖 **Full developer documentation** is available at [portainer.github.io/portainer-mcp/development/](https://portainer.github.io/portainer-mcp/development/contributing/)
 
-### Prerequisites
-
-- **Go 1.24+** — [Install Go](https://go.dev/doc/install)
-- **Make** — Build automation
-- **Docker** — Required for integration tests
-- A running **Portainer 2.31.2** instance (for live tests)
-
-### Clone & Build
+## Quick Start
 
 ```bash
+# Clone and build
 git clone https://github.com/portainer/portainer-mcp.git
 cd portainer-mcp
-make build
+make build          # → dist/portainer-mcp
+
+# Run tests
+make test           # Unit tests
+make test-all       # Unit + integration (requires Docker)
+
+# Format and lint
+gofmt -s -w .
+go vet ./...
 ```
 
-### Run Tests
+## Prerequisites
 
-```bash
-make test                  # Unit tests only
-make test-integration      # Integration tests (needs Docker)
-make test-all              # Everything
-make test-coverage         # Coverage report → coverage.out
-```
+| Tool | Version | Purpose |
+|------|---------|---------|
+| [Go](https://go.dev/doc/install) | 1.24+ | Build and test |
+| [Make](https://www.gnu.org/software/make/) | Any | Build automation |
+| [Docker](https://docs.docker.com/get-docker/) | 20+ | Integration tests |
+| [pnpm](https://pnpm.io/installation) | 9+ | Documentation site (optional) |
+| [Portainer](https://www.portainer.io/) | 2.31.2 | Live testing (optional) |
 
-### MCP Inspector
-
-Test your changes interactively with the MCP Inspector:
-
-```bash
-make inspector
-```
-
-This launches a web UI where you can invoke tools and inspect responses.
-
-## Code Style
-
-### General Conventions
-
-- **Go naming**: `PascalCase` for exported identifiers, `camelCase` for private
-- **Error handling**: Always wrap errors with context: `fmt.Errorf("failed to get stack: %w", err)`
-- **Imports**: Group in order — standard library, external packages, internal packages
-- **Comments**: Document all exported functions with `Parameters` and `Returns` sections
-
-### Package Structure
+## Project Structure
 
 ```
-cmd/portainer-mcp/       Entry point and CLI
-internal/mcp/            MCP server, handlers, tool registration
-internal/tooldef/        Tool definitions (embedded YAML)
-pkg/toolgen/             YAML parser and parameter utilities
-pkg/portainer/client/    Portainer API wrapper client
-pkg/portainer/models/    Local models with conversions
-tests/                   Integration and live tests
+portainer-mcp/
+├── cmd/portainer-mcp/         # CLI entry point (flags, startup)
+├── internal/
+│   ├── mcp/                   # MCP server core
+│   │   ├── server.go          #   Server struct, interfaces, registration
+│   │   ├── schema.go          #   Tool name constants
+│   │   ├── metatool_*.go      #   Meta-tool infrastructure
+│   │   ├── utils.go           #   Shared handler utilities
+│   │   └── <domain>.go        #   Handler files per domain
+│   ├── tooldef/               # Embedded tool definitions
+│   └── k8sutil/               # Kubernetes response stripping
+├── pkg/
+│   ├── portainer/
+│   │   ├── client/            # Portainer API wrapper client
+│   │   └── models/            # Local models + conversion functions
+│   └── toolgen/               # YAML tool loader + parameter parsing
+├── tests/integration/         # Integration tests with real Portainer
+├── tools.yaml                 # Tool definitions (embedded at build)
+├── docs/                      # Starlight documentation site
+└── .goreleaser.yaml           # Release automation
 ```
 
-### Models & Client Architecture
+## How to Contribute
 
-The project uses a two-layer model architecture:
+### Reporting Bugs
 
-- **Raw Models** (`portainer/client-api-go/v2/pkg/models`) — Direct SDK types, prefixed with `raw`
-- **Local Models** (`pkg/portainer/models`) — Simplified types for MCP use
+- Use [GitHub Issues](https://github.com/portainer/portainer-mcp/issues/new) with the **bug** label
+- Include: Go version, Portainer version, steps to reproduce, expected vs actual behavior
 
-```go
-import (
-    "github.com/portainer/portainer-mcp/pkg/portainer/models"              // Local
-    apimodels "github.com/portainer/client-api-go/v2/pkg/models"           // Raw SDK
-)
-```
+### Suggesting Features
 
-Always convert from raw → local models before returning to handlers.
+- Open an issue with the **enhancement** label
+- Describe the use case and proposed approach
 
-## Adding a New Tool
+### Submitting Code
 
-### 1. Define the Tool in `tools.yaml`
-
-```yaml
-- name: myNewTool
-  description: "Does something useful"
-  parameters:
-    type: object
-    properties:
-      id:
-        type: integer
-        description: "Resource ID"
-    required:
-      - id
-  annotations:
-    title: "My New Tool"
-    readOnlyHint: true        # Set to true if read-only
-    destructiveHint: false
-    idempotentHint: true
-    openWorldHint: true
-```
-
-> **Important**: Use `parameters:` not `inputSchema:` — the parser only recognizes `parameters`.
-
-### 2. Add the Handler
-
-Create or extend a handler file in `internal/mcp/`:
-
-```go
-func (s *PortainerMCPServer) handleMyNewTool(arguments map[string]interface{}) (*mcp.CallToolResult, error) {
-    params := toolgen.NewParameterParser(arguments)
-
-    id, err := params.GetRequiredInt("id")
-    if err != nil {
-        return nil, fmt.Errorf("invalid parameters: %w", err)
-    }
-
-    result, err := s.client.MyNewMethod(id)
-    if err != nil {
-        return nil, fmt.Errorf("failed to get resource: %w", err)
-    }
-
-    return toolgen.TextResult(result)
-}
-```
-
-### 3. Register the Handler
-
-In the server's feature registration (`internal/mcp/` or `cmd/portainer-mcp/mcp.go`):
-
-```go
-func (s *PortainerMCPServer) AddMyFeatures() {
-    s.AddToolHandler("myNewTool", s.handleMyNewTool, false)
-    // Use `true` for the third parameter if it's a read-only tool
-}
-```
-
-### 4. Implement the Client Method
-
-1. Add to `PortainerClient` interface in `internal/mcp/server.go`
-2. Implement in `pkg/portainer/client/`
-3. Add local model in `pkg/portainer/models/` if needed
-
-### 5. Write Tests
-
-- **Unit test**: Mock the client interface, test handler logic
-- **Integration test**: Use `testcontainers-go` for end-to-end validation
-
-## Testing Patterns
-
-### Unit Tests
-
-Use table-driven tests:
-
-```go
-func TestHandleMyNewTool(t *testing.T) {
-    tests := []struct {
-        name    string
-        args    map[string]interface{}
-        want    string
-        wantErr bool
-    }{
-        {
-            name:    "valid ID",
-            args:    map[string]interface{}{"id": float64(1)},
-            want:    `"id":1`,
-            wantErr: false,
-        },
-        {
-            name:    "missing ID",
-            args:    map[string]interface{}{},
-            wantErr: true,
-        },
-    }
-    // ...
-}
-```
-
-### Integration Tests
-
-Integration tests use Docker to spin up real Portainer instances:
-
-```go
-func TestMyFeature(t *testing.T) {
-    env := helpers.SetupTestEnv(t)
-    defer env.Cleanup()
-    // Test against real Portainer
-}
-```
-
-## Commit Messages
-
-Use conventional commit format:
-
-```
-feat: add webhook management tools
-fix: correct tools.yaml schema keys for Helm tools
-docs: update README with architecture diagram
-test: add integration tests for backup operations
-refactor: simplify parameter parsing in handlers
-```
-
-## Pull Request Process
-
-1. **Fork** the repository and create a branch from `main`
-2. **Implement** your changes with tests
-3. **Run** `make test-all` to verify nothing is broken
-4. **Format** code: `gofmt -s -w .`
-5. **Submit** a PR with a clear description of what and why
+1. **Fork** the repository
+2. **Branch** from `main` using a descriptive name: `feat/helm-rollback`, `fix/proxy-timeout`
+3. **Implement** with tests — see the [developer guide](https://portainer.github.io/portainer-mcp/development/contributing/) for patterns
+4. **Verify** — all checks must pass:
+   ```bash
+   go build ./...
+   go vet ./...
+   gofmt -d .       # Should produce no output
+   make test-all
+   ```
+5. **Commit** using [Conventional Commits](https://www.conventionalcommits.org/):
+   ```
+   feat: add Helm rollback support
+   fix: correct proxy timeout for large responses
+   docs: update architecture diagram
+   test: add edge job integration tests
+   refactor: simplify parameter validation
+   ```
+6. **Open a Pull Request** with a clear title and description
 
 ### PR Checklist
 
-- [ ] Tests pass (`make test-all`)
-- [ ] Code is formatted (`gofmt`)
-- [ ] New tools are added to `tools.yaml` with correct `parameters:` key
-- [ ] Handler includes proper error wrapping
-- [ ] Read-only annotations are set correctly
-- [ ] Documentation updated if adding user-facing changes
+- [ ] All tests pass (`make test-all`)
+- [ ] Code is formatted (`gofmt -s -w .`) and lint-clean (`go vet ./...`)
+- [ ] New tools defined in `tools.yaml` with correct `parameters:` key
+- [ ] Handlers wrap errors with context (`fmt.Errorf("failed to X: %w", err)`)
+- [ ] Read-only annotations (`readOnlyHint`) set correctly
+- [ ] New features have unit tests; breaking changes have integration tests
+- [ ] Documentation updated for user-facing changes
+
+## Key Conventions
+
+| Area | Convention |
+|------|-----------|
+| Naming | `PascalCase` exported, `camelCase` private |
+| Errors | `fmt.Errorf("context: %w", err)` — always wrap with context |
+| Imports | Standard lib → external → internal (blank line separated) |
+| Tests | Table-driven with descriptive case names |
+| Models | Raw → Local conversion; never expose raw models to handlers |
+| Logging | `zerolog` to stderr; never log to stdout (MCP transport) |
 
 ## Design Decisions
 
-Significant architectural decisions are documented in `docs/design/`. Before making major changes, review existing decisions and create a new record if needed:
+Architectural decisions are documented in `docs/design/`. Before making significant changes:
 
-- Naming: `YYMMDD-N-short-description.md`
-- Template: See `docs/design_summary.md`
+1. Review existing decisions in `docs/design_summary.md`
+2. Create a new record if introducing an architectural change: `YYMMDD-N-short-description.md`
+
+## Documentation
+
+The documentation site uses [Starlight](https://starlight.astro.build/) (Astro):
+
+```bash
+cd docs
+pnpm install
+pnpm run dev      # Local development at localhost:4321
+pnpm run build    # Production build
+```
+
+## Security
+
+Please report vulnerabilities privately — see [SECURITY.md](SECURITY.md) for details.
+
+## Code of Conduct
+
+Be respectful, constructive, and inclusive. We follow the [Contributor Covenant](https://www.contributor-covenant.org/version/2/1/code_of_conduct/).
 
 ## Questions?
 
-Open an issue or discussion on GitHub. We're happy to help!
+Open an [issue](https://github.com/portainer/portainer-mcp/issues) or [discussion](https://github.com/portainer/portainer-mcp/discussions). We're happy to help!
