@@ -31,7 +31,7 @@ func metaToolDefinitions() []metaToolDef {
 	return []metaToolDef{
 		{
 			name:        "manage_environments",
-			description: "Manage Portainer environments (endpoints), environment groups, and environment tags. Use the 'action' parameter to specify the operation.",
+			description: "Manage Portainer environments, environment groups, and tags. Actions: list_environments, get_environment, delete_environment, snapshot_environment, snapshot_all_environments, update_environment_tags, update_environment_user_accesses, update_environment_team_accesses, list_environment_groups, create_environment_group, update_environment_group_name, update_environment_group_environments, update_environment_group_tags, list_environment_tags, create_environment_tag, delete_environment_tag. Set 'action' parameter to choose.",
 			actions: []metaAction{
 				{name: "list_environments", handler: (*PortainerMCPServer).HandleGetEnvironments, readOnly: true},
 				{name: "get_environment", handler: (*PortainerMCPServer).HandleGetEnvironment, readOnly: true},
@@ -60,7 +60,7 @@ func metaToolDefinitions() []metaToolDef {
 		},
 		{
 			name:        "manage_stacks",
-			description: "Manage Portainer stacks (Docker Compose and Edge stacks). Use the 'action' parameter to specify the operation.",
+			description: "Manage Docker stacks (Compose and Edge deployments). Actions: list_stacks, list_regular_stacks, get_stack, get_stack_file, inspect_stack_file, create_stack, update_stack, delete_stack, update_stack_git, redeploy_stack_git, start_stack, stop_stack, migrate_stack. Set 'action' parameter to choose.",
 			actions: []metaAction{
 				{name: "list_stacks", handler: (*PortainerMCPServer).HandleGetStacks, readOnly: true},
 				{name: "list_regular_stacks", handler: (*PortainerMCPServer).HandleListRegularStacks, readOnly: true},
@@ -86,7 +86,7 @@ func metaToolDefinitions() []metaToolDef {
 		},
 		{
 			name:        "manage_access_groups",
-			description: "Manage Portainer access groups and their user/team access policies. Use the 'action' parameter to specify the operation.",
+			description: "Manage access groups for environment-level permissions. Actions: list_access_groups, create_access_group, update_access_group_name, update_access_group_user_accesses, update_access_group_team_accesses, add_environment_to_access_group, remove_environment_from_access_group. Set 'action' parameter to choose.",
 			actions: []metaAction{
 				{name: "list_access_groups", handler: (*PortainerMCPServer).HandleGetAccessGroups, readOnly: true},
 				{name: "create_access_group", handler: (*PortainerMCPServer).HandleCreateAccessGroup, readOnly: false},
@@ -106,7 +106,7 @@ func metaToolDefinitions() []metaToolDef {
 		},
 		{
 			name:        "manage_users",
-			description: "Manage Portainer users. Use the 'action' parameter to specify the operation.",
+			description: "Manage Portainer user accounts and roles. Actions: list_users, get_user, create_user, delete_user, update_user_role. Set 'action' parameter to choose.",
 			actions: []metaAction{
 				{name: "list_users", handler: (*PortainerMCPServer).HandleGetUsers, readOnly: true},
 				{name: "get_user", handler: (*PortainerMCPServer).HandleGetUser, readOnly: true},
@@ -124,7 +124,7 @@ func metaToolDefinitions() []metaToolDef {
 		},
 		{
 			name:        "manage_teams",
-			description: "Manage Portainer teams and team membership. Use the 'action' parameter to specify the operation.",
+			description: "Manage Portainer teams and membership. Actions: list_teams, get_team, create_team, delete_team, update_team_name, update_team_members. Set 'action' parameter to choose.",
 			actions: []metaAction{
 				{name: "list_teams", handler: (*PortainerMCPServer).HandleGetTeams, readOnly: true},
 				{name: "get_team", handler: (*PortainerMCPServer).HandleGetTeam, readOnly: true},
@@ -143,7 +143,7 @@ func metaToolDefinitions() []metaToolDef {
 		},
 		{
 			name:        "manage_docker",
-			description: "Interact with Docker environments via proxy API calls and dashboards. Use the 'action' parameter to specify the operation.",
+			description: "Interact with Docker environments via dashboards and proxy API calls. Actions: get_docker_dashboard, docker_proxy. Set 'action' parameter to choose.",
 			actions: []metaAction{
 				{name: "get_docker_dashboard", handler: (*PortainerMCPServer).HandleGetDockerDashboard, readOnly: true},
 				{name: "docker_proxy", handler: (*PortainerMCPServer).HandleDockerProxy, readOnly: false},
@@ -158,7 +158,7 @@ func metaToolDefinitions() []metaToolDef {
 		},
 		{
 			name:        "manage_kubernetes",
-			description: "Interact with Kubernetes environments via proxy API calls, dashboards, namespaces, and kubeconfig. Use the 'action' parameter to specify the operation.",
+			description: "Interact with Kubernetes environments via dashboards, namespaces, kubeconfig, and proxy API calls. Actions: get_kubernetes_resource_stripped, get_kubernetes_dashboard, list_kubernetes_namespaces, get_kubernetes_config, kubernetes_proxy. Set 'action' parameter to choose.",
 			actions: []metaAction{
 				{name: "get_kubernetes_resource_stripped", handler: (*PortainerMCPServer).HandleKubernetesProxyStripped, readOnly: true},
 				{name: "get_kubernetes_dashboard", handler: (*PortainerMCPServer).HandleGetKubernetesDashboard, readOnly: true},
@@ -176,7 +176,7 @@ func metaToolDefinitions() []metaToolDef {
 		},
 		{
 			name:        "manage_helm",
-			description: "Manage Helm repositories, charts, and releases. Use the 'action' parameter to specify the operation.",
+			description: "Manage Helm repositories, charts, and releases on Kubernetes environments. Actions: list_helm_repositories, search_helm_charts, list_helm_releases, get_helm_release_history, add_helm_repository, remove_helm_repository, install_helm_chart, delete_helm_release. Set 'action' parameter to choose.",
 			actions: []metaAction{
 				{name: "list_helm_repositories", handler: (*PortainerMCPServer).HandleListHelmRepositories, readOnly: true},
 				{name: "search_helm_charts", handler: (*PortainerMCPServer).HandleSearchHelmCharts, readOnly: true},
@@ -197,7 +197,7 @@ func metaToolDefinitions() []metaToolDef {
 		},
 		{
 			name:        "manage_registries",
-			description: "Manage Docker registries (Quay, Azure, DockerHub, GitLab, ECR, custom). Use the 'action' parameter to specify the operation.",
+			description: "Manage container registries (Quay, Azure, DockerHub, GitLab, ECR, custom). Actions: list_registries, get_registry, create_registry, update_registry, delete_registry. Set 'action' parameter to choose.",
 			actions: []metaAction{
 				{name: "list_registries", handler: (*PortainerMCPServer).HandleListRegistries, readOnly: true},
 				{name: "get_registry", handler: (*PortainerMCPServer).HandleGetRegistry, readOnly: true},
@@ -215,7 +215,7 @@ func metaToolDefinitions() []metaToolDef {
 		},
 		{
 			name:        "manage_templates",
-			description: "Manage custom templates and application templates. Use the 'action' parameter to specify the operation.",
+			description: "Manage custom and application templates for stack deployment. Actions: list_custom_templates, get_custom_template, get_custom_template_file, create_custom_template, delete_custom_template, list_app_templates, get_app_template_file. Set 'action' parameter to choose.",
 			actions: []metaAction{
 				{name: "list_custom_templates", handler: (*PortainerMCPServer).HandleListCustomTemplates, readOnly: true},
 				{name: "get_custom_template", handler: (*PortainerMCPServer).HandleGetCustomTemplate, readOnly: true},
@@ -235,7 +235,7 @@ func metaToolDefinitions() []metaToolDef {
 		},
 		{
 			name:        "manage_backups",
-			description: "Manage Portainer server backups (local and S3). Use the 'action' parameter to specify the operation.",
+			description: "Manage Portainer server backups and restore (local and S3). Actions: get_backup_status, get_backup_s3_settings, create_backup, backup_to_s3, restore_from_s3. Set 'action' parameter to choose.",
 			actions: []metaAction{
 				{name: "get_backup_status", handler: (*PortainerMCPServer).HandleGetBackupStatus, readOnly: true},
 				{name: "get_backup_s3_settings", handler: (*PortainerMCPServer).HandleGetBackupS3Settings, readOnly: true},
@@ -253,7 +253,7 @@ func metaToolDefinitions() []metaToolDef {
 		},
 		{
 			name:        "manage_webhooks",
-			description: "Manage webhooks for services and containers. Use the 'action' parameter to specify the operation.",
+			description: "Manage webhooks for container services and automated deployments. Actions: list_webhooks, create_webhook, delete_webhook. Set 'action' parameter to choose.",
 			actions: []metaAction{
 				{name: "list_webhooks", handler: (*PortainerMCPServer).HandleListWebhooks, readOnly: true},
 				{name: "create_webhook", handler: (*PortainerMCPServer).HandleCreateWebhook, readOnly: false},
@@ -269,7 +269,7 @@ func metaToolDefinitions() []metaToolDef {
 		},
 		{
 			name:        "manage_edge",
-			description: "Manage Edge jobs and Edge update schedules. Use the 'action' parameter to specify the operation.",
+			description: "Manage Edge compute jobs and update schedules for remote environments. Actions: list_edge_jobs, get_edge_job, get_edge_job_file, create_edge_job, delete_edge_job, list_edge_update_schedules. Set 'action' parameter to choose.",
 			actions: []metaAction{
 				{name: "list_edge_jobs", handler: (*PortainerMCPServer).HandleListEdgeJobs, readOnly: true},
 				{name: "get_edge_job", handler: (*PortainerMCPServer).HandleGetEdgeJob, readOnly: true},
@@ -288,7 +288,7 @@ func metaToolDefinitions() []metaToolDef {
 		},
 		{
 			name:        "manage_settings",
-			description: "Manage Portainer server settings, public settings, and SSL configuration. Use the 'action' parameter to specify the operation.",
+			description: "Manage Portainer server settings, public settings, and SSL configuration. Actions: get_settings, get_public_settings, update_settings, get_ssl_settings, update_ssl_settings. Set 'action' parameter to choose.",
 			actions: []metaAction{
 				{name: "get_settings", handler: (*PortainerMCPServer).HandleGetSettings, readOnly: true},
 				{name: "get_public_settings", handler: (*PortainerMCPServer).HandleGetPublicSettings, readOnly: true},
@@ -306,7 +306,7 @@ func metaToolDefinitions() []metaToolDef {
 		},
 		{
 			name:        "manage_system",
-			description: "System information, roles, message of the day, and authentication. Use the 'action' parameter to specify the operation.",
+			description: "Portainer system info, roles, MOTD, and authentication. Actions: get_system_status, list_roles, get_motd, authenticate, logout. Set 'action' parameter to choose.",
 			actions: []metaAction{
 				{name: "get_system_status", handler: (*PortainerMCPServer).HandleGetSystemStatus, readOnly: true},
 				{name: "list_roles", handler: (*PortainerMCPServer).HandleListRoles, readOnly: true},
