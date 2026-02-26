@@ -23,6 +23,17 @@ func createMockHttpResponse(statusCode int, body string) *http.Response {
 	}
 }
 
+// trackingCloser wraps a reader and tracks whether Close() was called.
+type trackingCloser struct {
+	io.Reader
+	closed bool
+}
+
+func (tc *trackingCloser) Close() error {
+	tc.closed = true
+	return nil
+}
+
 // errorReader simulates an error during io.ReadAll
 type errorReader struct{}
 
@@ -386,4 +397,23 @@ func TestHandleGetDockerDashboard(t *testing.T) {
 			mockClient.AssertExpectations(t)
 		})
 	}
+}
+
+func TestHandleDockerProxy_ClosesResponseBody(t *testing.T) {
+tc := &trackingCloser{Reader: strings.NewReader(`{"status":"ok"}`)}
+mockClient := new(MockPortainerClient)
+mockClient.On("ProxyDockerRequest", mock.AnythingOfType("models.DockerProxyRequestOptions")).
+Return(&http.Response{StatusCode: http.StatusOK, Body: tc}, nil)
+
+server := &PortainerMCPServer{cli: mockClient}
+request := CreateMCPRequest(map[string]any{
+"environmentId": float64(1),
+"dockerAPIPath": "/containers/json",
+"method":        "GET",
+})
+
+handler := server.HandleDockerProxy()
+_, err := handler(context.Background(), request)
+assert.NoError(t, err)
+assert.True(t, tc.closed, "response body should be closed after handler returns")
 }

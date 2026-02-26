@@ -2,7 +2,6 @@ package mcp
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 
 	"github.com/mark3labs/mcp-go/mcp"
@@ -47,12 +46,7 @@ func (s *PortainerMCPServer) HandleGetTeams() server.ToolHandlerFunc {
 			return mcp.NewToolResultErrorFromErr("failed to get teams", err), nil
 		}
 
-		data, err := json.Marshal(teams)
-		if err != nil {
-			return mcp.NewToolResultErrorFromErr("failed to marshal teams", err), nil
-		}
-
-		return mcp.NewToolResultText(string(data)), nil
+		return jsonResult(teams, "failed to marshal teams")
 	}
 }
 
@@ -70,12 +64,7 @@ func (s *PortainerMCPServer) HandleGetTeam() server.ToolHandlerFunc {
 			return mcp.NewToolResultErrorFromErr("failed to get team", err), nil
 		}
 
-		data, err := json.Marshal(team)
-		if err != nil {
-			return mcp.NewToolResultErrorFromErr("failed to marshal team", err), nil
-		}
-
-		return mcp.NewToolResultText(string(data)), nil
+		return jsonResult(team, "failed to marshal team")
 	}
 }
 

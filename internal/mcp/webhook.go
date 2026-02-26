@@ -2,7 +2,6 @@ package mcp
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 
 	"github.com/mark3labs/mcp-go/mcp"
@@ -26,12 +25,7 @@ func (s *PortainerMCPServer) HandleListWebhooks() server.ToolHandlerFunc {
 			return mcp.NewToolResultErrorFromErr("failed to get webhooks", err), nil
 		}
 
-		data, err := json.Marshal(webhooks)
-		if err != nil {
-			return mcp.NewToolResultErrorFromErr("failed to marshal webhooks", err), nil
-		}
-
-		return mcp.NewToolResultText(string(data)), nil
+		return jsonResult(webhooks, "failed to marshal webhooks")
 	}
 }
 

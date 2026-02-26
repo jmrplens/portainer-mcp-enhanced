@@ -2,7 +2,6 @@ package mcp
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 
 	"github.com/mark3labs/mcp-go/mcp"
@@ -28,12 +27,7 @@ func (s *PortainerMCPServer) HandleListRegistries() server.ToolHandlerFunc {
 			return mcp.NewToolResultErrorFromErr("failed to list registries", err), nil
 		}
 
-		data, err := json.Marshal(registries)
-		if err != nil {
-			return mcp.NewToolResultErrorFromErr("failed to marshal registries", err), nil
-		}
-
-		return mcp.NewToolResultText(string(data)), nil
+		return jsonResult(registries, "failed to marshal registries")
 	}
 }
 
@@ -51,12 +45,7 @@ func (s *PortainerMCPServer) HandleGetRegistry() server.ToolHandlerFunc {
 			return mcp.NewToolResultErrorFromErr("failed to get registry", err), nil
 		}
 
-		data, err := json.Marshal(registry)
-		if err != nil {
-			return mcp.NewToolResultErrorFromErr("failed to marshal registry", err), nil
-		}
-
-		return mcp.NewToolResultText(string(data)), nil
+		return jsonResult(registry, "failed to marshal registry")
 	}
 }
 
@@ -72,6 +61,10 @@ func (s *PortainerMCPServer) HandleCreateRegistry() server.ToolHandlerFunc {
 		registryType, err := parser.GetInt("type", true)
 		if err != nil {
 			return mcp.NewToolResultErrorFromErr("invalid type parameter", err), nil
+		}
+
+		if !isValidRegistryType(registryType) {
+			return mcp.NewToolResultError("invalid registry type: must be 1-7 (1=Quay.io 2=Azure 3=Custom 4=GitLab 5=ProGet 6=DockerHub 7=ECR)"), nil
 		}
 
 		url, err := parser.GetString("url", true)

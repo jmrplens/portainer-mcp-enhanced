@@ -35,6 +35,10 @@ const (
 )
 
 func ConvertEndpointToEnvironment(rawEndpoint *apimodels.PortainereeEndpoint) Environment {
+	if rawEndpoint == nil {
+		return Environment{}
+	}
+
 	return Environment{
 		ID:           int(rawEndpoint.ID),
 		Name:         rawEndpoint.Name,

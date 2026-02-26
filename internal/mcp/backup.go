@@ -2,7 +2,6 @@ package mcp
 
 import (
 	"context"
-	"encoding/json"
 
 	"github.com/mark3labs/mcp-go/mcp"
 	"github.com/mark3labs/mcp-go/server"
@@ -28,12 +27,7 @@ func (s *PortainerMCPServer) HandleGetBackupStatus() server.ToolHandlerFunc {
 			return mcp.NewToolResultErrorFromErr("failed to get backup status", err), nil
 		}
 
-		data, err := json.Marshal(status)
-		if err != nil {
-			return mcp.NewToolResultErrorFromErr("failed to marshal backup status", err), nil
-		}
-
-		return mcp.NewToolResultText(string(data)), nil
+		return jsonResult(status, "failed to marshal backup status")
 	}
 }
 
@@ -44,12 +38,7 @@ func (s *PortainerMCPServer) HandleGetBackupS3Settings() server.ToolHandlerFunc 
 			return mcp.NewToolResultErrorFromErr("failed to get backup S3 settings", err), nil
 		}
 
-		data, err := json.Marshal(settings)
-		if err != nil {
-			return mcp.NewToolResultErrorFromErr("failed to marshal backup S3 settings", err), nil
-		}
-
-		return mcp.NewToolResultText(string(data)), nil
+		return jsonResult(settings, "failed to marshal backup S3 settings")
 	}
 }
 

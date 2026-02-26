@@ -10,6 +10,10 @@ type SystemStatus struct {
 }
 
 func ConvertToSystemStatus(rawStatus *apimodels.GithubComPortainerPortainerEeAPIHTTPHandlerSystemStatus) SystemStatus {
+	if rawStatus == nil {
+		return SystemStatus{}
+	}
+
 	return SystemStatus{
 		Version:    rawStatus.Version,
 		InstanceID: rawStatus.InstanceID,

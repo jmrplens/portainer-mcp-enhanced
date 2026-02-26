@@ -1,6 +1,7 @@
 package models
 
 import (
+	"log"
 	"strconv"
 
 	apimodels "github.com/portainer/client-api-go/v2/pkg/models"
@@ -10,14 +11,20 @@ func convertAccesses[T apimodels.PortainerUserAccessPolicies | apimodels.Portain
 	accesses := make(map[int]string)
 	for idStr, role := range rawPolicies {
 		id, err := strconv.Atoi(idStr)
-		if err == nil {
-			accesses[id] = convertAccessPolicyRole(&role)
+		if err != nil {
+			log.Printf("warning: skipping access policy with invalid ID %q: %v", idStr, err)
+			continue
 		}
+		accesses[id] = convertAccessPolicyRole(&role)
 	}
 	return accesses
 }
 
 func convertAccessPolicyRole(rawPolicy *apimodels.PortainerAccessPolicy) string {
+	if rawPolicy == nil {
+		return "unknown"
+	}
+
 	switch rawPolicy.RoleID {
 	case 1:
 		return "environment_administrator"

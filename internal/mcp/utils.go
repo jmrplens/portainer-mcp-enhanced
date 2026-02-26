@@ -1,11 +1,20 @@
 package mcp
 
 import (
+	"encoding/json"
 	"fmt"
-	"slices"
 
 	"github.com/mark3labs/mcp-go/mcp"
 )
+
+// jsonResult marshals the given object to JSON and returns it as an MCP tool result.
+func jsonResult(obj any, errMsg string) (*mcp.CallToolResult, error) {
+	data, err := json.Marshal(obj)
+	if err != nil {
+		return mcp.NewToolResultErrorFromErr(errMsg, err), nil
+	}
+	return mcp.NewToolResultText(string(data)), nil
+}
 
 // parseAccessMap parses access entries from an array of objects and returns a map of ID to access level
 func parseAccessMap(entries []any) (map[int]string, error) {
@@ -64,12 +73,8 @@ func parseKeyValueMap(items []any) (map[string]string, error) {
 	return resultMap, nil
 }
 
-func isValidHTTPMethod(method string) bool {
-	validMethods := []string{"GET", "POST", "PUT", "DELETE", "HEAD"}
-	return slices.Contains(validMethods, method)
-}
-
-// CreateMCPRequest creates a new MCP tool request with the given arguments
+// CreateMCPRequest creates a new MCP tool request with the given arguments.
+// Used by test code only.
 func CreateMCPRequest(args map[string]any) mcp.CallToolRequest {
 	return mcp.CallToolRequest{
 		Params: mcp.CallToolParams{

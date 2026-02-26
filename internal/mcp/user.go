@@ -2,7 +2,6 @@ package mcp
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 
 	"github.com/mark3labs/mcp-go/mcp"
@@ -28,12 +27,7 @@ func (s *PortainerMCPServer) HandleGetUsers() server.ToolHandlerFunc {
 			return mcp.NewToolResultErrorFromErr("failed to get users", err), nil
 		}
 
-		data, err := json.Marshal(users)
-		if err != nil {
-			return mcp.NewToolResultErrorFromErr("failed to marshal users", err), nil
-		}
-
-		return mcp.NewToolResultText(string(data)), nil
+		return jsonResult(users, "failed to marshal users")
 	}
 }
 
@@ -110,12 +104,7 @@ func (s *PortainerMCPServer) HandleGetUser() server.ToolHandlerFunc {
 			return mcp.NewToolResultErrorFromErr("failed to get user", err), nil
 		}
 
-		data, err := json.Marshal(user)
-		if err != nil {
-			return mcp.NewToolResultErrorFromErr("failed to marshal user", err), nil
-		}
-
-		return mcp.NewToolResultText(string(data)), nil
+		return jsonResult(user, "failed to marshal user")
 	}
 }
 

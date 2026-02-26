@@ -2,7 +2,6 @@ package mcp
 
 import (
 	"context"
-	"encoding/json"
 
 	"github.com/mark3labs/mcp-go/mcp"
 	"github.com/mark3labs/mcp-go/server"
@@ -36,12 +35,7 @@ func (s *PortainerMCPServer) HandleAuthenticateUser() server.ToolHandlerFunc {
 			return mcp.NewToolResultErrorFromErr("failed to authenticate user", err), nil
 		}
 
-		data, err := json.Marshal(authResponse)
-		if err != nil {
-			return mcp.NewToolResultErrorFromErr("failed to marshal authentication response", err), nil
-		}
-
-		return mcp.NewToolResultText(string(data)), nil
+		return jsonResult(authResponse, "failed to marshal authentication response")
 	}
 }
 

@@ -2,7 +2,6 @@ package mcp
 
 import (
 	"context"
-	"encoding/json"
 
 	"github.com/mark3labs/mcp-go/mcp"
 	"github.com/mark3labs/mcp-go/server"
@@ -19,11 +18,6 @@ func (s *PortainerMCPServer) HandleGetMOTD() server.ToolHandlerFunc {
 			return mcp.NewToolResultErrorFromErr("failed to get MOTD", err), nil
 		}
 
-		data, err := json.Marshal(motd)
-		if err != nil {
-			return mcp.NewToolResultErrorFromErr("failed to marshal MOTD", err), nil
-		}
-
-		return mcp.NewToolResultText(string(data)), nil
+		return jsonResult(motd, "failed to marshal MOTD")
 	}
 }

@@ -2,7 +2,6 @@ package mcp
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 
 	"github.com/mark3labs/mcp-go/mcp"
@@ -36,12 +35,7 @@ func (s *PortainerMCPServer) HandleGetStacks() server.ToolHandlerFunc {
 			return mcp.NewToolResultErrorFromErr("failed to get stacks", err), nil
 		}
 
-		data, err := json.Marshal(stacks)
-		if err != nil {
-			return mcp.NewToolResultErrorFromErr("failed to marshal stacks", err), nil
-		}
-
-		return mcp.NewToolResultText(string(data)), nil
+		return jsonResult(stacks, "failed to marshal stacks")
 	}
 }
 
@@ -52,12 +46,7 @@ func (s *PortainerMCPServer) HandleListRegularStacks() server.ToolHandlerFunc {
 			return mcp.NewToolResultErrorFromErr("failed to list regular stacks", err), nil
 		}
 
-		data, err := json.Marshal(stacks)
-		if err != nil {
-			return mcp.NewToolResultErrorFromErr("failed to marshal regular stacks", err), nil
-		}
-
-		return mcp.NewToolResultText(string(data)), nil
+		return jsonResult(stacks, "failed to marshal regular stacks")
 	}
 }
 
@@ -149,12 +138,7 @@ func (s *PortainerMCPServer) HandleInspectStack() server.ToolHandlerFunc {
 			return mcp.NewToolResultErrorFromErr("failed to inspect stack", err), nil
 		}
 
-		data, err := json.Marshal(stack)
-		if err != nil {
-			return mcp.NewToolResultErrorFromErr("failed to marshal stack", err), nil
-		}
-
-		return mcp.NewToolResultText(string(data)), nil
+		return jsonResult(stack, "failed to marshal stack")
 	}
 }
 
@@ -233,12 +217,7 @@ func (s *PortainerMCPServer) HandleUpdateStackGit() server.ToolHandlerFunc {
 			return mcp.NewToolResultErrorFromErr("failed to update stack git", err), nil
 		}
 
-		data, err := json.Marshal(stack)
-		if err != nil {
-			return mcp.NewToolResultErrorFromErr("failed to marshal stack", err), nil
-		}
-
-		return mcp.NewToolResultText(string(data)), nil
+		return jsonResult(stack, "failed to marshal stack")
 	}
 }
 
@@ -271,12 +250,7 @@ func (s *PortainerMCPServer) HandleRedeployStackGit() server.ToolHandlerFunc {
 			return mcp.NewToolResultErrorFromErr("failed to redeploy stack", err), nil
 		}
 
-		data, err := json.Marshal(stack)
-		if err != nil {
-			return mcp.NewToolResultErrorFromErr("failed to marshal stack", err), nil
-		}
-
-		return mcp.NewToolResultText(string(data)), nil
+		return jsonResult(stack, "failed to marshal stack")
 	}
 }
 
@@ -299,12 +273,7 @@ func (s *PortainerMCPServer) HandleStartStack() server.ToolHandlerFunc {
 			return mcp.NewToolResultErrorFromErr("failed to start stack", err), nil
 		}
 
-		data, err := json.Marshal(stack)
-		if err != nil {
-			return mcp.NewToolResultErrorFromErr("failed to marshal stack", err), nil
-		}
-
-		return mcp.NewToolResultText(string(data)), nil
+		return jsonResult(stack, "failed to marshal stack")
 	}
 }
 
@@ -327,12 +296,7 @@ func (s *PortainerMCPServer) HandleStopStack() server.ToolHandlerFunc {
 			return mcp.NewToolResultErrorFromErr("failed to stop stack", err), nil
 		}
 
-		data, err := json.Marshal(stack)
-		if err != nil {
-			return mcp.NewToolResultErrorFromErr("failed to marshal stack", err), nil
-		}
-
-		return mcp.NewToolResultText(string(data)), nil
+		return jsonResult(stack, "failed to marshal stack")
 	}
 }
 
@@ -365,11 +329,6 @@ func (s *PortainerMCPServer) HandleMigrateStack() server.ToolHandlerFunc {
 			return mcp.NewToolResultErrorFromErr("failed to migrate stack", err), nil
 		}
 
-		data, err := json.Marshal(stack)
-		if err != nil {
-			return mcp.NewToolResultErrorFromErr("failed to marshal stack", err), nil
-		}
-
-		return mcp.NewToolResultText(string(data)), nil
+		return jsonResult(stack, "failed to marshal stack")
 	}
 }

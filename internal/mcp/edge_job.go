@@ -2,7 +2,6 @@ package mcp
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 
 	"github.com/mark3labs/mcp-go/mcp"
@@ -28,12 +27,7 @@ func (s *PortainerMCPServer) HandleListEdgeJobs() server.ToolHandlerFunc {
 			return mcp.NewToolResultErrorFromErr("failed to list edge jobs", err), nil
 		}
 
-		data, err := json.Marshal(jobs)
-		if err != nil {
-			return mcp.NewToolResultErrorFromErr("failed to marshal edge jobs", err), nil
-		}
-
-		return mcp.NewToolResultText(string(data)), nil
+		return jsonResult(jobs, "failed to marshal edge jobs")
 	}
 }
 
@@ -51,12 +45,7 @@ func (s *PortainerMCPServer) HandleGetEdgeJob() server.ToolHandlerFunc {
 			return mcp.NewToolResultErrorFromErr("failed to get edge job", err), nil
 		}
 
-		data, err := json.Marshal(job)
-		if err != nil {
-			return mcp.NewToolResultErrorFromErr("failed to marshal edge job", err), nil
-		}
-
-		return mcp.NewToolResultText(string(data)), nil
+		return jsonResult(job, "failed to marshal edge job")
 	}
 }
 
@@ -140,11 +129,6 @@ func (s *PortainerMCPServer) HandleListEdgeUpdateSchedules() server.ToolHandlerF
 			return mcp.NewToolResultErrorFromErr("failed to list edge update schedules", err), nil
 		}
 
-		data, err := json.Marshal(schedules)
-		if err != nil {
-			return mcp.NewToolResultErrorFromErr("failed to marshal edge update schedules", err), nil
-		}
-
-		return mcp.NewToolResultText(string(data)), nil
+		return jsonResult(schedules, "failed to marshal edge update schedules")
 	}
 }

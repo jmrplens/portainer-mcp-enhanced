@@ -2,8 +2,6 @@ package mcp
 
 import (
 	"context"
-	"encoding/json"
-	"fmt"
 
 	"github.com/mark3labs/mcp-go/mcp"
 	"github.com/mark3labs/mcp-go/server"
@@ -38,12 +36,7 @@ func (s *PortainerMCPServer) HandleListHelmRepositories() server.ToolHandlerFunc
 			return mcp.NewToolResultErrorFromErr("failed to list helm repositories", err), nil
 		}
 
-		data, err := json.Marshal(repos)
-		if err != nil {
-			return mcp.NewToolResultErrorFromErr("failed to marshal helm repositories", err), nil
-		}
-
-		return mcp.NewToolResultText(string(data)), nil
+		return jsonResult(repos, "failed to marshal helm repositories")
 	}
 }
 
@@ -66,12 +59,7 @@ func (s *PortainerMCPServer) HandleAddHelmRepository() server.ToolHandlerFunc {
 			return mcp.NewToolResultErrorFromErr("failed to add helm repository", err), nil
 		}
 
-		data, err := json.Marshal(repo)
-		if err != nil {
-			return mcp.NewToolResultErrorFromErr("failed to marshal helm repository", err), nil
-		}
-
-		return mcp.NewToolResultText(string(data)), nil
+		return jsonResult(repo, "failed to marshal helm repository")
 	}
 }
 
@@ -165,12 +153,7 @@ func (s *PortainerMCPServer) HandleInstallHelmChart() server.ToolHandlerFunc {
 			return mcp.NewToolResultErrorFromErr("failed to install helm chart", err), nil
 		}
 
-		data, err := json.Marshal(release)
-		if err != nil {
-			return mcp.NewToolResultErrorFromErr("failed to marshal helm release", err), nil
-		}
-
-		return mcp.NewToolResultText(fmt.Sprintf("Helm chart installed successfully: %s", string(data))), nil
+		return jsonResult(release, "failed to marshal helm release")
 	}
 }
 
@@ -203,12 +186,7 @@ func (s *PortainerMCPServer) HandleListHelmReleases() server.ToolHandlerFunc {
 			return mcp.NewToolResultErrorFromErr("failed to list helm releases", err), nil
 		}
 
-		data, err := json.Marshal(releases)
-		if err != nil {
-			return mcp.NewToolResultErrorFromErr("failed to marshal helm releases", err), nil
-		}
-
-		return mcp.NewToolResultText(string(data)), nil
+		return jsonResult(releases, "failed to marshal helm releases")
 	}
 }
 
@@ -264,11 +242,6 @@ func (s *PortainerMCPServer) HandleGetHelmReleaseHistory() server.ToolHandlerFun
 			return mcp.NewToolResultErrorFromErr("failed to get helm release history", err), nil
 		}
 
-		data, err := json.Marshal(history)
-		if err != nil {
-			return mcp.NewToolResultErrorFromErr("failed to marshal helm release history", err), nil
-		}
-
-		return mcp.NewToolResultText(string(data)), nil
+		return jsonResult(history, "failed to marshal helm release history")
 	}
 }

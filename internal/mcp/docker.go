@@ -2,7 +2,6 @@ package mcp
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"io"
 	"strings"
@@ -85,6 +84,7 @@ func (s *PortainerMCPServer) HandleDockerProxy() server.ToolHandlerFunc {
 		if err != nil {
 			return mcp.NewToolResultErrorFromErr("failed to send Docker API request", err), nil
 		}
+		defer response.Body.Close()
 
 		responseBody, err := io.ReadAll(response.Body)
 		if err != nil {
@@ -109,11 +109,6 @@ func (s *PortainerMCPServer) HandleGetDockerDashboard() server.ToolHandlerFunc {
 			return mcp.NewToolResultErrorFromErr("failed to get docker dashboard", err), nil
 		}
 
-		data, err := json.Marshal(dashboard)
-		if err != nil {
-			return mcp.NewToolResultErrorFromErr("failed to marshal docker dashboard", err), nil
-		}
-
-		return mcp.NewToolResultText(string(data)), nil
+		return jsonResult(dashboard, "failed to marshal docker dashboard")
 	}
 }

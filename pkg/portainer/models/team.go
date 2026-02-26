@@ -11,8 +11,15 @@ type Team struct {
 }
 
 func ConvertToTeam(rawTeam *apimodels.PortainerTeam, rawMemberships []*apimodels.PortainerTeamMembership) Team {
+	if rawTeam == nil {
+		return Team{}
+	}
+
 	memberIDs := make([]int, 0)
 	for _, member := range rawMemberships {
+		if member == nil {
+			continue
+		}
 		if member.TeamID == rawTeam.ID {
 			memberIDs = append(memberIDs, int(member.UserID))
 		}

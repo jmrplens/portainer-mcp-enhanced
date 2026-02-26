@@ -13,6 +13,10 @@ type EnvironmentTag struct {
 }
 
 func ConvertTagToEnvironmentTag(rawTag *apimodels.PortainerTag) EnvironmentTag {
+	if rawTag == nil {
+		return EnvironmentTag{}
+	}
+
 	environmentIDs := make([]int, 0, len(rawTag.Endpoints))
 
 	for endpointID := range rawTag.Endpoints {

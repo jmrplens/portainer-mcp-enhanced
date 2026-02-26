@@ -13,6 +13,10 @@ type Group struct {
 }
 
 func ConvertEdgeGroupToGroup(rawEdgeGroup *apimodels.EdgegroupsDecoratedEdgeGroup) Group {
+	if rawEdgeGroup == nil {
+		return Group{}
+	}
+
 	return Group{
 		ID:             int(rawEdgeGroup.ID),
 		Name:           rawEdgeGroup.Name,

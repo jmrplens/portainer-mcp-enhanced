@@ -2,7 +2,6 @@ package mcp
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 
 	"github.com/mark3labs/mcp-go/mcp"
@@ -28,12 +27,7 @@ func (s *PortainerMCPServer) HandleGetEnvironmentGroups() server.ToolHandlerFunc
 			return mcp.NewToolResultErrorFromErr("failed to get environment groups", err), nil
 		}
 
-		data, err := json.Marshal(edgeGroups)
-		if err != nil {
-			return mcp.NewToolResultErrorFromErr("failed to marshal environment groups", err), nil
-		}
-
-		return mcp.NewToolResultText(string(data)), nil
+		return jsonResult(edgeGroups, "failed to marshal environment groups")
 	}
 }
 

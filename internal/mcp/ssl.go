@@ -2,7 +2,6 @@ package mcp
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 
 	"github.com/mark3labs/mcp-go/mcp"
@@ -27,12 +26,7 @@ func (s *PortainerMCPServer) HandleGetSSLSettings() server.ToolHandlerFunc {
 			return mcp.NewToolResultErrorFromErr("failed to get SSL settings", err), nil
 		}
 
-		data, err := json.Marshal(sslSettings)
-		if err != nil {
-			return mcp.NewToolResultErrorFromErr("failed to marshal SSL settings", err), nil
-		}
-
-		return mcp.NewToolResultText(string(data)), nil
+		return jsonResult(sslSettings, "failed to marshal SSL settings")
 	}
 }
 

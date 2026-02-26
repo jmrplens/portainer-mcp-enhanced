@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"net/http"
+	"strings"
 	"testing"
 
 	"github.com/mark3labs/mcp-go/mcp"
@@ -828,4 +829,23 @@ func TestHandleGetKubernetesConfig(t *testing.T) {
 			mockClient.AssertExpectations(t)
 		})
 	}
+}
+
+func TestHandleKubernetesProxy_ClosesResponseBody(t *testing.T) {
+tc := &trackingCloser{Reader: strings.NewReader(`{"status":"ok"}`)}
+mockClient := new(MockPortainerClient)
+mockClient.On("ProxyKubernetesRequest", mock.AnythingOfType("models.KubernetesProxyRequestOptions")).
+Return(&http.Response{StatusCode: http.StatusOK, Body: tc}, nil)
+
+server := &PortainerMCPServer{cli: mockClient}
+request := CreateMCPRequest(map[string]any{
+"environmentId":     float64(1),
+"kubernetesAPIPath": "/api/v1/namespaces",
+"method":            "GET",
+})
+
+handler := server.HandleKubernetesProxy()
+_, err := handler(context.Background(), request)
+assert.NoError(t, err)
+assert.True(t, tc.closed, "response body should be closed after handler returns")
 }

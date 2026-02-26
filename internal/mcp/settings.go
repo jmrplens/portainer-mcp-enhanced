@@ -25,12 +25,7 @@ func (s *PortainerMCPServer) HandleGetSettings() server.ToolHandlerFunc {
 			return mcp.NewToolResultErrorFromErr("failed to get settings", err), nil
 		}
 
-		data, err := json.Marshal(settings)
-		if err != nil {
-			return mcp.NewToolResultErrorFromErr("failed to marshal settings", err), nil
-		}
-
-		return mcp.NewToolResultText(string(data)), nil
+		return jsonResult(settings, "failed to marshal settings")
 	}
 }
 
@@ -66,11 +61,6 @@ func (s *PortainerMCPServer) HandleGetPublicSettings() server.ToolHandlerFunc {
 			return mcp.NewToolResultErrorFromErr("failed to get public settings", err), nil
 		}
 
-		data, err := json.Marshal(publicSettings)
-		if err != nil {
-			return mcp.NewToolResultErrorFromErr("failed to marshal public settings", err), nil
-		}
-
-		return mcp.NewToolResultText(string(data)), nil
+		return jsonResult(publicSettings, "failed to marshal public settings")
 	}
 }

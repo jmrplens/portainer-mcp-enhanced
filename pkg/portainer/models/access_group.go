@@ -13,8 +13,15 @@ type AccessGroup struct {
 }
 
 func ConvertEndpointGroupToAccessGroup(rawGroup *apimodels.PortainerEndpointGroup, rawEndpoints []*apimodels.PortainereeEndpoint) AccessGroup {
+	if rawGroup == nil {
+		return AccessGroup{}
+	}
+
 	environmentIds := make([]int, 0)
 	for _, env := range rawEndpoints {
+		if env == nil {
+			continue
+		}
 		if env.GroupID == rawGroup.ID {
 			environmentIds = append(environmentIds, int(env.ID))
 		}

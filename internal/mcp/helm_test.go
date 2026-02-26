@@ -298,7 +298,7 @@ func TestHandleInstallHelmChart(t *testing.T) {
 				assert.Len(t, result.Content, 1)
 				textContent, ok := result.Content[0].(mcp.TextContent)
 				assert.True(t, ok)
-				assert.Contains(t, textContent.Text, "successfully")
+				assert.Contains(t, textContent.Text, "my-nginx")
 			}
 
 			mockClient.AssertExpectations(t)

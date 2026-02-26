@@ -19,6 +19,10 @@ const (
 )
 
 func ConvertToUser(rawUser *apimodels.PortainereeUser) User {
+	if rawUser == nil {
+		return User{}
+	}
+
 	return User{
 		ID:       int(rawUser.ID),
 		Username: rawUser.Username,

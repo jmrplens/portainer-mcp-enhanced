@@ -2,7 +2,6 @@ package mcp
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"io"
 	"strings"
@@ -143,6 +142,7 @@ func (s *PortainerMCPServer) HandleKubernetesProxy() server.ToolHandlerFunc {
 		if err != nil {
 			return mcp.NewToolResultErrorFromErr("failed to send Kubernetes API request", err), nil
 		}
+		defer response.Body.Close()
 
 		responseBody, err := io.ReadAll(response.Body)
 		if err != nil {
@@ -173,12 +173,7 @@ func (s *PortainerMCPServer) HandleGetKubernetesDashboard() server.ToolHandlerFu
 			return mcp.NewToolResultErrorFromErr("failed to get kubernetes dashboard", err), nil
 		}
 
-		jsonData, err := json.Marshal(dashboard)
-		if err != nil {
-			return mcp.NewToolResultErrorFromErr("failed to marshal kubernetes dashboard", err), nil
-		}
-
-		return mcp.NewToolResultText(string(jsonData)), nil
+		return jsonResult(dashboard, "failed to marshal kubernetes dashboard")
 	}
 }
 
@@ -196,12 +191,7 @@ func (s *PortainerMCPServer) HandleListKubernetesNamespaces() server.ToolHandler
 			return mcp.NewToolResultErrorFromErr("failed to get kubernetes namespaces", err), nil
 		}
 
-		jsonData, err := json.Marshal(namespaces)
-		if err != nil {
-			return mcp.NewToolResultErrorFromErr("failed to marshal kubernetes namespaces", err), nil
-		}
-
-		return mcp.NewToolResultText(string(jsonData)), nil
+		return jsonResult(namespaces, "failed to marshal kubernetes namespaces")
 	}
 }
 
@@ -223,11 +213,7 @@ func (s *PortainerMCPServer) HandleGetKubernetesConfig() server.ToolHandlerFunc 
 		case string:
 			return mcp.NewToolResultText(v), nil
 		default:
-			jsonData, err := json.Marshal(config)
-			if err != nil {
-				return mcp.NewToolResultErrorFromErr("failed to marshal kubernetes config", err), nil
-			}
-			return mcp.NewToolResultText(string(jsonData)), nil
+			return jsonResult(config, "failed to marshal kubernetes config")
 		}
 	}
 }

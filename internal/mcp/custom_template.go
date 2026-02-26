@@ -2,7 +2,6 @@ package mcp
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 
 	"github.com/mark3labs/mcp-go/mcp"
@@ -28,12 +27,7 @@ func (s *PortainerMCPServer) HandleListCustomTemplates() server.ToolHandlerFunc 
 			return mcp.NewToolResultErrorFromErr("failed to list custom templates", err), nil
 		}
 
-		data, err := json.Marshal(templates)
-		if err != nil {
-			return mcp.NewToolResultErrorFromErr("failed to marshal custom templates", err), nil
-		}
-
-		return mcp.NewToolResultText(string(data)), nil
+		return jsonResult(templates, "failed to marshal custom templates")
 	}
 }
 
@@ -51,12 +45,7 @@ func (s *PortainerMCPServer) HandleGetCustomTemplate() server.ToolHandlerFunc {
 			return mcp.NewToolResultErrorFromErr("failed to get custom template", err), nil
 		}
 
-		data, err := json.Marshal(template)
-		if err != nil {
-			return mcp.NewToolResultErrorFromErr("failed to marshal custom template", err), nil
-		}
-
-		return mcp.NewToolResultText(string(data)), nil
+		return jsonResult(template, "failed to marshal custom template")
 	}
 }
 
@@ -100,6 +89,10 @@ func (s *PortainerMCPServer) HandleCreateCustomTemplate() server.ToolHandlerFunc
 		templateType, err := parser.GetInt("type", true)
 		if err != nil {
 			return mcp.NewToolResultErrorFromErr("invalid type parameter", err), nil
+		}
+
+		if !isValidTemplateType(templateType) {
+			return mcp.NewToolResultError("invalid template type: must be 1-3 (1=swarm 2=compose 3=kubernetes)"), nil
 		}
 
 		platform, err := parser.GetInt("platform", true)

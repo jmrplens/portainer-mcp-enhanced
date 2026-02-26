@@ -15,6 +15,10 @@ type Registry struct {
 }
 
 func ConvertRawRegistryToRegistry(rawRegistry *apimodels.PortainereeRegistry) Registry {
+	if rawRegistry == nil {
+		return Registry{}
+	}
+
 	return Registry{
 		ID:             int(rawRegistry.ID),
 		Name:           rawRegistry.Name,

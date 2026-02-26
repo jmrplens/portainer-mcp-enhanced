@@ -159,7 +159,7 @@ func TestConvertSettingsToPortainerSettings(t *testing.T) {
 		{
 			name:        "Nil input",
 			input:       nil,
-			shouldPanic: true,
+			shouldPanic: false,
 		},
 	}
 

@@ -2,7 +2,6 @@ package mcp
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 
 	"github.com/mark3labs/mcp-go/mcp"
@@ -30,12 +29,7 @@ func (s *PortainerMCPServer) HandleGetAccessGroups() server.ToolHandlerFunc {
 			return mcp.NewToolResultErrorFromErr("failed to get access groups", err), nil
 		}
 
-		data, err := json.Marshal(accessGroups)
-		if err != nil {
-			return mcp.NewToolResultErrorFromErr("failed to marshal access groups", err), nil
-		}
-
-		return mcp.NewToolResultText(string(data)), nil
+		return jsonResult(accessGroups, "failed to marshal access groups")
 	}
 }
 

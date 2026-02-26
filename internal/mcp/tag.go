@@ -2,7 +2,6 @@ package mcp
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 
 	"github.com/mark3labs/mcp-go/mcp"
@@ -26,12 +25,7 @@ func (s *PortainerMCPServer) HandleGetEnvironmentTags() server.ToolHandlerFunc {
 			return mcp.NewToolResultErrorFromErr("failed to get environment tags", err), nil
 		}
 
-		data, err := json.Marshal(environmentTags)
-		if err != nil {
-			return mcp.NewToolResultErrorFromErr("failed to marshal environment tags", err), nil
-		}
-
-		return mcp.NewToolResultText(string(data)), nil
+		return jsonResult(environmentTags, "failed to marshal environment tags")
 	}
 }
 

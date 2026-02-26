@@ -156,3 +156,21 @@ func isValidAccessLevel(access string) bool {
 func isValidUserRole(role string) bool {
 	return slices.Contains(AllUserRoles, role)
 }
+
+// isValidHTTPMethod checks if a given string is a valid HTTP method for proxy requests
+func isValidHTTPMethod(method string) bool {
+	validMethods := []string{"GET", "POST", "PUT", "DELETE", "HEAD"}
+	return slices.Contains(validMethods, method)
+}
+
+// isValidRegistryType checks if a given integer is a valid registry type.
+// 1=Quay.io 2=Azure 3=Custom 4=GitLab 5=ProGet 6=DockerHub 7=ECR
+func isValidRegistryType(t int) bool {
+	return t >= 1 && t <= 7
+}
+
+// isValidTemplateType checks if a given integer is a valid custom template type.
+// 1=swarm 2=compose 3=kubernetes
+func isValidTemplateType(t int) bool {
+	return t >= 1 && t <= 3
+}

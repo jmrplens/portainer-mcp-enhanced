@@ -2,7 +2,6 @@ package mcp
 
 import (
 	"context"
-	"encoding/json"
 
 	"github.com/mark3labs/mcp-go/mcp"
 	"github.com/mark3labs/mcp-go/server"
@@ -30,12 +29,7 @@ func (s *PortainerMCPServer) HandleGetEnvironments() server.ToolHandlerFunc {
 			return mcp.NewToolResultErrorFromErr("failed to get environments", err), nil
 		}
 
-		data, err := json.Marshal(environments)
-		if err != nil {
-			return mcp.NewToolResultErrorFromErr("failed to marshal environments", err), nil
-		}
-
-		return mcp.NewToolResultText(string(data)), nil
+		return jsonResult(environments, "failed to marshal environments")
 	}
 }
 
@@ -53,12 +47,7 @@ func (s *PortainerMCPServer) HandleGetEnvironment() server.ToolHandlerFunc {
 			return mcp.NewToolResultErrorFromErr("failed to get environment", err), nil
 		}
 
-		data, err := json.Marshal(environment)
-		if err != nil {
-			return mcp.NewToolResultErrorFromErr("failed to marshal environment", err), nil
-		}
-
-		return mcp.NewToolResultText(string(data)), nil
+		return jsonResult(environment, "failed to marshal environment")
 	}
 }
 

@@ -23,11 +23,17 @@ const (
 )
 
 func ConvertSettingsToPortainerSettings(rawSettings *apimodels.PortainereeSettings) PortainerSettings {
+	if rawSettings == nil {
+		return PortainerSettings{}
+	}
+
 	s := PortainerSettings{}
 
 	s.Authentication.Method = convertAuthenticationMethod(rawSettings.AuthenticationMethod)
 	s.Edge.Enabled = rawSettings.EnableEdgeComputeFeatures
-	s.Edge.ServerURL = rawSettings.Edge.TunnelServerAddress
+	if rawSettings.Edge != nil {
+		s.Edge.ServerURL = rawSettings.Edge.TunnelServerAddress
+	}
 	s.LogoURL = rawSettings.LogoURL
 	s.EnableTelemetry = rawSettings.EnableTelemetry
 	if rawSettings.InternalAuthSettings != nil {
@@ -52,6 +58,10 @@ type PublicSettings struct {
 
 // ConvertToPublicSettings converts a raw SDK public settings response to the local PublicSettings model.
 func ConvertToPublicSettings(raw *apimodels.SettingsPublicSettingsResponse) PublicSettings {
+	if raw == nil {
+		return PublicSettings{}
+	}
+
 	return PublicSettings{
 		AuthenticationMethod:      convertAuthenticationMethod(raw.AuthenticationMethod),
 		EnableEdgeComputeFeatures: raw.EnableEdgeComputeFeatures,
