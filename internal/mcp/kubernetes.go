@@ -13,6 +13,7 @@ import (
 	"github.com/portainer/portainer-mcp/pkg/toolgen"
 )
 
+// AddKubernetesProxyFeatures registers the Kubernetes proxy and resource management tools on the MCP server.
 func (s *PortainerMCPServer) AddKubernetesProxyFeatures() {
 	s.addToolIfExists(ToolKubernetesProxyStripped, s.HandleKubernetesProxyStripped())
 
@@ -21,6 +22,7 @@ func (s *PortainerMCPServer) AddKubernetesProxyFeatures() {
 	}
 }
 
+// HandleKubernetesProxyStripped returns an MCP tool handler that handles kubernetes proxy stripped.
 func (s *PortainerMCPServer) HandleKubernetesProxyStripped() server.ToolHandlerFunc {
 	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 		parser := toolgen.NewParameterParser(request)
@@ -166,12 +168,14 @@ func (s *PortainerMCPServer) HandleKubernetesProxy() server.ToolHandlerFunc {
 	}
 }
 
+// AddKubernetesNativeFeatures registers the Kubernetes proxy and resource management tools on the MCP server.
 func (s *PortainerMCPServer) AddKubernetesNativeFeatures() {
 	s.addToolIfExists(ToolGetKubernetesDashboard, s.HandleGetKubernetesDashboard())
 	s.addToolIfExists(ToolListKubernetesNamespaces, s.HandleListKubernetesNamespaces())
 	s.addToolIfExists(ToolGetKubernetesConfig, s.HandleGetKubernetesConfig())
 }
 
+// HandleGetKubernetesDashboard returns an MCP tool handler that retrieves kubernetes dashboard.
 func (s *PortainerMCPServer) HandleGetKubernetesDashboard() server.ToolHandlerFunc {
 	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 		parser := toolgen.NewParameterParser(request)
@@ -193,6 +197,7 @@ func (s *PortainerMCPServer) HandleGetKubernetesDashboard() server.ToolHandlerFu
 	}
 }
 
+// HandleListKubernetesNamespaces returns an MCP tool handler that lists kubernetes namespaces.
 func (s *PortainerMCPServer) HandleListKubernetesNamespaces() server.ToolHandlerFunc {
 	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 		parser := toolgen.NewParameterParser(request)
@@ -214,6 +219,7 @@ func (s *PortainerMCPServer) HandleListKubernetesNamespaces() server.ToolHandler
 	}
 }
 
+// HandleGetKubernetesConfig returns an MCP tool handler that retrieves kubernetes config.
 func (s *PortainerMCPServer) HandleGetKubernetesConfig() server.ToolHandlerFunc {
 	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 		parser := toolgen.NewParameterParser(request)

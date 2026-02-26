@@ -45,6 +45,7 @@ keyPEM := pem.EncodeToMemory(&pem.Block{Type: "EC PRIVATE KEY", Bytes: keyDER})
 return string(certPEM), string(keyPEM)
 }
 
+// TestHandleGetSSLSettings verifies the HandleGetSSLSettings MCP tool handler.
 func TestHandleGetSSLSettings(t *testing.T) {
 tests := []struct {
 name          string
@@ -111,6 +112,7 @@ mockClient.AssertExpectations(t)
 }
 }
 
+// TestHandleUpdateSSLSettings verifies the HandleUpdateSSLSettings MCP tool handler.
 func TestHandleUpdateSSLSettings(t *testing.T) {
 httpEnabled := true
 testCert, testKey := generateTestCertAndKey(t)

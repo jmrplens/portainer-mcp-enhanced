@@ -45,6 +45,7 @@ func (r *errorReader) Close() error {
 	return nil
 }
 
+// TestHandleDockerProxy_ParameterValidation verifies the HandleDockerProxy_ParameterValidation MCP tool handler.
 func TestHandleDockerProxy_ParameterValidation(t *testing.T) {
 	tests := []struct {
 		name             string
@@ -165,6 +166,7 @@ func TestHandleDockerProxy_ParameterValidation(t *testing.T) {
 	}
 }
 
+// TestHandleDockerProxy_ClientInteraction verifies the HandleDockerProxy_ClientInteraction MCP tool handler.
 func TestHandleDockerProxy_ClientInteraction(t *testing.T) {
 	type testCase struct {
 		name  string
@@ -315,6 +317,7 @@ func TestHandleDockerProxy_ClientInteraction(t *testing.T) {
 	}
 }
 
+// TestHandleGetDockerDashboard verifies the HandleGetDockerDashboard MCP tool handler.
 func TestHandleGetDockerDashboard(t *testing.T) {
 	tests := []struct {
 		name          string
@@ -399,6 +402,7 @@ func TestHandleGetDockerDashboard(t *testing.T) {
 	}
 }
 
+// TestHandleDockerProxy_ClosesResponseBody verifies the HandleDockerProxy_ClosesResponseBody MCP tool handler.
 func TestHandleDockerProxy_ClosesResponseBody(t *testing.T) {
 tc := &trackingCloser{Reader: strings.NewReader(`{"status":"ok"}`)}
 mockClient := new(MockPortainerClient)

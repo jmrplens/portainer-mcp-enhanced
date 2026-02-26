@@ -10,6 +10,7 @@ import (
 	"github.com/portainer/portainer-mcp/pkg/toolgen"
 )
 
+// AddEdgeJobFeatures registers the edge job and edge update schedule management tools on the MCP server.
 func (s *PortainerMCPServer) AddEdgeJobFeatures() {
 	s.addToolIfExists(ToolListEdgeJobs, s.HandleListEdgeJobs())
 	s.addToolIfExists(ToolGetEdgeJob, s.HandleGetEdgeJob())
@@ -21,6 +22,7 @@ func (s *PortainerMCPServer) AddEdgeJobFeatures() {
 	}
 }
 
+// HandleListEdgeJobs returns an MCP tool handler that lists edge jobs.
 func (s *PortainerMCPServer) HandleListEdgeJobs() server.ToolHandlerFunc {
 	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 		jobs, err := s.cli.GetEdgeJobs()
@@ -32,6 +34,7 @@ func (s *PortainerMCPServer) HandleListEdgeJobs() server.ToolHandlerFunc {
 	}
 }
 
+// HandleGetEdgeJob returns an MCP tool handler that retrieves edge job.
 func (s *PortainerMCPServer) HandleGetEdgeJob() server.ToolHandlerFunc {
 	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 		parser := toolgen.NewParameterParser(request)
@@ -53,6 +56,7 @@ func (s *PortainerMCPServer) HandleGetEdgeJob() server.ToolHandlerFunc {
 	}
 }
 
+// HandleGetEdgeJobFile returns an MCP tool handler that retrieves edge job file.
 func (s *PortainerMCPServer) HandleGetEdgeJobFile() server.ToolHandlerFunc {
 	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 		parser := toolgen.NewParameterParser(request)
@@ -74,6 +78,7 @@ func (s *PortainerMCPServer) HandleGetEdgeJobFile() server.ToolHandlerFunc {
 	}
 }
 
+// HandleCreateEdgeJob returns an MCP tool handler that creates edge job.
 func (s *PortainerMCPServer) HandleCreateEdgeJob() server.ToolHandlerFunc {
 	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 		parser := toolgen.NewParameterParser(request)
@@ -111,6 +116,7 @@ func (s *PortainerMCPServer) HandleCreateEdgeJob() server.ToolHandlerFunc {
 	}
 }
 
+// HandleDeleteEdgeJob returns an MCP tool handler that deletes edge job.
 func (s *PortainerMCPServer) HandleDeleteEdgeJob() server.ToolHandlerFunc {
 	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 		parser := toolgen.NewParameterParser(request)
@@ -139,10 +145,12 @@ func isValidCronExpression(expr string) bool {
 	return len(fields) == 5
 }
 
+// AddEdgeUpdateScheduleFeatures registers the edge job and edge update schedule management tools on the MCP server.
 func (s *PortainerMCPServer) AddEdgeUpdateScheduleFeatures() {
 	s.addToolIfExists(ToolListEdgeUpdateSchedules, s.HandleListEdgeUpdateSchedules())
 }
 
+// HandleListEdgeUpdateSchedules returns an MCP tool handler that lists edge update schedules.
 func (s *PortainerMCPServer) HandleListEdgeUpdateSchedules() server.ToolHandlerFunc {
 	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 		schedules, err := s.cli.GetEdgeUpdateSchedules()

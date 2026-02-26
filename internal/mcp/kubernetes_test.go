@@ -13,6 +13,7 @@ import (
 	"github.com/stretchr/testify/mock"
 )
 
+// TestHandleKubernetesProxy_ParameterValidation verifies the HandleKubernetesProxy_ParameterValidation MCP tool handler.
 func TestHandleKubernetesProxy_ParameterValidation(t *testing.T) {
 	tests := []struct {
 		name             string
@@ -133,6 +134,7 @@ func TestHandleKubernetesProxy_ParameterValidation(t *testing.T) {
 	}
 }
 
+// TestHandleKubernetesProxy_ClientInteraction verifies the HandleKubernetesProxy_ClientInteraction MCP tool handler.
 func TestHandleKubernetesProxy_ClientInteraction(t *testing.T) {
 	type testCase struct {
 		name  string
@@ -282,6 +284,7 @@ func TestHandleKubernetesProxy_ClientInteraction(t *testing.T) {
 	}
 }
 
+// TestHandleKubernetesProxyStripped_ParameterValidation verifies the HandleKubernetesProxyStripped_ParameterValidation MCP tool handler.
 func TestHandleKubernetesProxyStripped_ParameterValidation(t *testing.T) {
 	tests := []struct {
 		name             string
@@ -368,6 +371,7 @@ func TestHandleKubernetesProxyStripped_ParameterValidation(t *testing.T) {
 	}
 }
 
+// TestHandleKubernetesProxyStripped_ClientInteraction verifies the HandleKubernetesProxyStripped_ClientInteraction MCP tool handler.
 func TestHandleKubernetesProxyStripped_ClientInteraction(t *testing.T) {
 	type testCase struct {
 		name  string
@@ -609,6 +613,7 @@ func TestHandleKubernetesProxyStripped_ClientInteraction(t *testing.T) {
 	}
 }
 
+// TestHandleGetKubernetesDashboard verifies the HandleGetKubernetesDashboard MCP tool handler.
 func TestHandleGetKubernetesDashboard(t *testing.T) {
 	tests := []struct {
 		name             string
@@ -679,6 +684,7 @@ func TestHandleGetKubernetesDashboard(t *testing.T) {
 	}
 }
 
+// TestHandleListKubernetesNamespaces verifies the HandleListKubernetesNamespaces MCP tool handler.
 func TestHandleListKubernetesNamespaces(t *testing.T) {
 	tests := []struct {
 		name             string
@@ -758,6 +764,7 @@ func TestHandleListKubernetesNamespaces(t *testing.T) {
 	}
 }
 
+// TestHandleGetKubernetesConfig verifies the HandleGetKubernetesConfig MCP tool handler.
 func TestHandleGetKubernetesConfig(t *testing.T) {
 	tests := []struct {
 		name             string
@@ -831,6 +838,7 @@ func TestHandleGetKubernetesConfig(t *testing.T) {
 	}
 }
 
+// TestHandleKubernetesProxy_ClosesResponseBody verifies the HandleKubernetesProxy_ClosesResponseBody MCP tool handler.
 func TestHandleKubernetesProxy_ClosesResponseBody(t *testing.T) {
 tc := &trackingCloser{Reader: strings.NewReader(`{"status":"ok"}`)}
 mockClient := new(MockPortainerClient)

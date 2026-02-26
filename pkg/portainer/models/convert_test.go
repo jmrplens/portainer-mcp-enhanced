@@ -11,6 +11,7 @@ import (
 
 // --- AppTemplate ---
 
+// TestConvertToAppTemplate verifies the ConvertToAppTemplate model conversion function.
 func TestConvertToAppTemplate(t *testing.T) {
 	raw := &apimodels.PortainerTemplate{
 		ID:          42,
@@ -39,6 +40,7 @@ func TestConvertToAppTemplate(t *testing.T) {
 	assert.Equal(t, "Requires MySQL", result.Note)
 }
 
+// TestConvertToAppTemplates verifies the ConvertToAppTemplates model conversion function.
 func TestConvertToAppTemplates(t *testing.T) {
 	raw := []*apimodels.PortainerTemplate{
 		{ID: 1, Title: "App1"},
@@ -54,6 +56,7 @@ func TestConvertToAppTemplates(t *testing.T) {
 
 // --- Backup ---
 
+// TestConvertToBackupStatus verifies the ConvertToBackupStatus model conversion function.
 func TestConvertToBackupStatus(t *testing.T) {
 	raw := &apimodels.BackupBackupStatus{
 		Failed:       true,
@@ -66,6 +69,7 @@ func TestConvertToBackupStatus(t *testing.T) {
 	assert.Equal(t, "2024-01-15T10:30:00Z", result.TimestampUTC)
 }
 
+// TestConvertToS3BackupSettings verifies the ConvertToS3BackupSettings model conversion function.
 func TestConvertToS3BackupSettings(t *testing.T) {
 	raw := &apimodels.PortainereeS3BackupSettings{
 		AccessKeyID:      "AKID123",
@@ -90,6 +94,7 @@ func TestConvertToS3BackupSettings(t *testing.T) {
 
 // --- Docker Dashboard ---
 
+// TestConvertDockerDashboardResponse verifies the ConvertDockerDashboardResponse model conversion function.
 func TestConvertDockerDashboardResponse(t *testing.T) {
 	tests := []struct {
 		name     string
@@ -168,6 +173,7 @@ func TestConvertDockerDashboardResponse(t *testing.T) {
 
 // --- Edge Job ---
 
+// TestConvertEdgeJobToLocal verifies the ConvertEdgeJobToLocal model conversion function.
 func TestConvertEdgeJobToLocal(t *testing.T) {
 	raw := &apimodels.PortainerEdgeJob{
 		ID:             10,
@@ -190,6 +196,7 @@ func TestConvertEdgeJobToLocal(t *testing.T) {
 	assert.Equal(t, []int{1, 2, 5}, result.EdgeGroups)
 }
 
+// TestConvertEdgeJobToLocal_EmptyEdgeGroups verifies the ConvertEdgeJobToLocal_EmptyEdgeGroups model conversion function.
 func TestConvertEdgeJobToLocal_EmptyEdgeGroups(t *testing.T) {
 	raw := &apimodels.PortainerEdgeJob{
 		Name:       "simple-job",
@@ -202,6 +209,7 @@ func TestConvertEdgeJobToLocal_EmptyEdgeGroups(t *testing.T) {
 	assert.Empty(t, result.EdgeGroups)
 }
 
+// TestConvertEdgeUpdateScheduleToLocal verifies the ConvertEdgeUpdateScheduleToLocal model conversion function.
 func TestConvertEdgeUpdateScheduleToLocal(t *testing.T) {
 	raw := &apimodels.EdgeupdateschedulesDecoratedUpdateSchedule{
 		ID:            7,
@@ -230,6 +238,7 @@ func TestConvertEdgeUpdateScheduleToLocal(t *testing.T) {
 
 // --- Helm ---
 
+// TestConvertToHelmRepository verifies the ConvertToHelmRepository model conversion function.
 func TestConvertToHelmRepository(t *testing.T) {
 	raw := &apimodels.PortainerHelmUserRepository{
 		ID:     5,
@@ -244,6 +253,7 @@ func TestConvertToHelmRepository(t *testing.T) {
 	assert.Equal(t, 2, result.UserID)
 }
 
+// TestConvertToHelmRepositoryList verifies the ConvertToHelmRepositoryList model conversion function.
 func TestConvertToHelmRepositoryList(t *testing.T) {
 	raw := &apimodels.UsersHelmUserRepositoryResponse{
 		GlobalRepository: "https://charts.bitnami.com/bitnami",
@@ -261,6 +271,7 @@ func TestConvertToHelmRepositoryList(t *testing.T) {
 	assert.Equal(t, "https://repo2.example.com", result.UserRepositories[1].URL)
 }
 
+// TestConvertToHelmRepositoryList_Empty verifies the ConvertToHelmRepositoryList_Empty model conversion function.
 func TestConvertToHelmRepositoryList_Empty(t *testing.T) {
 	raw := &apimodels.UsersHelmUserRepositoryResponse{
 		GlobalRepository: "https://global.repo",
@@ -273,6 +284,7 @@ func TestConvertToHelmRepositoryList_Empty(t *testing.T) {
 	assert.Empty(t, result.UserRepositories)
 }
 
+// TestConvertToHelmRelease verifies the ConvertToHelmRelease model conversion function.
 func TestConvertToHelmRelease(t *testing.T) {
 	raw := &apimodels.ReleaseReleaseElement{
 		Name:       "my-release",
@@ -295,6 +307,7 @@ func TestConvertToHelmRelease(t *testing.T) {
 	assert.Equal(t, "2024-01-15T10:00:00Z", result.Updated)
 }
 
+// TestConvertToHelmReleaseDetails verifies the ConvertToHelmReleaseDetails model conversion function.
 func TestConvertToHelmReleaseDetails(t *testing.T) {
 	tests := []struct {
 		name     string
@@ -343,6 +356,7 @@ func TestConvertToHelmReleaseDetails(t *testing.T) {
 
 // --- Kubernetes ---
 
+// TestConvertK8sDashboard verifies the ConvertK8sDashboard model conversion function.
 func TestConvertK8sDashboard(t *testing.T) {
 	raw := &apimodels.KubernetesK8sDashboard{
 		ApplicationsCount: 10,
@@ -365,6 +379,7 @@ func TestConvertK8sDashboard(t *testing.T) {
 	assert.Equal(t, 4, result.VolumesCount)
 }
 
+// TestConvertK8sNamespace verifies the ConvertK8sNamespace model conversion function.
 func TestConvertK8sNamespace(t *testing.T) {
 	raw := &apimodels.PortainerK8sNamespaceInfo{
 		ID:             "ns-123",
@@ -387,6 +402,7 @@ func TestConvertK8sNamespace(t *testing.T) {
 
 // --- MOTD ---
 
+// TestConvertToMOTDFromMap verifies the ConvertToMOTDFromMap model conversion function.
 func TestConvertToMOTDFromMap(t *testing.T) {
 	tests := []struct {
 		name     string
@@ -472,6 +488,7 @@ func TestConvertToMOTDFromMap(t *testing.T) {
 
 // --- Registry ---
 
+// TestConvertRawRegistryToRegistry verifies the ConvertRawRegistryToRegistry model conversion function.
 func TestConvertRawRegistryToRegistry(t *testing.T) {
 	raw := &apimodels.PortainereeRegistry{
 		ID:             3,
@@ -496,6 +513,7 @@ func TestConvertRawRegistryToRegistry(t *testing.T) {
 
 // --- Role ---
 
+// TestConvertToRole verifies the ConvertToRole model conversion function.
 func TestConvertToRole(t *testing.T) {
 	id := int64(1)
 	name := "Administrator"
@@ -567,6 +585,7 @@ func TestConvertToRole(t *testing.T) {
 
 // --- SSL ---
 
+// TestConvertToSSLSettings verifies the ConvertToSSLSettings model conversion function.
 func TestConvertToSSLSettings(t *testing.T) {
 	raw := &apimodels.PortainereeSSLSettings{
 		CertPath:    "/certs/cert.pem",
@@ -587,6 +606,7 @@ func TestConvertToSSLSettings(t *testing.T) {
 
 // --- Stack ---
 
+// TestConvertRegularStack verifies the ConvertRegularStack model conversion function.
 func TestConvertRegularStack(t *testing.T) {
 	tests := []struct {
 		name     string
@@ -646,6 +666,7 @@ func TestConvertRegularStack(t *testing.T) {
 
 // --- System ---
 
+// TestConvertToSystemStatus verifies the ConvertToSystemStatus model conversion function.
 func TestConvertToSystemStatus(t *testing.T) {
 	raw := &apimodels.GithubComPortainerPortainerEeAPIHTTPHandlerSystemStatus{
 		Version:    "2.20.0",
@@ -660,6 +681,7 @@ func TestConvertToSystemStatus(t *testing.T) {
 
 // --- Webhook ---
 
+// TestConvertToWebhook verifies the ConvertToWebhook model conversion function.
 func TestConvertToWebhook(t *testing.T) {
 	raw := &apimodels.PortainerWebhook{
 		ID:         10,
@@ -682,6 +704,7 @@ func TestConvertToWebhook(t *testing.T) {
 
 // --- Public Settings ---
 
+// TestConvertToPublicSettings verifies the ConvertToPublicSettings model conversion function.
 func TestConvertToPublicSettings(t *testing.T) {
 	raw := &apimodels.SettingsPublicSettingsResponse{
 		AuthenticationMethod:      1,

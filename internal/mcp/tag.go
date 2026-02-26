@@ -9,6 +9,7 @@ import (
 	"github.com/portainer/portainer-mcp/pkg/toolgen"
 )
 
+// AddTagFeatures registers the environment tag management tools on the MCP server.
 func (s *PortainerMCPServer) AddTagFeatures() {
 	s.addToolIfExists(ToolListEnvironmentTags, s.HandleGetEnvironmentTags())
 
@@ -18,6 +19,7 @@ func (s *PortainerMCPServer) AddTagFeatures() {
 	}
 }
 
+// HandleGetEnvironmentTags returns an MCP tool handler that retrieves environment tags.
 func (s *PortainerMCPServer) HandleGetEnvironmentTags() server.ToolHandlerFunc {
 	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 		environmentTags, err := s.cli.GetEnvironmentTags()
@@ -29,6 +31,7 @@ func (s *PortainerMCPServer) HandleGetEnvironmentTags() server.ToolHandlerFunc {
 	}
 }
 
+// HandleCreateEnvironmentTag returns an MCP tool handler that creates environment tag.
 func (s *PortainerMCPServer) HandleCreateEnvironmentTag() server.ToolHandlerFunc {
 	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 		parser := toolgen.NewParameterParser(request)
@@ -50,6 +53,7 @@ func (s *PortainerMCPServer) HandleCreateEnvironmentTag() server.ToolHandlerFunc
 	}
 }
 
+// HandleDeleteEnvironmentTag returns an MCP tool handler that deletes environment tag.
 func (s *PortainerMCPServer) HandleDeleteEnvironmentTag() server.ToolHandlerFunc {
 	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 		parser := toolgen.NewParameterParser(request)

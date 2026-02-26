@@ -99,6 +99,7 @@ func (c *PortainerClient) UpdateUserRole(id int, role string) error {
 	return c.cli.UpdateUserRole(id, roleInt)
 }
 
+// convertRole convert role.
 func convertRole(role string) int64 {
 	switch role {
 	case models.UserRoleAdmin:

@@ -11,6 +11,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+// TestGetStacks verifies get stacks behavior.
 func TestGetStacks(t *testing.T) {
 	now := time.Now().Unix()
 	tests := []struct {
@@ -83,6 +84,7 @@ func TestGetStacks(t *testing.T) {
 	}
 }
 
+// TestGetStackFile verifies get stack file behavior.
 func TestGetStackFile(t *testing.T) {
 	tests := []struct {
 		name          string
@@ -126,6 +128,7 @@ func TestGetStackFile(t *testing.T) {
 	}
 }
 
+// TestCreateStack verifies create stack behavior.
 func TestCreateStack(t *testing.T) {
 	tests := []struct {
 		name                string
@@ -175,6 +178,7 @@ func TestCreateStack(t *testing.T) {
 	}
 }
 
+// TestUpdateStack verifies update stack behavior.
 func TestUpdateStack(t *testing.T) {
 	tests := []struct {
 		name                string

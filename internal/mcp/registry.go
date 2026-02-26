@@ -10,6 +10,7 @@ import (
 	"github.com/portainer/portainer-mcp/pkg/toolgen"
 )
 
+// AddRegistryFeatures registers the Docker registry management tools on the MCP server.
 func (s *PortainerMCPServer) AddRegistryFeatures() {
 	s.addToolIfExists(ToolListRegistries, s.HandleListRegistries())
 	s.addToolIfExists(ToolGetRegistry, s.HandleGetRegistry())
@@ -21,6 +22,7 @@ func (s *PortainerMCPServer) AddRegistryFeatures() {
 	}
 }
 
+// HandleListRegistries returns an MCP tool handler that lists registries.
 func (s *PortainerMCPServer) HandleListRegistries() server.ToolHandlerFunc {
 	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 		registries, err := s.cli.GetRegistries()
@@ -32,6 +34,7 @@ func (s *PortainerMCPServer) HandleListRegistries() server.ToolHandlerFunc {
 	}
 }
 
+// HandleGetRegistry returns an MCP tool handler that retrieves registry.
 func (s *PortainerMCPServer) HandleGetRegistry() server.ToolHandlerFunc {
 	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 		parser := toolgen.NewParameterParser(request)
@@ -53,6 +56,7 @@ func (s *PortainerMCPServer) HandleGetRegistry() server.ToolHandlerFunc {
 	}
 }
 
+// HandleCreateRegistry returns an MCP tool handler that creates registry.
 func (s *PortainerMCPServer) HandleCreateRegistry() server.ToolHandlerFunc {
 	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 		parser := toolgen.NewParameterParser(request)
@@ -101,6 +105,7 @@ func (s *PortainerMCPServer) HandleCreateRegistry() server.ToolHandlerFunc {
 	}
 }
 
+// HandleUpdateRegistry returns an MCP tool handler that updates registry.
 func (s *PortainerMCPServer) HandleUpdateRegistry() server.ToolHandlerFunc {
 	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 		parser := toolgen.NewParameterParser(request)
@@ -183,6 +188,7 @@ func (s *PortainerMCPServer) HandleUpdateRegistry() server.ToolHandlerFunc {
 	}
 }
 
+// HandleDeleteRegistry returns an MCP tool handler that deletes registry.
 func (s *PortainerMCPServer) HandleDeleteRegistry() server.ToolHandlerFunc {
 	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 		parser := toolgen.NewParameterParser(request)

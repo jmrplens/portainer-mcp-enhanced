@@ -9,6 +9,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+// TestGetSettings verifies get settings behavior.
 func TestGetSettings(t *testing.T) {
 	tests := []struct {
 		name          string

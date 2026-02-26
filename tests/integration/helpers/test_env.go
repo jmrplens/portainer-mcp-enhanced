@@ -1,3 +1,6 @@
+// Package helpers provides test environment setup utilities for integration tests.
+// It configures both the raw Portainer API client and MCP server instances
+// for comparative testing.
 package helpers
 
 import (

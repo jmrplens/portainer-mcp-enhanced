@@ -1,3 +1,6 @@
+// Package toolgen provides tool generation utilities for building MCP tool
+// definitions from YAML specifications. It handles parameter extraction,
+// type conversion, and tool definition construction.
 package toolgen
 
 import (

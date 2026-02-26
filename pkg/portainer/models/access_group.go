@@ -1,3 +1,7 @@
+// Package models defines the local data structures used by the MCP server.
+// These models are simplified representations of Portainer API resources,
+// containing only fields relevant to MCP operations. Each model type includes
+// a Convert function to transform from raw API models (client-api-go SDK).
 package models
 
 import (

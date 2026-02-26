@@ -8,6 +8,7 @@ import (
 	"github.com/portainer/portainer-mcp/pkg/toolgen"
 )
 
+// AddAuthFeatures registers the authentication management tools on the MCP server.
 func (s *PortainerMCPServer) AddAuthFeatures() {
 	s.addToolIfExists(ToolAuthenticate, s.HandleAuthenticateUser())
 
@@ -16,6 +17,7 @@ func (s *PortainerMCPServer) AddAuthFeatures() {
 	}
 }
 
+// HandleAuthenticateUser returns an MCP tool handler that authenticates user.
 func (s *PortainerMCPServer) HandleAuthenticateUser() server.ToolHandlerFunc {
 	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 		parser := toolgen.NewParameterParser(request)
@@ -39,6 +41,7 @@ func (s *PortainerMCPServer) HandleAuthenticateUser() server.ToolHandlerFunc {
 	}
 }
 
+// HandleLogout returns an MCP tool handler that logs out authentication.
 func (s *PortainerMCPServer) HandleLogout() server.ToolHandlerFunc {
 	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 		err := s.cli.Logout()

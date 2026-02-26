@@ -1,3 +1,8 @@
+// Package mcp implements the Portainer MCP server and all its tool handlers.
+// It provides the core server infrastructure, meta-tool routing, and individual
+// handlers for each Portainer resource domain (environments, stacks, users,
+// Docker, Kubernetes, etc.). The package bridges the MCP protocol with the
+// Portainer API client layer.
 package mcp
 
 import (
@@ -9,6 +14,7 @@ import (
 	"github.com/portainer/portainer-mcp/pkg/toolgen"
 )
 
+// AddAccessGroupFeatures registers the access group management tools on the MCP server.
 func (s *PortainerMCPServer) AddAccessGroupFeatures() {
 	s.addToolIfExists(ToolListAccessGroups, s.HandleGetAccessGroups())
 
@@ -22,6 +28,7 @@ func (s *PortainerMCPServer) AddAccessGroupFeatures() {
 	}
 }
 
+// HandleGetAccessGroups returns an MCP tool handler that retrieves access groups.
 func (s *PortainerMCPServer) HandleGetAccessGroups() server.ToolHandlerFunc {
 	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 		accessGroups, err := s.cli.GetAccessGroups()
@@ -33,6 +40,7 @@ func (s *PortainerMCPServer) HandleGetAccessGroups() server.ToolHandlerFunc {
 	}
 }
 
+// HandleCreateAccessGroup returns an MCP tool handler that creates access group.
 func (s *PortainerMCPServer) HandleCreateAccessGroup() server.ToolHandlerFunc {
 	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 		parser := toolgen.NewParameterParser(request)
@@ -59,6 +67,7 @@ func (s *PortainerMCPServer) HandleCreateAccessGroup() server.ToolHandlerFunc {
 	}
 }
 
+// HandleUpdateAccessGroupName returns an MCP tool handler that updates access group name.
 func (s *PortainerMCPServer) HandleUpdateAccessGroupName() server.ToolHandlerFunc {
 	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 		parser := toolgen.NewParameterParser(request)
@@ -85,6 +94,7 @@ func (s *PortainerMCPServer) HandleUpdateAccessGroupName() server.ToolHandlerFun
 	}
 }
 
+// HandleUpdateAccessGroupUserAccesses returns an MCP tool handler that updates access group user accesses.
 func (s *PortainerMCPServer) HandleUpdateAccessGroupUserAccesses() server.ToolHandlerFunc {
 	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 		parser := toolgen.NewParameterParser(request)
@@ -113,6 +123,7 @@ func (s *PortainerMCPServer) HandleUpdateAccessGroupUserAccesses() server.ToolHa
 	}
 }
 
+// HandleUpdateAccessGroupTeamAccesses returns an MCP tool handler that updates access group team accesses.
 func (s *PortainerMCPServer) HandleUpdateAccessGroupTeamAccesses() server.ToolHandlerFunc {
 	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 		parser := toolgen.NewParameterParser(request)
@@ -141,6 +152,7 @@ func (s *PortainerMCPServer) HandleUpdateAccessGroupTeamAccesses() server.ToolHa
 	}
 }
 
+// HandleAddEnvironmentToAccessGroup returns an MCP tool handler that registers environment to access group.
 func (s *PortainerMCPServer) HandleAddEnvironmentToAccessGroup() server.ToolHandlerFunc {
 	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 		parser := toolgen.NewParameterParser(request)
@@ -164,6 +176,7 @@ func (s *PortainerMCPServer) HandleAddEnvironmentToAccessGroup() server.ToolHand
 	}
 }
 
+// HandleRemoveEnvironmentFromAccessGroup returns an MCP tool handler that removes environment from access group.
 func (s *PortainerMCPServer) HandleRemoveEnvironmentFromAccessGroup() server.ToolHandlerFunc {
 	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 		parser := toolgen.NewParameterParser(request)

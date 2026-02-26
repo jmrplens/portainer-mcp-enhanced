@@ -8,6 +8,7 @@ import (
 	"github.com/portainer/portainer-mcp/pkg/toolgen"
 )
 
+// AddEnvironmentFeatures registers the environment (endpoint) management tools on the MCP server.
 func (s *PortainerMCPServer) AddEnvironmentFeatures() {
 	s.addToolIfExists(ToolListEnvironments, s.HandleGetEnvironments())
 	s.addToolIfExists(ToolGetEnvironment, s.HandleGetEnvironment())
@@ -22,6 +23,7 @@ func (s *PortainerMCPServer) AddEnvironmentFeatures() {
 	}
 }
 
+// HandleGetEnvironments returns an MCP tool handler that retrieves environments.
 func (s *PortainerMCPServer) HandleGetEnvironments() server.ToolHandlerFunc {
 	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 		environments, err := s.cli.GetEnvironments()
@@ -33,6 +35,7 @@ func (s *PortainerMCPServer) HandleGetEnvironments() server.ToolHandlerFunc {
 	}
 }
 
+// HandleGetEnvironment returns an MCP tool handler that retrieves environment.
 func (s *PortainerMCPServer) HandleGetEnvironment() server.ToolHandlerFunc {
 	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 		parser := toolgen.NewParameterParser(request)
@@ -54,6 +57,7 @@ func (s *PortainerMCPServer) HandleGetEnvironment() server.ToolHandlerFunc {
 	}
 }
 
+// HandleDeleteEnvironment returns an MCP tool handler that deletes environment.
 func (s *PortainerMCPServer) HandleDeleteEnvironment() server.ToolHandlerFunc {
 	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 		parser := toolgen.NewParameterParser(request)
@@ -75,6 +79,7 @@ func (s *PortainerMCPServer) HandleDeleteEnvironment() server.ToolHandlerFunc {
 	}
 }
 
+// HandleSnapshotEnvironment returns an MCP tool handler that triggers a snapshot of environment.
 func (s *PortainerMCPServer) HandleSnapshotEnvironment() server.ToolHandlerFunc {
 	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 		parser := toolgen.NewParameterParser(request)
@@ -96,6 +101,7 @@ func (s *PortainerMCPServer) HandleSnapshotEnvironment() server.ToolHandlerFunc 
 	}
 }
 
+// HandleSnapshotAllEnvironments returns an MCP tool handler that triggers a snapshot of all environments.
 func (s *PortainerMCPServer) HandleSnapshotAllEnvironments() server.ToolHandlerFunc {
 	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 		err := s.cli.SnapshotAllEnvironments()
@@ -107,6 +113,7 @@ func (s *PortainerMCPServer) HandleSnapshotAllEnvironments() server.ToolHandlerF
 	}
 }
 
+// HandleUpdateEnvironmentTags returns an MCP tool handler that updates environment tags.
 func (s *PortainerMCPServer) HandleUpdateEnvironmentTags() server.ToolHandlerFunc {
 	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 		parser := toolgen.NewParameterParser(request)
@@ -133,6 +140,7 @@ func (s *PortainerMCPServer) HandleUpdateEnvironmentTags() server.ToolHandlerFun
 	}
 }
 
+// HandleUpdateEnvironmentUserAccesses returns an MCP tool handler that updates environment user accesses.
 func (s *PortainerMCPServer) HandleUpdateEnvironmentUserAccesses() server.ToolHandlerFunc {
 	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 		parser := toolgen.NewParameterParser(request)
@@ -164,6 +172,7 @@ func (s *PortainerMCPServer) HandleUpdateEnvironmentUserAccesses() server.ToolHa
 	}
 }
 
+// HandleUpdateEnvironmentTeamAccesses returns an MCP tool handler that updates environment team accesses.
 func (s *PortainerMCPServer) HandleUpdateEnvironmentTeamAccesses() server.ToolHandlerFunc {
 	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 		parser := toolgen.NewParameterParser(request)

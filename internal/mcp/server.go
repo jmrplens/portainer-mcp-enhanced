@@ -27,7 +27,22 @@ const (
 	maxProxyResponseSize = 10 * 1024 * 1024
 )
 
-// PortainerClient defines the interface for the wrapper client used by the MCP server
+// PortainerClient defines the contract between the MCP server and the Portainer API
+// client wrapper. It abstracts all Portainer API interactions so that the MCP handlers
+// never communicate with the Portainer HTTP API directly.
+//
+// The interface covers the following resource domains:
+//   - Environments (endpoints): CRUD, snapshots, access control
+//   - Environment groups and access groups: grouping and permission management
+//   - Stacks: edge stacks and regular (non-edge) compose/swarm stacks
+//   - Users and teams: identity and team membership management
+//   - Settings: server, public, and SSL configuration
+//   - Templates: application templates and custom templates
+//   - Registries: container registry management
+//   - Docker and Kubernetes proxies: raw API pass-through to container engines
+//   - Tags, roles, webhooks, backups, edge jobs, Helm, auth, and system status
+//
+// Implementations must be safe for concurrent use by multiple MCP handler goroutines.
 type PortainerClient interface {
 	// Tag methods
 	GetEnvironmentTags() ([]models.EnvironmentTag, error)
@@ -179,8 +194,11 @@ type PortainerClient interface {
 	GetHelmReleaseHistory(environmentId int, name, namespace string) ([]models.HelmReleaseDetails, error)
 }
 
-// PortainerMCPServer is the main server that handles MCP protocol communication
-// with AI assistants and translates them into Portainer API calls.
+// PortainerMCPServer is the main MCP server that bridges AI assistants and the
+// Portainer API. It registers tool definitions loaded from a YAML file, routes
+// incoming MCP tool-call requests to the appropriate handlers, and communicates
+// with Portainer through the [PortainerClient] interface. The server supports
+// read-only mode to prevent modifications and listens on stdio for MCP messages.
 type PortainerMCPServer struct {
 	srv      *server.MCPServer
 	cli      PortainerClient
@@ -188,7 +206,8 @@ type PortainerMCPServer struct {
 	readOnly bool
 }
 
-// ServerOption is a function that configures the server
+// ServerOption is a functional option for configuring a [PortainerMCPServer].
+// Pass one or more options to [NewPortainerMCPServer] to customise behaviour.
 type ServerOption func(*serverOptions)
 
 // serverOptions contains all configurable options for the server

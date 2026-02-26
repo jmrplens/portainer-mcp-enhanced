@@ -9,6 +9,7 @@ import (
 	"github.com/portainer/portainer-mcp/pkg/toolgen"
 )
 
+// AddWebhookFeatures registers the webhook management tools on the MCP server.
 func (s *PortainerMCPServer) AddWebhookFeatures() {
 	s.addToolIfExists(ToolListWebhooks, s.HandleListWebhooks())
 
@@ -18,6 +19,7 @@ func (s *PortainerMCPServer) AddWebhookFeatures() {
 	}
 }
 
+// HandleListWebhooks returns an MCP tool handler that lists webhooks.
 func (s *PortainerMCPServer) HandleListWebhooks() server.ToolHandlerFunc {
 	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 		webhooks, err := s.cli.GetWebhooks()
@@ -29,6 +31,7 @@ func (s *PortainerMCPServer) HandleListWebhooks() server.ToolHandlerFunc {
 	}
 }
 
+// HandleCreateWebhook returns an MCP tool handler that creates webhook.
 func (s *PortainerMCPServer) HandleCreateWebhook() server.ToolHandlerFunc {
 	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 		parser := toolgen.NewParameterParser(request)
@@ -63,6 +66,7 @@ func (s *PortainerMCPServer) HandleCreateWebhook() server.ToolHandlerFunc {
 	}
 }
 
+// HandleDeleteWebhook returns an MCP tool handler that deletes webhook.
 func (s *PortainerMCPServer) HandleDeleteWebhook() server.ToolHandlerFunc {
 	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 		parser := toolgen.NewParameterParser(request)

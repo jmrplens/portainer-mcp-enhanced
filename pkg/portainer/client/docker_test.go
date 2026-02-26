@@ -13,6 +13,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+// TestProxyDockerRequest verifies proxy docker request behavior.
 func TestProxyDockerRequest(t *testing.T) {
 	tests := []struct {
 		name             string

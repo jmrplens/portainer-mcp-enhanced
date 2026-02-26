@@ -9,6 +9,7 @@ import (
 	"github.com/portainer/portainer-mcp/pkg/toolgen"
 )
 
+// AddTeamFeatures registers the team management tools on the MCP server.
 func (s *PortainerMCPServer) AddTeamFeatures() {
 	s.addToolIfExists(ToolListTeams, s.HandleGetTeams())
 	s.addToolIfExists(ToolGetTeam, s.HandleGetTeam())
@@ -21,6 +22,7 @@ func (s *PortainerMCPServer) AddTeamFeatures() {
 	}
 }
 
+// HandleCreateTeam returns an MCP tool handler that creates team.
 func (s *PortainerMCPServer) HandleCreateTeam() server.ToolHandlerFunc {
 	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 		parser := toolgen.NewParameterParser(request)
@@ -42,6 +44,7 @@ func (s *PortainerMCPServer) HandleCreateTeam() server.ToolHandlerFunc {
 	}
 }
 
+// HandleGetTeams returns an MCP tool handler that retrieves teams.
 func (s *PortainerMCPServer) HandleGetTeams() server.ToolHandlerFunc {
 	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 		teams, err := s.cli.GetTeams()
@@ -53,6 +56,7 @@ func (s *PortainerMCPServer) HandleGetTeams() server.ToolHandlerFunc {
 	}
 }
 
+// HandleGetTeam returns an MCP tool handler that retrieves team.
 func (s *PortainerMCPServer) HandleGetTeam() server.ToolHandlerFunc {
 	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 		parser := toolgen.NewParameterParser(request)
@@ -71,6 +75,7 @@ func (s *PortainerMCPServer) HandleGetTeam() server.ToolHandlerFunc {
 	}
 }
 
+// HandleDeleteTeam returns an MCP tool handler that deletes team.
 func (s *PortainerMCPServer) HandleDeleteTeam() server.ToolHandlerFunc {
 	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 		parser := toolgen.NewParameterParser(request)
@@ -89,6 +94,7 @@ func (s *PortainerMCPServer) HandleDeleteTeam() server.ToolHandlerFunc {
 	}
 }
 
+// HandleUpdateTeamName returns an MCP tool handler that updates team name.
 func (s *PortainerMCPServer) HandleUpdateTeamName() server.ToolHandlerFunc {
 	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 		parser := toolgen.NewParameterParser(request)
@@ -115,6 +121,7 @@ func (s *PortainerMCPServer) HandleUpdateTeamName() server.ToolHandlerFunc {
 	}
 }
 
+// HandleUpdateTeamMembers returns an MCP tool handler that updates team members.
 func (s *PortainerMCPServer) HandleUpdateTeamMembers() server.ToolHandlerFunc {
 	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 		parser := toolgen.NewParameterParser(request)

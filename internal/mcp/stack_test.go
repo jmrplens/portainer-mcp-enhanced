@@ -11,6 +11,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+// TestHandleGetStacks verifies the HandleGetStacks MCP tool handler.
 func TestHandleGetStacks(t *testing.T) {
 	tests := []struct {
 		name        string
@@ -76,6 +77,7 @@ func TestHandleGetStacks(t *testing.T) {
 	}
 }
 
+// TestHandleGetStackFile verifies the HandleGetStackFile MCP tool handler.
 func TestHandleGetStackFile(t *testing.T) {
 	tests := []struct {
 		name        string
@@ -163,6 +165,7 @@ func TestHandleGetStackFile(t *testing.T) {
 	}
 }
 
+// TestHandleCreateStack verifies the HandleCreateStack MCP tool handler.
 func TestHandleCreateStack(t *testing.T) {
 	tests := []struct {
 		name             string
@@ -295,6 +298,7 @@ func TestHandleCreateStack(t *testing.T) {
 	}
 }
 
+// TestHandleUpdateStack verifies the HandleUpdateStack MCP tool handler.
 func TestHandleUpdateStack(t *testing.T) {
 	tests := []struct {
 		name             string

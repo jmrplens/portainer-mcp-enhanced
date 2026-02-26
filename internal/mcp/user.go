@@ -9,6 +9,7 @@ import (
 	"github.com/portainer/portainer-mcp/pkg/toolgen"
 )
 
+// AddUserFeatures registers the user management tools on the MCP server.
 func (s *PortainerMCPServer) AddUserFeatures() {
 	s.addToolIfExists(ToolListUsers, s.HandleGetUsers())
 	s.addToolIfExists(ToolGetUser, s.HandleGetUser())
@@ -20,6 +21,7 @@ func (s *PortainerMCPServer) AddUserFeatures() {
 	}
 }
 
+// HandleGetUsers returns an MCP tool handler that retrieves users.
 func (s *PortainerMCPServer) HandleGetUsers() server.ToolHandlerFunc {
 	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 		users, err := s.cli.GetUsers()
@@ -31,6 +33,7 @@ func (s *PortainerMCPServer) HandleGetUsers() server.ToolHandlerFunc {
 	}
 }
 
+// HandleUpdateUserRole returns an MCP tool handler that updates user role.
 func (s *PortainerMCPServer) HandleUpdateUserRole() server.ToolHandlerFunc {
 	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 		parser := toolgen.NewParameterParser(request)
@@ -61,6 +64,7 @@ func (s *PortainerMCPServer) HandleUpdateUserRole() server.ToolHandlerFunc {
 	}
 }
 
+// HandleCreateUser returns an MCP tool handler that creates user.
 func (s *PortainerMCPServer) HandleCreateUser() server.ToolHandlerFunc {
 	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 		parser := toolgen.NewParameterParser(request)
@@ -93,6 +97,7 @@ func (s *PortainerMCPServer) HandleCreateUser() server.ToolHandlerFunc {
 	}
 }
 
+// HandleGetUser returns an MCP tool handler that retrieves user.
 func (s *PortainerMCPServer) HandleGetUser() server.ToolHandlerFunc {
 	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 		parser := toolgen.NewParameterParser(request)
@@ -114,6 +119,7 @@ func (s *PortainerMCPServer) HandleGetUser() server.ToolHandlerFunc {
 	}
 }
 
+// HandleDeleteUser returns an MCP tool handler that deletes user.
 func (s *PortainerMCPServer) HandleDeleteUser() server.ToolHandlerFunc {
 	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 		parser := toolgen.NewParameterParser(request)

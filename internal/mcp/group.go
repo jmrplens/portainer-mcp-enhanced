@@ -9,6 +9,7 @@ import (
 	"github.com/portainer/portainer-mcp/pkg/toolgen"
 )
 
+// AddEnvironmentGroupFeatures registers the environment group management tools on the MCP server.
 func (s *PortainerMCPServer) AddEnvironmentGroupFeatures() {
 	s.addToolIfExists(ToolListEnvironmentGroups, s.HandleGetEnvironmentGroups())
 
@@ -20,6 +21,7 @@ func (s *PortainerMCPServer) AddEnvironmentGroupFeatures() {
 	}
 }
 
+// HandleGetEnvironmentGroups returns an MCP tool handler that retrieves environment groups.
 func (s *PortainerMCPServer) HandleGetEnvironmentGroups() server.ToolHandlerFunc {
 	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 		edgeGroups, err := s.cli.GetEnvironmentGroups()
@@ -31,6 +33,7 @@ func (s *PortainerMCPServer) HandleGetEnvironmentGroups() server.ToolHandlerFunc
 	}
 }
 
+// HandleCreateEnvironmentGroup returns an MCP tool handler that creates environment group.
 func (s *PortainerMCPServer) HandleCreateEnvironmentGroup() server.ToolHandlerFunc {
 	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 		parser := toolgen.NewParameterParser(request)
@@ -57,6 +60,7 @@ func (s *PortainerMCPServer) HandleCreateEnvironmentGroup() server.ToolHandlerFu
 	}
 }
 
+// HandleUpdateEnvironmentGroupName returns an MCP tool handler that updates environment group name.
 func (s *PortainerMCPServer) HandleUpdateEnvironmentGroupName() server.ToolHandlerFunc {
 	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 		parser := toolgen.NewParameterParser(request)
@@ -83,6 +87,7 @@ func (s *PortainerMCPServer) HandleUpdateEnvironmentGroupName() server.ToolHandl
 	}
 }
 
+// HandleUpdateEnvironmentGroupEnvironments returns an MCP tool handler that updates environment group environments.
 func (s *PortainerMCPServer) HandleUpdateEnvironmentGroupEnvironments() server.ToolHandlerFunc {
 	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 		parser := toolgen.NewParameterParser(request)
@@ -106,6 +111,7 @@ func (s *PortainerMCPServer) HandleUpdateEnvironmentGroupEnvironments() server.T
 	}
 }
 
+// HandleUpdateEnvironmentGroupTags returns an MCP tool handler that updates environment group tags.
 func (s *PortainerMCPServer) HandleUpdateEnvironmentGroupTags() server.ToolHandlerFunc {
 	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 		parser := toolgen.NewParameterParser(request)

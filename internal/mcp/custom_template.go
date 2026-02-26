@@ -9,6 +9,7 @@ import (
 	"github.com/portainer/portainer-mcp/pkg/toolgen"
 )
 
+// AddCustomTemplateFeatures registers the custom template management tools on the MCP server.
 func (s *PortainerMCPServer) AddCustomTemplateFeatures() {
 	s.addToolIfExists(ToolListCustomTemplates, s.HandleListCustomTemplates())
 	s.addToolIfExists(ToolGetCustomTemplate, s.HandleGetCustomTemplate())
@@ -20,6 +21,7 @@ func (s *PortainerMCPServer) AddCustomTemplateFeatures() {
 	}
 }
 
+// HandleListCustomTemplates returns an MCP tool handler that lists custom templates.
 func (s *PortainerMCPServer) HandleListCustomTemplates() server.ToolHandlerFunc {
 	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 		templates, err := s.cli.GetCustomTemplates()
@@ -31,6 +33,7 @@ func (s *PortainerMCPServer) HandleListCustomTemplates() server.ToolHandlerFunc 
 	}
 }
 
+// HandleGetCustomTemplate returns an MCP tool handler that retrieves custom template.
 func (s *PortainerMCPServer) HandleGetCustomTemplate() server.ToolHandlerFunc {
 	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 		parser := toolgen.NewParameterParser(request)
@@ -52,6 +55,7 @@ func (s *PortainerMCPServer) HandleGetCustomTemplate() server.ToolHandlerFunc {
 	}
 }
 
+// HandleGetCustomTemplateFile returns an MCP tool handler that retrieves custom template file.
 func (s *PortainerMCPServer) HandleGetCustomTemplateFile() server.ToolHandlerFunc {
 	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 		parser := toolgen.NewParameterParser(request)
@@ -73,6 +77,7 @@ func (s *PortainerMCPServer) HandleGetCustomTemplateFile() server.ToolHandlerFun
 	}
 }
 
+// HandleCreateCustomTemplate returns an MCP tool handler that creates custom template.
 func (s *PortainerMCPServer) HandleCreateCustomTemplate() server.ToolHandlerFunc {
 	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 		parser := toolgen.NewParameterParser(request)
@@ -118,6 +123,7 @@ func (s *PortainerMCPServer) HandleCreateCustomTemplate() server.ToolHandlerFunc
 	}
 }
 
+// HandleDeleteCustomTemplate returns an MCP tool handler that deletes custom template.
 func (s *PortainerMCPServer) HandleDeleteCustomTemplate() server.ToolHandlerFunc {
 	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 		parser := toolgen.NewParameterParser(request)

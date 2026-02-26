@@ -9,6 +9,7 @@ import (
 	"github.com/portainer/portainer-mcp/pkg/toolgen"
 )
 
+// AddStackFeatures registers the stack management tools on the MCP server.
 func (s *PortainerMCPServer) AddStackFeatures() {
 	s.addToolIfExists(ToolListStacks, s.HandleGetStacks())
 	s.addToolIfExists(ToolListRegularStacks, s.HandleListRegularStacks())
@@ -28,6 +29,7 @@ func (s *PortainerMCPServer) AddStackFeatures() {
 	}
 }
 
+// HandleGetStacks returns an MCP tool handler that retrieves stacks.
 func (s *PortainerMCPServer) HandleGetStacks() server.ToolHandlerFunc {
 	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 		stacks, err := s.cli.GetStacks()
@@ -39,6 +41,7 @@ func (s *PortainerMCPServer) HandleGetStacks() server.ToolHandlerFunc {
 	}
 }
 
+// HandleListRegularStacks returns an MCP tool handler that lists regular stacks.
 func (s *PortainerMCPServer) HandleListRegularStacks() server.ToolHandlerFunc {
 	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 		stacks, err := s.cli.GetRegularStacks()
@@ -50,6 +53,7 @@ func (s *PortainerMCPServer) HandleListRegularStacks() server.ToolHandlerFunc {
 	}
 }
 
+// HandleGetStackFile returns an MCP tool handler that retrieves stack file.
 func (s *PortainerMCPServer) HandleGetStackFile() server.ToolHandlerFunc {
 	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 		parser := toolgen.NewParameterParser(request)
@@ -71,6 +75,7 @@ func (s *PortainerMCPServer) HandleGetStackFile() server.ToolHandlerFunc {
 	}
 }
 
+// HandleCreateStack returns an MCP tool handler that creates stack.
 func (s *PortainerMCPServer) HandleCreateStack() server.ToolHandlerFunc {
 	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 		parser := toolgen.NewParameterParser(request)
@@ -105,6 +110,7 @@ func (s *PortainerMCPServer) HandleCreateStack() server.ToolHandlerFunc {
 	}
 }
 
+// HandleUpdateStack returns an MCP tool handler that updates stack.
 func (s *PortainerMCPServer) HandleUpdateStack() server.ToolHandlerFunc {
 	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 		parser := toolgen.NewParameterParser(request)
@@ -139,6 +145,7 @@ func (s *PortainerMCPServer) HandleUpdateStack() server.ToolHandlerFunc {
 	}
 }
 
+// HandleInspectStack returns an MCP tool handler that retrieves detailed information about stack.
 func (s *PortainerMCPServer) HandleInspectStack() server.ToolHandlerFunc {
 	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 		parser := toolgen.NewParameterParser(request)
@@ -160,6 +167,7 @@ func (s *PortainerMCPServer) HandleInspectStack() server.ToolHandlerFunc {
 	}
 }
 
+// HandleDeleteStack returns an MCP tool handler that deletes stack.
 func (s *PortainerMCPServer) HandleDeleteStack() server.ToolHandlerFunc {
 	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 		parser := toolgen.NewParameterParser(request)
@@ -194,6 +202,7 @@ func (s *PortainerMCPServer) HandleDeleteStack() server.ToolHandlerFunc {
 	}
 }
 
+// HandleInspectStackFile returns an MCP tool handler that retrieves detailed information about stack file.
 func (s *PortainerMCPServer) HandleInspectStackFile() server.ToolHandlerFunc {
 	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 		parser := toolgen.NewParameterParser(request)
@@ -215,6 +224,7 @@ func (s *PortainerMCPServer) HandleInspectStackFile() server.ToolHandlerFunc {
 	}
 }
 
+// HandleUpdateStackGit returns an MCP tool handler that updates stack git.
 func (s *PortainerMCPServer) HandleUpdateStackGit() server.ToolHandlerFunc {
 	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 		parser := toolgen.NewParameterParser(request)
@@ -254,6 +264,7 @@ func (s *PortainerMCPServer) HandleUpdateStackGit() server.ToolHandlerFunc {
 	}
 }
 
+// HandleRedeployStackGit returns an MCP tool handler that redeploys stack git.
 func (s *PortainerMCPServer) HandleRedeployStackGit() server.ToolHandlerFunc {
 	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 		parser := toolgen.NewParameterParser(request)
@@ -293,6 +304,7 @@ func (s *PortainerMCPServer) HandleRedeployStackGit() server.ToolHandlerFunc {
 	}
 }
 
+// HandleStartStack returns an MCP tool handler that starts stack.
 func (s *PortainerMCPServer) HandleStartStack() server.ToolHandlerFunc {
 	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 		parser := toolgen.NewParameterParser(request)
@@ -322,6 +334,7 @@ func (s *PortainerMCPServer) HandleStartStack() server.ToolHandlerFunc {
 	}
 }
 
+// HandleStopStack returns an MCP tool handler that stops stack.
 func (s *PortainerMCPServer) HandleStopStack() server.ToolHandlerFunc {
 	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 		parser := toolgen.NewParameterParser(request)
@@ -351,6 +364,7 @@ func (s *PortainerMCPServer) HandleStopStack() server.ToolHandlerFunc {
 	}
 }
 
+// HandleMigrateStack returns an MCP tool handler that migrates stack.
 func (s *PortainerMCPServer) HandleMigrateStack() server.ToolHandlerFunc {
 	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 		parser := toolgen.NewParameterParser(request)

@@ -39,6 +39,7 @@ export default defineConfig({
           items: [
             { label: "Meta-Tools", slug: "guides/meta-tools" },
             { label: "Security", slug: "guides/security" },
+            { label: "Troubleshooting & FAQ", slug: "guides/troubleshooting" },
           ],
         },
         {

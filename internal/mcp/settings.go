@@ -9,6 +9,7 @@ import (
 	"github.com/portainer/portainer-mcp/pkg/toolgen"
 )
 
+// AddSettingsFeatures registers the Portainer settings management tools on the MCP server.
 func (s *PortainerMCPServer) AddSettingsFeatures() {
 	s.addToolIfExists(ToolGetSettings, s.HandleGetSettings())
 	s.addToolIfExists(ToolGetPublicSettings, s.HandleGetPublicSettings())
@@ -18,6 +19,7 @@ func (s *PortainerMCPServer) AddSettingsFeatures() {
 	}
 }
 
+// HandleGetSettings returns an MCP tool handler that retrieves settings.
 func (s *PortainerMCPServer) HandleGetSettings() server.ToolHandlerFunc {
 	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 		settings, err := s.cli.GetSettings()

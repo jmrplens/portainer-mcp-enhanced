@@ -13,6 +13,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+// TestProxyKubernetesRequest verifies proxy kubernetes request behavior.
 func TestProxyKubernetesRequest(t *testing.T) {
 	tests := []struct {
 		name             string

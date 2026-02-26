@@ -16,6 +16,7 @@ func newTestParser(args map[string]any) *ParameterParser {
 	})
 }
 
+// TestGetString verifies get string behavior.
 func TestGetString(t *testing.T) {
 	tests := []struct {
 		name     string
@@ -82,6 +83,7 @@ func TestGetString(t *testing.T) {
 	}
 }
 
+// TestGetNumber verifies get number behavior.
 func TestGetNumber(t *testing.T) {
 	tests := []struct {
 		name     string
@@ -148,6 +150,7 @@ func TestGetNumber(t *testing.T) {
 	}
 }
 
+// TestGetBoolean verifies get boolean behavior.
 func TestGetBoolean(t *testing.T) {
 	tests := []struct {
 		name     string
@@ -222,6 +225,7 @@ func TestGetBoolean(t *testing.T) {
 	}
 }
 
+// TestGetArrayOfObjects verifies get array of objects behavior.
 func TestGetArrayOfObjects(t *testing.T) {
 	tests := []struct {
 		name     string
@@ -294,6 +298,7 @@ func TestGetArrayOfObjects(t *testing.T) {
 	}
 }
 
+// TestParseArrayOfIntegers verifies parse array of integers behavior.
 func TestParseArrayOfIntegers(t *testing.T) {
 	tests := []struct {
 		name    string
@@ -386,6 +391,7 @@ func TestParseArrayOfIntegers(t *testing.T) {
 	}
 }
 
+// TestGetInt verifies get int behavior.
 func TestGetInt(t *testing.T) {
 	tests := []struct {
 		name     string
@@ -500,6 +506,7 @@ func TestGetInt(t *testing.T) {
 	}
 }
 
+// TestGetArrayOfIntegers verifies get array of integers behavior.
 func TestGetArrayOfIntegers(t *testing.T) {
 	tests := []struct {
 		name     string

@@ -5,6 +5,7 @@ import (
 	"testing"
 )
 
+// TestParseAccessMap verifies parse access map behavior.
 func TestParseAccessMap(t *testing.T) {
 	tests := []struct {
 		name    string
@@ -126,6 +127,7 @@ func TestParseAccessMap(t *testing.T) {
 	}
 }
 
+// TestIsValidHTTPMethod verifies is valid h t t p method behavior.
 func TestIsValidHTTPMethod(t *testing.T) {
 	tests := []struct {
 		name   string
@@ -154,6 +156,7 @@ func TestIsValidHTTPMethod(t *testing.T) {
 	}
 }
 
+// TestParseKeyValueMap verifies parse key value map behavior.
 func TestParseKeyValueMap(t *testing.T) {
 	tests := []struct {
 		name    string

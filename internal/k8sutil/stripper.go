@@ -1,3 +1,6 @@
+// Package k8sutil provides utilities for processing Kubernetes API responses.
+// It includes functions to strip verbose metadata fields (such as managedFields)
+// from JSON payloads to reduce response size.
 package k8sutil
 
 import (

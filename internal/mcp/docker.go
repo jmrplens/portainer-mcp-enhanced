@@ -12,6 +12,7 @@ import (
 	"github.com/portainer/portainer-mcp/pkg/toolgen"
 )
 
+// AddDockerProxyFeatures registers the Docker proxy management tools on the MCP server.
 func (s *PortainerMCPServer) AddDockerProxyFeatures() {
 	s.addToolIfExists(ToolGetDockerDashboard, s.HandleGetDockerDashboard())
 
@@ -107,6 +108,7 @@ func (s *PortainerMCPServer) HandleDockerProxy() server.ToolHandlerFunc {
 	}
 }
 
+// HandleGetDockerDashboard returns an MCP tool handler that retrieves docker dashboard.
 func (s *PortainerMCPServer) HandleGetDockerDashboard() server.ToolHandlerFunc {
 	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 		parser := toolgen.NewParameterParser(request)

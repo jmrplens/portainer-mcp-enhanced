@@ -8,6 +8,7 @@ import (
 	"github.com/portainer/portainer-mcp/pkg/toolgen"
 )
 
+// AddHelmFeatures registers the Helm chart and release management tools on the MCP server.
 func (s *PortainerMCPServer) AddHelmFeatures() {
 	s.addToolIfExists(ToolListHelmRepositories, s.HandleListHelmRepositories())
 	s.addToolIfExists(ToolSearchHelmCharts, s.HandleSearchHelmCharts())
@@ -22,6 +23,7 @@ func (s *PortainerMCPServer) AddHelmFeatures() {
 	}
 }
 
+// HandleListHelmRepositories returns an MCP tool handler that lists helm repositories.
 func (s *PortainerMCPServer) HandleListHelmRepositories() server.ToolHandlerFunc {
 	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 		parser := toolgen.NewParameterParser(request)
@@ -43,6 +45,7 @@ func (s *PortainerMCPServer) HandleListHelmRepositories() server.ToolHandlerFunc
 	}
 }
 
+// HandleAddHelmRepository returns an MCP tool handler that registers helm repository.
 func (s *PortainerMCPServer) HandleAddHelmRepository() server.ToolHandlerFunc {
 	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 		parser := toolgen.NewParameterParser(request)
@@ -73,6 +76,7 @@ func (s *PortainerMCPServer) HandleAddHelmRepository() server.ToolHandlerFunc {
 	}
 }
 
+// HandleRemoveHelmRepository returns an MCP tool handler that removes helm repository.
 func (s *PortainerMCPServer) HandleRemoveHelmRepository() server.ToolHandlerFunc {
 	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 		parser := toolgen.NewParameterParser(request)
@@ -102,6 +106,7 @@ func (s *PortainerMCPServer) HandleRemoveHelmRepository() server.ToolHandlerFunc
 	}
 }
 
+// HandleSearchHelmCharts returns an MCP tool handler that searches for helm charts.
 func (s *PortainerMCPServer) HandleSearchHelmCharts() server.ToolHandlerFunc {
 	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 		parser := toolgen.NewParameterParser(request)
@@ -129,6 +134,7 @@ func (s *PortainerMCPServer) HandleSearchHelmCharts() server.ToolHandlerFunc {
 	}
 }
 
+// HandleInstallHelmChart returns an MCP tool handler that installs helm chart.
 func (s *PortainerMCPServer) HandleInstallHelmChart() server.ToolHandlerFunc {
 	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 		parser := toolgen.NewParameterParser(request)
@@ -184,6 +190,7 @@ func (s *PortainerMCPServer) HandleInstallHelmChart() server.ToolHandlerFunc {
 	}
 }
 
+// HandleListHelmReleases returns an MCP tool handler that lists helm releases.
 func (s *PortainerMCPServer) HandleListHelmReleases() server.ToolHandlerFunc {
 	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 		parser := toolgen.NewParameterParser(request)
@@ -220,6 +227,7 @@ func (s *PortainerMCPServer) HandleListHelmReleases() server.ToolHandlerFunc {
 	}
 }
 
+// HandleDeleteHelmRelease returns an MCP tool handler that deletes helm release.
 func (s *PortainerMCPServer) HandleDeleteHelmRelease() server.ToolHandlerFunc {
 	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 		parser := toolgen.NewParameterParser(request)
@@ -251,6 +259,7 @@ func (s *PortainerMCPServer) HandleDeleteHelmRelease() server.ToolHandlerFunc {
 	}
 }
 
+// HandleGetHelmReleaseHistory returns an MCP tool handler that retrieves helm release history.
 func (s *PortainerMCPServer) HandleGetHelmReleaseHistory() server.ToolHandlerFunc {
 	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 		parser := toolgen.NewParameterParser(request)

@@ -1,3 +1,6 @@
+// Package main implements the portainer-mcp CLI application.
+// It provides a Model Context Protocol (MCP) server that exposes
+// Portainer container management capabilities as MCP tools.
 package main
 
 import (
@@ -8,12 +11,16 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
+// defaultToolsPath is the default file path for the tools YAML configuration.
 const defaultToolsPath = "tools.yaml"
 
 var (
-	Version   string
+	// Version is the version of the portainer-mcp application, set at build time.
+	Version string
+	// BuildDate is the date the portainer-mcp application was built, set at build time.
 	BuildDate string
-	Commit    string
+	// Commit is the git commit hash of the portainer-mcp application, set at build time.
+	Commit string
 )
 
 func main() {
