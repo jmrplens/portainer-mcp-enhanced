@@ -1,12 +1,23 @@
-# Portainer MCP Enhanced
+<div align="center">
 
-[![Go Report Card](https://goreportcard.com/badge/github.com/jmrplens/portainer-mcp-enhanced)](https://goreportcard.com/report/github.com/jmrplens/portainer-mcp-enhanced)
+# Portainer MCP Server
 
-> **Community-enhanced fork of [portainer/portainer-mcp](https://github.com/portainer/portainer-mcp) with comprehensive API coverage.**
+**Manage your entire Portainer infrastructure through AI assistants using the Model Context Protocol**
 
-Portainer MCP Enhanced connects your AI assistant directly to your Portainer environments with **98 tools** covering the full Portainer API surface — compared to ~25 tools in the official version.
+[![Go Report Card](https://goreportcard.com/badge/github.com/portainer/portainer-mcp)](https://goreportcard.com/report/github.com/portainer/portainer-mcp)
+[![codecov](https://codecov.io/gh/portainer/portainer-mcp/graph/badge.svg?token=NHTQ5FIPFX)](https://codecov.io/gh/portainer/portainer-mcp)
+![Go Version](https://img.shields.io/github/go-mod/go-version/portainer/portainer-mcp)
+![License](https://img.shields.io/github/license/portainer/portainer-mcp)
+![Portainer](https://img.shields.io/badge/Portainer-2.31.2-blue)
+![MCP Tools](https://img.shields.io/badge/MCP_Tools-98-green)
 
-Manage stacks, users, teams, registries, templates, environments, edge computing, Kubernetes, Helm, backups, settings, and more — all through natural language via your AI assistant.
+[Quickstart](#quickstart) · [Tools Reference](#tools-reference) · [Configuration](#configuration) · [Architecture](#architecture) · [Contributing](CONTRIBUTING.md)
+
+</div>
+
+---
+
+A [Model Context Protocol (MCP)](https://modelcontextprotocol.io/introduction) server that connects AI assistants to [Portainer](https://www.portainer.io/) — exposing **98 tools** covering the complete Portainer API. Manage environments, stacks, users, teams, registries, Kubernetes, Helm, Docker, edge computing, backups, and more through natural language.
 
 <details open>
 <summary><b>🖥️ System & Docker Dashboard</b></summary>
@@ -32,80 +43,30 @@ Manage stacks, users, teams, registries, templates, environments, edge computing
 ![Backup & Docker Proxy demo](docs/demo-4-backup-proxy.webp)
 </details>
 
-## Overview
+## Quickstart
 
-This is a [Model Context Protocol (MCP)](https://modelcontextprotocol.io/introduction) server for Portainer. MCP standardizes how AI models interact with external tools and data sources.
+### 1. Download
 
-This enhanced fork extends the official implementation to expose the **full Portainer API** through MCP tools, enabling AI assistants to perform any operation available in the Portainer web interface and beyond.
-
-### Key Differences from Official Version
-
-| Feature | Official | Enhanced |
-|---------|----------|----------|
-| Total tools | ~25 | **98** |
-| Stack management | Edge stacks only | Edge + Regular + Git + Migrate |
-| User management | List, update role | Full CRUD |
-| Team management | List, create, update | Full CRUD |
-| Registries | ❌ | Full CRUD |
-| Custom templates | ❌ | Full CRUD |
-| Webhooks | ❌ | List, create, delete |
-| Backup/Restore | ❌ | Full (local + S3) |
-| Settings management | Read only | Read + Update |
-| SSL management | ❌ | Read + Update |
-| Edge jobs | ❌ | Full CRUD |
-| Edge update schedules | ❌ | List |
-| Kubernetes dashboard | ❌ | Dashboard, namespaces, config |
-| Docker dashboard | ❌ | Full dashboard data |
-| Helm management | ❌ | Repos, charts, releases |
-| Auth | ❌ | Login, logout |
-| Roles | ❌ | List |
-| App templates | ❌ | List, get file |
-| MOTD | ❌ | Read |
-| System status | ❌ | Status info |
-| Environment snapshots | ❌ | Single + batch |
-| Environment delete | ❌ | Delete |
-| Tag delete | ❌ | Delete |
-
-> [!NOTE]
-> This fork is based on the official v0.6.0 release and maintains full backward compatibility. All original tools work identically.
-
-## Installation
-
-### Download Pre-built Binaries
-
-Download from the [Releases Page](https://github.com/jmrplens/portainer-mcp-enhanced/releases/latest) for Linux (amd64, arm64) and macOS (arm64).
-
-### Build from Source
+Grab the latest binary from [Releases](https://github.com/portainer/portainer-mcp/releases/latest) for your platform (Linux amd64/arm64, macOS arm64), or build from source:
 
 ```bash
-git clone https://github.com/jmrplens/portainer-mcp-enhanced.git
-cd portainer-mcp-enhanced
+git clone https://github.com/portainer/portainer-mcp.git
+cd portainer-mcp
 make build
+# Binary: dist/portainer-mcp
 ```
 
-The binary will be in `dist/portainer-mcp-<platform>-<arch>`.
+### 2. Get a Portainer API Token
 
-### Go Install
+1. Log in to your Portainer instance → **My Account** → **API Keys**
+2. Create a new key and copy the token
 
-```bash
-go install github.com/jmrplens/portainer-mcp-enhanced/cmd/portainer-mcp@latest
-```
+### 3. Configure your AI assistant
 
-## Configuration
+<details open>
+<summary><b>Claude Desktop</b></summary>
 
-### Getting a Portainer API Token
-
-1. Log in to your Portainer instance
-2. Click on your username in the top-right corner
-3. Select **My Account**
-4. Scroll to **API Keys** and create a new key
-5. Copy the generated token
-
-### MCP Client Configuration
-
-#### Claude Desktop / Cursor
-
-Add to your MCP settings configuration file:
+Edit `~/Library/Application Support/Claude/claude_desktop_config.json` (macOS) or `%APPDATA%\Claude\claude_desktop_config.json` (Windows):
 
 ```json
 {
@@ -113,17 +74,19 @@ Add to your MCP settings configuration file:
     "portainer": {
       "command": "/path/to/portainer-mcp",
       "args": [
-        "--server-url", "https://your-portainer-instance:9443",
-        "--api-token", "ptr_your_api_token_here"
+        "-server", "https://your-portainer:9443",
+        "-token", "ptr_your_api_token"
       ]
     }
   }
 }
 ```
+</details>
 
-#### VS Code (GitHub Copilot)
+<details>
+<summary><b>VS Code (GitHub Copilot)</b></summary>
 
-Add to `.vscode/mcp.json`:
+Create `.vscode/mcp.json` in your workspace:
 
 ```json
 {
@@ -132,320 +95,384 @@ Add to `.vscode/mcp.json`:
       "type": "stdio",
       "command": "/path/to/portainer-mcp",
       "args": [
-        "--server-url", "https://your-portainer-instance:9443",
-        "--api-token", "ptr_your_api_token_here"
+        "-server", "https://your-portainer:9443",
+        "-token", "ptr_your_api_token"
       ]
     }
   }
 }
 ```
+</details>
+
+<details>
+<summary><b>Cursor</b></summary>
+
+Go to **Cursor Settings → MCP** and add:
+
+```json
+{
+  "mcpServers": {
+    "portainer": {
+      "command": "/path/to/portainer-mcp",
+      "args": [
+        "-server", "https://your-portainer:9443",
+        "-token", "ptr_your_api_token"
+      ]
+    }
+  }
+}
+```
+</details>
+
+### 4. Start asking
+
+> "List all environments and their status"
+> "Create a new nginx stack from this compose file"
+> "Show me the Kubernetes dashboard for environment 3"
+
+## Configuration
 
 ### Command-Line Flags
 
-| Flag | Description | Required |
-|------|-------------|----------|
-| `--server-url` | Portainer server URL (e.g., `https://portainer:9443`) | Yes |
-| `--api-token` | Portainer API token | Yes |
-| `--read-only` | Enable read-only mode (disables all write/delete operations) | No |
-| `--disable-version-check` | Skip Portainer version compatibility check | No |
+| Flag | Description | Required | Default |
+|------|-------------|----------|---------|
+| `-server` | Portainer server URL | **Yes** | — |
+| `-token` | Portainer API token | **Yes** | — |
+| `-tools` | Path to custom tools.yaml | No | Embedded |
+| `-read-only` | Disable all write/delete operations | No | `false` |
+| `-disable-version-check` | Skip Portainer version validation | No | `false` |
 
 ### Read-Only Mode
 
-Use `--read-only` to restrict the server to read-only operations only. This disables all create, update, delete, and destructive operations — useful for monitoring and observation without risk.
+Run with `-read-only` to restrict to 46 read-only tools. All write, update, and delete operations are disabled — ideal for monitoring and observation.
 
-### Portainer Version Support
-
-| MCP Enhanced Version | Based On | Supported Portainer Version |
-|---------------------|----------|----------------------------|
-| 1.0.0 | v0.6.0 | 2.31.2 |
-
-> [!NOTE]
-> Use `--disable-version-check` to connect to unsupported Portainer versions at your own risk.
-
-## Supported Capabilities
-
-### Access Groups (Endpoint Groups)
-
-| Tool | Description | Read-Only |
-|------|-------------|-----------|
-| `listAccessGroups` | List all available access groups | ✅ |
-| `createAccessGroup` | Create a new access group | ❌ |
-| `updateAccessGroupName` | Update the name of an access group | ❌ |
-| `updateAccessGroupUserAccesses` | Update user accesses for an access group | ❌ |
-| `updateAccessGroupTeamAccesses` | Update team accesses for an access group | ❌ |
-| `addEnvironmentToAccessGroup` | Add an environment to an access group | ❌ |
-| `removeEnvironmentFromAccessGroup` | Remove an environment from an access group | ❌ |
-
-### Environments (Endpoints)
-
-| Tool | Description | Read-Only |
-|------|-------------|-----------|
-| `listEnvironments` | List all available environments | ✅ |
-| `getEnvironment` | Get detailed information about a specific environment | ✅ |
-| `deleteEnvironment` | Delete an environment permanently | ❌ |
-| `snapshotEnvironment` | Trigger a snapshot refresh for a specific environment | ❌ |
-| `snapshotAllEnvironments` | Trigger a snapshot refresh for all environments | ❌ |
-| `updateEnvironmentTags` | Update tags associated with an environment | ❌ |
-| `updateEnvironmentUserAccesses` | Update user access policies for an environment | ❌ |
-| `updateEnvironmentTeamAccesses` | Update team access policies for an environment | ❌ |
-
-### Environment Groups (Edge Groups)
-
-| Tool | Description | Read-Only |
-|------|-------------|-----------|
-| `listEnvironmentGroups` | List all environment groups | ✅ |
-| `createEnvironmentGroup` | Create a new environment group | ❌ |
-| `updateEnvironmentGroupName` | Update the name of an environment group | ❌ |
-| `updateEnvironmentGroupEnvironments` | Update environments in a group | ❌ |
-| `updateEnvironmentGroupTags` | Update tags associated with a group | ❌ |
-
-### Stacks — Edge Stacks
-
-| Tool | Description | Read-Only |
-|------|-------------|-----------|
-| `listStacks` | List all edge stacks | ✅ |
-| `getStackFile` | Get the compose file for an edge stack | ✅ |
-| `createStack` | Create a new edge stack | ❌ |
-| `updateStack` | Update an existing edge stack | ❌ |
-
-### Stacks — Regular Stacks (Docker Compose / Swarm)
-
-| Tool | Description | Read-Only |
-|------|-------------|-----------|
-| `listRegularStacks` | List all regular (non-edge) stacks | ✅ |
-| `getStack` | Get detailed information about a specific stack | ✅ |
-| `inspectStackFile` | Get the compose file content of a stack | ✅ |
-| `deleteStack` | Delete a regular stack permanently | ❌ |
-| `startStack` | Start a stopped stack | ❌ |
-| `stopStack` | Stop a running stack | ❌ |
-| `updateStackGit` | Update git configuration of a stack | ❌ |
-| `redeployStackGit` | Trigger git-based redeployment of a stack | ❌ |
-| `migrateStack` | Migrate a stack to another environment | ❌ |
-
-### Tags
-
-| Tool | Description | Read-Only |
-|------|-------------|-----------|
-| `listEnvironmentTags` | List all environment tags | ✅ |
-| `createEnvironmentTag` | Create a new environment tag | ❌ |
-| `deleteEnvironmentTag` | Delete an environment tag | ❌ |
-
-### Teams
-
-| Tool | Description | Read-Only |
-|------|-------------|-----------|
-| `listTeams` | List all teams | ✅ |
-| `getTeam` | Get details of a specific team | ✅ |
-| `createTeam` | Create a new team | ❌ |
-| `deleteTeam` | Delete a team | ❌ |
-| `updateTeamName` | Update the name of a team | ❌ |
-| `updateTeamMembers` | Update the members of a team | ❌ |
-
-### Users
-
-| Tool | Description | Read-Only |
-|------|-------------|-----------|
-| `listUsers` | List all users | ✅ |
-| `getUser` | Get details of a specific user | ✅ |
-| `createUser` | Create a new user | ❌ |
-| `deleteUser` | Delete a user | ❌ |
-| `updateUserRole` | Update a user's role | ❌ |
-
-### Registries
-
-| Tool | Description | Read-Only |
-|------|-------------|-----------|
-| `listRegistries` | List all configured registries | ✅ |
-| `getRegistry` | Get details of a specific registry | ✅ |
-| `createRegistry` | Create a new registry | ❌ |
-| `updateRegistry` | Update an existing registry | ❌ |
-| `deleteRegistry` | Delete a registry | ❌ |
-
-### Custom Templates
-
-| Tool | Description | Read-Only |
-|------|-------------|-----------|
-| `listCustomTemplates` | List all custom templates | ✅ |
-| `getCustomTemplate` | Get details of a specific custom template | ✅ |
-| `getCustomTemplateFile` | Get the file content of a custom template | ✅ |
-| `createCustomTemplate` | Create a new custom template | ❌ |
-| `deleteCustomTemplate` | Delete a custom template | ❌ |
-
-### Webhooks
-
-| Tool | Description | Read-Only |
-|------|-------------|-----------|
-| `listWebhooks` | List all webhooks | ✅ |
-| `createWebhook` | Create a new webhook | ❌ |
-| `deleteWebhook` | Delete a webhook | ❌ |
-
-### Docker
-
-| Tool | Description | Read-Only |
-|------|-------------|-----------|
-| `dockerProxy` | Proxy any Docker API request to a specific environment | Depends on method |
-| `getDockerDashboard` | Get Docker dashboard data (containers, images, volumes, networks) | ✅ |
-
-### Kubernetes
-
-| Tool | Description | Read-Only |
-|------|-------------|-----------|
-| `kubernetesProxy` | Proxy any Kubernetes API request to a specific environment | Depends on method |
-| `getKubernetesResourceStripped` | Get K8s resources with verbose metadata automatically stripped | ✅ |
-| `getKubernetesDashboard` | Get Kubernetes dashboard data for an environment | ✅ |
-| `listKubernetesNamespaces` | List all namespaces in a Kubernetes environment | ✅ |
-| `getKubernetesConfig` | Get the kubeconfig for a Kubernetes environment | ✅ |
-
-### Helm
-
-| Tool | Description | Read-Only |
-|------|-------------|-----------|
-| `listHelmRepositories` | List all Helm repositories configured for a user | ✅ |
-| `addHelmRepository` | Add a Helm repository | ❌ |
-| `removeHelmRepository` | Remove a Helm repository | ❌ |
-| `searchHelmCharts` | Search for Helm charts in a repository | ✅ |
-| `installHelmChart` | Install a Helm chart on an environment | ❌ |
-| `listHelmReleases` | List all Helm releases on an environment | ✅ |
-| `deleteHelmRelease` | Delete a Helm release | ❌ |
-| `getHelmReleaseHistory` | Get the revision history of a Helm release | ✅ |
-
-### Settings
-
-| Tool | Description | Read-Only |
-|------|-------------|-----------|
-| `getSettings` | Get Portainer instance settings | ✅ |
-| `updateSettings` | Update Portainer settings (partial update supported) | ❌ |
-| `getPublicSettings` | Get public settings (available without auth) | ✅ |
-| `getSSLSettings` | Get SSL certificate settings | ✅ |
-| `updateSSLSettings` | Update SSL certificate and key | ❌ |
-
-### Backup & Restore
-
-| Tool | Description | Read-Only |
-|------|-------------|-----------|
-| `getBackupStatus` | Get the status of the last backup | ✅ |
-| `getBackupS3Settings` | Get S3 backup settings | ✅ |
-| `createBackup` | Create a local backup of the Portainer server | ❌ |
-| `backupToS3` | Backup to S3-compatible storage | ❌ |
-| `restoreFromS3` | Restore from S3-compatible storage | ❌ |
-
-### Edge Computing
-
-| Tool | Description | Read-Only |
-|------|-------------|-----------|
-| `listEdgeJobs` | List all edge jobs | ✅ |
-| `getEdgeJob` | Get details of a specific edge job | ✅ |
-| `getEdgeJobFile` | Get the script file content of an edge job | ✅ |
-| `createEdgeJob` | Create a new edge job | ❌ |
-| `deleteEdgeJob` | Delete an edge job | ❌ |
-| `listEdgeUpdateSchedules` | List all edge update schedules | ✅ |
-
-### Application Templates
-
-| Tool | Description | Read-Only |
-|------|-------------|-----------|
-| `listAppTemplates` | List all available application templates | ✅ |
-| `getAppTemplateFile` | Get the file content of an application template | ✅ |
-
-### Authentication
-
-| Tool | Description | Read-Only |
-|------|-------------|-----------|
-| `authenticate` | Authenticate with username and password, returns JWT token | ✅ |
-| `logout` | Log out the current user session | ❌ |
-
-### Roles
-
-| Tool | Description | Read-Only |
-|------|-------------|-----------|
-| `listRoles` | List all available roles with their authorizations | ✅ |
-
-### System
-
-| Tool | Description | Read-Only |
-|------|-------------|-----------|
-| `getSystemStatus` | Get system status including version and instance ID | ✅ |
-| `getMOTD` | Get the Portainer message of the day | ✅ |
-
-## Development
-
-### Building
-
-```bash
-make build                                    # Build for current platform
-make PLATFORM=linux ARCH=amd64 build          # Build for specific platform
+```json
+{
+  "args": ["-server", "...", "-token", "...", "-read-only"]
+}
 ```
 
-### Testing
+### Version Compatibility
 
-```bash
-go test -v ./...                              # Run unit tests
-make test-all                                 # Run all tests
-```
+The server validates the Portainer instance version at startup. Use `-disable-version-check` to bypass this for unsupported versions.
 
-### Live Testing
+| MCP Server | Supported Portainer |
+|------------|-------------------|
+| v0.6.x | 2.31.2 |
+| v0.5.x | 2.30.0 |
+| v0.4.x | 2.27.4 |
 
-The project includes a comprehensive live test suite that validates all 98 tools against a real Portainer instance:
+## Tools Reference
 
-```bash
-export PORTAINER_LIVE_URL="your-portainer-host:9443"
-export PORTAINER_LIVE_TOKEN="ptr_your_token"
-go test -v ./tests/live/ -count=1
-```
+**98 tools** organized into 20 categories. Each tool includes MCP annotations (`readOnlyHint`, `destructiveHint`, `idempotentHint`, `openWorldHint`) for safe AI operation.
 
-Live tests follow non-destructive patterns: they create test resources, validate operations, and clean up afterward.
+> 🔒 = Available in read-only mode · ✏️ = Write operation · ⚠️ = Destructive operation
 
-### Code Statistics
+### Access Groups (7 tools)
 
-```bash
-./cloc.sh                                     # Lines of code metrics
-```
+| Tool | Description | Mode |
+|------|-------------|------|
+| `listAccessGroups` | List all available access groups | 🔒 |
+| `createAccessGroup` | Create a new access group | ✏️ |
+| `updateAccessGroupName` | Update the name of an access group | ✏️ |
+| `updateAccessGroupUserAccesses` | Update user accesses for an access group | ✏️ |
+| `updateAccessGroupTeamAccesses` | Update team accesses for an access group | ✏️ |
+| `addEnvironmentToAccessGroup` | Add an environment to an access group | ✏️ |
+| `removeEnvironmentFromAccessGroup` | Remove an environment from an access group | ⚠️ |
 
-### Token Counting
+### Environments (8 tools)
 
-Estimate token consumption for tool definitions sent to AI models:
+| Tool | Description | Mode |
+|------|-------------|------|
+| `listEnvironments` | List all available environments | 🔒 |
+| `getEnvironment` | Get detailed info about a specific environment | 🔒 |
+| `deleteEnvironment` | Delete an environment permanently | ⚠️ |
+| `snapshotEnvironment` | Trigger a snapshot for a specific environment | ✏️ |
+| `snapshotAllEnvironments` | Trigger a snapshot for all environments | ✏️ |
+| `updateEnvironmentTags` | Update tags associated with an environment | ✏️ |
+| `updateEnvironmentUserAccesses` | Update user access policies | ✏️ |
+| `updateEnvironmentTeamAccesses` | Update team access policies | ✏️ |
 
-```bash
-go run ./cmd/token-count -input internal/tooldef/tools.yaml -output .tmp/tools.json
-./token.sh -k <anthropic-api-key> -i .tmp/tools.json
-```
+### Environment Groups (5 tools)
+
+| Tool | Description | Mode |
+|------|-------------|------|
+| `listEnvironmentGroups` | List all environment groups | 🔒 |
+| `createEnvironmentGroup` | Create a new environment group | ✏️ |
+| `updateEnvironmentGroupName` | Rename an environment group | ✏️ |
+| `updateEnvironmentGroupEnvironments` | Update group environments | ✏️ |
+| `updateEnvironmentGroupTags` | Update group tags | ✏️ |
+
+### Stacks (13 tools)
+
+**Edge Stacks:**
+
+| Tool | Description | Mode |
+|------|-------------|------|
+| `listStacks` | List all edge stacks | 🔒 |
+| `getStackFile` | Get compose file for an edge stack | 🔒 |
+| `createStack` | Create a new edge stack | ✏️ |
+| `updateStack` | Update an edge stack | ✏️ |
+
+**Regular Stacks (Docker Compose / Swarm):**
+
+| Tool | Description | Mode |
+|------|-------------|------|
+| `listRegularStacks` | List all regular stacks | 🔒 |
+| `getStack` | Get details of a regular stack | 🔒 |
+| `inspectStackFile` | Get compose file content | 🔒 |
+| `deleteStack` | Delete a stack permanently | ⚠️ |
+| `startStack` | Start a stopped stack | ✏️ |
+| `stopStack` | Stop a running stack | ✏️ |
+| `updateStackGit` | Update git configuration | ✏️ |
+| `redeployStackGit` | Trigger git-based redeployment | ✏️ |
+| `migrateStack` | Migrate stack to another environment | ✏️ |
+
+### Tags (3 tools)
+
+| Tool | Description | Mode |
+|------|-------------|------|
+| `listEnvironmentTags` | List all tags | 🔒 |
+| `createEnvironmentTag` | Create a new tag | ✏️ |
+| `deleteEnvironmentTag` | Delete a tag | ⚠️ |
+
+### Teams (6 tools)
+
+| Tool | Description | Mode |
+|------|-------------|------|
+| `listTeams` | List all teams | 🔒 |
+| `getTeam` | Get team details | 🔒 |
+| `createTeam` | Create a new team | ✏️ |
+| `deleteTeam` | Delete a team | ⚠️ |
+| `updateTeamName` | Rename a team | ✏️ |
+| `updateTeamMembers` | Update team members | ✏️ |
+
+### Users (5 tools)
+
+| Tool | Description | Mode |
+|------|-------------|------|
+| `listUsers` | List all users | 🔒 |
+| `getUser` | Get user details | 🔒 |
+| `createUser` | Create a new user | ✏️ |
+| `deleteUser` | Delete a user | ⚠️ |
+| `updateUserRole` | Update user role | ✏️ |
+
+### Docker (2 tools)
+
+| Tool | Description | Mode |
+|------|-------------|------|
+| `dockerProxy` | Proxy any Docker Engine API request | 🔒 |
+| `getDockerDashboard` | Get dashboard data (containers, images, volumes, networks) | 🔒 |
+
+### Kubernetes (5 tools)
+
+| Tool | Description | Mode |
+|------|-------------|------|
+| `kubernetesProxy` | Proxy any Kubernetes API request | 🔒 |
+| `getKubernetesResourceStripped` | GET K8s resources with metadata stripped | 🔒 |
+| `getKubernetesDashboard` | Get K8s dashboard summary | 🔒 |
+| `listKubernetesNamespaces` | List K8s namespaces | 🔒 |
+| `getKubernetesConfig` | Get kubeconfig for an environment | 🔒 |
+
+### Helm (8 tools)
+
+| Tool | Description | Mode |
+|------|-------------|------|
+| `listHelmRepositories` | List Helm repos for a user | 🔒 |
+| `addHelmRepository` | Add a Helm repository | ✏️ |
+| `removeHelmRepository` | Remove a Helm repository | ⚠️ |
+| `searchHelmCharts` | Search charts in a repository | 🔒 |
+| `installHelmChart` | Install a Helm chart | ✏️ |
+| `listHelmReleases` | List Helm releases | 🔒 |
+| `deleteHelmRelease` | Delete a Helm release | ⚠️ |
+| `getHelmReleaseHistory` | Get release revision history | 🔒 |
+
+### Registries (5 tools)
+
+| Tool | Description | Mode |
+|------|-------------|------|
+| `listRegistries` | List all registries | 🔒 |
+| `getRegistry` | Get registry details | 🔒 |
+| `createRegistry` | Create a new registry | ✏️ |
+| `updateRegistry` | Update a registry | ✏️ |
+| `deleteRegistry` | Delete a registry | ⚠️ |
+
+### Custom Templates (5 tools)
+
+| Tool | Description | Mode |
+|------|-------------|------|
+| `listCustomTemplates` | List all custom templates | 🔒 |
+| `getCustomTemplate` | Get template details | 🔒 |
+| `getCustomTemplateFile` | Get template file content | 🔒 |
+| `createCustomTemplate` | Create a new template | ✏️ |
+| `deleteCustomTemplate` | Delete a template | ⚠️ |
+
+### Webhooks (3 tools)
+
+| Tool | Description | Mode |
+|------|-------------|------|
+| `listWebhooks` | List all webhooks | 🔒 |
+| `createWebhook` | Create a new webhook | ✏️ |
+| `deleteWebhook` | Delete a webhook | ⚠️ |
+
+### Settings & SSL (5 tools)
+
+| Tool | Description | Mode |
+|------|-------------|------|
+| `getSettings` | Get Portainer settings | 🔒 |
+| `updateSettings` | Update settings (partial update) | ✏️ |
+| `getPublicSettings` | Get public settings (no auth required) | 🔒 |
+| `getSSLSettings` | Get SSL settings | 🔒 |
+| `updateSSLSettings` | Update SSL certificate and key | ✏️ |
+
+### Backup & Restore (5 tools)
+
+| Tool | Description | Mode |
+|------|-------------|------|
+| `getBackupStatus` | Get last backup status | 🔒 |
+| `getBackupS3Settings` | Get S3 backup settings | 🔒 |
+| `createBackup` | Create a local backup | ✏️ |
+| `backupToS3` | Backup to S3-compatible storage | ✏️ |
+| `restoreFromS3` | Restore from S3 backup | ⚠️ |
+
+### Edge Computing (6 tools)
+
+| Tool | Description | Mode |
+|------|-------------|------|
+| `listEdgeJobs` | List all edge jobs | 🔒 |
+| `getEdgeJob` | Get edge job details | 🔒 |
+| `getEdgeJobFile` | Get edge job script content | 🔒 |
+| `createEdgeJob` | Create a new edge job | ✏️ |
+| `deleteEdgeJob` | Delete an edge job | ⚠️ |
+| `listEdgeUpdateSchedules` | List edge update schedules | 🔒 |
+
+### App Templates (2 tools)
+
+| Tool | Description | Mode |
+|------|-------------|------|
+| `listAppTemplates` | List all application templates | 🔒 |
+| `getAppTemplateFile` | Get template file content | 🔒 |
+
+### Authentication (2 tools)
+
+| Tool | Description | Mode |
+|------|-------------|------|
+| `authenticate` | Authenticate with username/password | �� |
+| `logout` | Log out the current session | ✏️ |
+
+### System (3 tools)
+
+| Tool | Description | Mode |
+|------|-------------|------|
+| `getSystemStatus` | Get system version and instance ID | 🔒 |
+| `getMOTD` | Get message of the day | 🔒 |
+| `listRoles` | List all roles with authorizations | 🔒 |
+
+For complete parameter details, see [docs/api-reference.md](docs/api-reference.md).
 
 ## Architecture
 
-```
-cmd/portainer-mcp/       # Entry point
-internal/
-  mcp/                   # MCP server, handlers, tool registration
-  tooldef/               # Tool definitions (tools.yaml, embedded at build time)
-pkg/portainer/
-  client/                # Wrapper client over portainer/client-api-go SDK
-  models/                # Local models with conversion from raw SDK models
-tests/
-  live/                  # Live tests against real Portainer instance
-docs/
-  design/                # Design decision records
-  clients_and_models.md  # Client architecture documentation
+```mermaid
+graph TB
+    subgraph "AI Assistants"
+        CD[Claude Desktop]
+        VS[VS Code / Copilot]
+        CU[Cursor]
+    end
+
+    subgraph "MCP Server"
+        direction TB
+        EP[stdio Transport<br/>JSON-RPC 2.0]
+        SRV[PortainerMCPServer<br/><i>server.go</i>]
+        TD[Tool Definitions<br/><i>tools.yaml — embedded</i>]
+        TG[Tool Generator<br/><i>pkg/toolgen</i>]
+
+        subgraph "Handlers"
+            direction LR
+            H1[environment.go]
+            H2[stack.go]
+            H3[docker.go]
+            H4[kubernetes.go]
+            H5[helm.go]
+            H6["... 17 more"]
+        end
+    end
+
+    subgraph "Client Layer"
+        WC[Wrapper Client<br/><i>pkg/portainer/client</i>]
+        LM[Local Models<br/><i>pkg/portainer/models</i>]
+    end
+
+    subgraph "External"
+        SDK[portainer/client-api-go<br/>v2.31.2]
+        PA[Portainer API<br/>HTTPS]
+        RAW[Raw HTTP Client<br/><i>K8s Dashboard, MOTD</i>]
+    end
+
+    CD & VS & CU -->|MCP Protocol| EP
+    EP --> SRV
+    TD --> TG
+    TG -->|"map[string]mcp.Tool"| SRV
+    SRV --> H1 & H2 & H3 & H4 & H5 & H6
+    H1 & H2 & H3 & H4 & H5 & H6 --> WC
+    WC --> LM
+    WC --> SDK --> PA
+    WC --> RAW --> PA
 ```
 
-For detailed architecture documentation, see [docs/clients_and_models.md](docs/clients_and_models.md).
+### Key Design Decisions
+
+- **YAML-driven tool definitions** — All 98 tools defined in `tools.yaml`, embedded at build time, overridable at runtime
+- **Two-layer client** — Wrapper client abstracts the raw SDK, converting between API models and simplified local models
+- **Read-only mode** — Tools annotated with `readOnlyHint: true` are the only ones registered when `-read-only` is set
+- **Version pinning** — Server validates Portainer version at startup to prevent API incompatibilities
+- **Raw HTTP fallback** — Some endpoints (K8s dashboard, MOTD) bypass the SDK due to response format mismatches
+
+See [docs/design/](docs/design/) for detailed design decision records.
+
+## Development
+
+### Prerequisites
+
+- Go 1.24+
+- Make
+
+### Build & Test
+
+```bash
+make build                    # Build binary
+make test                     # Unit tests
+make test-integration         # Integration tests (requires Docker)
+make test-all                 # All tests
+make inspector                # Launch MCP Inspector UI
+```
+
+### Project Structure
+
+```
+cmd/portainer-mcp/mcp.go      Entry point, CLI flags, server init
+internal/mcp/                  MCP server + 22 handler files (one per domain)
+internal/mcp/server.go         Server core, PortainerClient interface, tool registration
+internal/tooldef/              Embeds tools.yaml at build time
+pkg/toolgen/                   YAML parser + parameter parser (used by all handlers)
+pkg/portainer/client/          Wrapper client over SDK
+pkg/portainer/models/          Local models with conversion functions
+tests/integration/             Integration tests using Docker containers
+docs/design/                   Design decision records (ADR format)
+```
+
+### Adding a New Tool
+
+1. Add the tool definition to `tools.yaml` with parameters and annotations
+2. Add the handler method to the appropriate file in `internal/mcp/`
+3. Register the handler in `mcp.go` via `server.AddXxxFeatures()`
+4. Add the client method to `PortainerClient` interface and implement in `pkg/portainer/client/`
+5. Add unit tests for the handler and integration tests if applicable
 
 ## Contributing
 
-Contributions are welcome! Please:
-
-1. Fork the repository
-2. Create a feature branch from `main`
-3. Follow the existing code style and patterns
-4. Add tests for new functionality
-5. Submit a pull request
-
-## Related
-
-- [Official Portainer MCP](https://github.com/portainer/portainer-mcp) — Original implementation
-- [Portainer](https://www.portainer.io/) — Container management platform
-- [MCP Protocol](https://modelcontextprotocol.io/) — Model Context Protocol specification
-- [PR #45](https://github.com/portainer/portainer-mcp/pull/45) — Our contribution to the official repo
+See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 ## License
 
-[MIT License](LICENSE)
+Copyright (c) 2025 Portainer.io — See [LICENSE](LICENSE) for details.
