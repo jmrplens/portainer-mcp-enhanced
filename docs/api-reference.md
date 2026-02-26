@@ -1,5 +1,12 @@
-API reference: 1427 lines, 98 tools documented
-MCP tools provided by the Portainer MCP Server.
+---
+title: Tools Reference
+nav_order: 5
+---
+
+# Tools Reference
+{: .no_toc }
+
+Complete reference for all 98 granular MCP tools provided by the Portainer MCP Server.
 
 Each tool is exposed via the [Model Context Protocol](https://modelcontextprotocol.io/) over stdio transport using JSON-RPC 2.0.
 

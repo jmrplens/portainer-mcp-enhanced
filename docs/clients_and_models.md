@@ -1,3 +1,8 @@
+---
+title: Clients & Models
+nav_order: 9
+---
+
 # Portainer MCP Client and Model Usage Guide
 
 This document clarifies the different client implementations and model structures used within the `portainer-mcp` project to prevent confusion and aid development.

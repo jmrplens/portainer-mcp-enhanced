@@ -1,3 +1,8 @@
+---
+title: Design Decisions
+nav_order: 10
+---
+
 # Design Documentation Summary
 
 This document provides a summary of key design decisions for the Portainer MCP project. Each decision is documented in detail in its own file.
