@@ -1,8 +1,9 @@
 package models
 
 import (
-	"log"
 	"strconv"
+
+	"github.com/rs/zerolog/log"
 
 	apimodels "github.com/portainer/client-api-go/v2/pkg/models"
 )
@@ -12,7 +13,7 @@ func convertAccesses[T apimodels.PortainerUserAccessPolicies | apimodels.Portain
 	for idStr, role := range rawPolicies {
 		id, err := strconv.Atoi(idStr)
 		if err != nil {
-			log.Printf("warning: skipping access policy with invalid ID %q: %v", idStr, err)
+			log.Warn().Str("id", idStr).Err(err).Msg("Skipping access policy with invalid ID")
 			continue
 		}
 		accesses[id] = convertAccessPolicyRole(&role)

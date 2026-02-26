@@ -6,10 +6,8 @@ import "slices"
 const (
 	ToolCreateEnvironmentGroup             = "createEnvironmentGroup"
 	ToolListEnvironmentGroups              = "listEnvironmentGroups"
-	ToolUpdateEnvironmentGroup             = "updateEnvironmentGroup"
 	ToolCreateAccessGroup                  = "createAccessGroup"
 	ToolListAccessGroups                   = "listAccessGroups"
-	ToolUpdateAccessGroup                  = "updateAccessGroup"
 	ToolAddEnvironmentToAccessGroup        = "addEnvironmentToAccessGroup"
 	ToolRemoveEnvironmentFromAccessGroup   = "removeEnvironmentFromAccessGroup"
 	ToolListEnvironments                   = "listEnvironments"
@@ -17,7 +15,6 @@ const (
 	ToolDeleteEnvironment                  = "deleteEnvironment"
 	ToolSnapshotEnvironment                = "snapshotEnvironment"
 	ToolSnapshotAllEnvironments            = "snapshotAllEnvironments"
-	ToolUpdateEnvironment                  = "updateEnvironment"
 	ToolGetStackFile                       = "getStackFile"
 	ToolCreateStack                        = "createStack"
 	ToolListStacks                         = "listStacks"
@@ -163,14 +160,30 @@ func isValidHTTPMethod(method string) bool {
 	return slices.Contains(validMethods, method)
 }
 
+// Registry type constants as used by the Portainer API
+const (
+	RegistryTypeQuay      = 1 // Quay.io
+	RegistryTypeAzure     = 2 // Azure Container Registry
+	RegistryTypeCustom    = 3 // Custom registry
+	RegistryTypeGitLab    = 4 // GitLab
+	RegistryTypeProGet    = 5 // ProGet
+	RegistryTypeDockerHub = 6 // DockerHub
+	RegistryTypeECR       = 7 // Amazon ECR
+)
+
+// Template type constants as used by the Portainer API
+const (
+	TemplateTypeSwarm      = 1 // Swarm
+	TemplateTypeCompose    = 2 // Compose
+	TemplateTypeKubernetes = 3 // Kubernetes
+)
+
 // isValidRegistryType checks if a given integer is a valid registry type.
-// 1=Quay.io 2=Azure 3=Custom 4=GitLab 5=ProGet 6=DockerHub 7=ECR
 func isValidRegistryType(t int) bool {
-	return t >= 1 && t <= 7
+	return t >= RegistryTypeQuay && t <= RegistryTypeECR
 }
 
 // isValidTemplateType checks if a given integer is a valid custom template type.
-// 1=swarm 2=compose 3=kubernetes
 func isValidTemplateType(t int) bool {
-	return t >= 1 && t <= 3
+	return t >= TemplateTypeSwarm && t <= TemplateTypeKubernetes
 }

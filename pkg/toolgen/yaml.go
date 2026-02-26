@@ -2,10 +2,10 @@ package toolgen
 
 import (
 	"fmt"
-	"log"
 	"os"
 
 	"github.com/mark3labs/mcp-go/mcp"
+	"github.com/rs/zerolog/log"
 	"golang.org/x/mod/semver"
 	"gopkg.in/yaml.v3"
 )
@@ -48,12 +48,12 @@ type Annotations struct {
 func LoadToolsFromYAML(filePath string, minimumVersion string) (map[string]mcp.Tool, error) {
 	data, err := os.ReadFile(filePath)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to read tools file: %w", err)
 	}
 
 	var config ToolsConfig
 	if err := yaml.Unmarshal(data, &config); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to parse tools YAML: %w", err)
 	}
 
 	if config.Version == "" {
@@ -78,7 +78,7 @@ func convertToolDefinitions(defs []ToolDefinition) map[string]mcp.Tool {
 	for _, def := range defs {
 		tool, err := convertToolDefinition(def)
 		if err != nil {
-			log.Printf("skipping invalid tool definition %s: %s", def.Name, err)
+			log.Warn().Str("tool", def.Name).Err(err).Msg("Skipping invalid tool definition")
 			continue
 		}
 

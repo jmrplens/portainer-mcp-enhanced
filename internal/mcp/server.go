@@ -2,14 +2,15 @@ package mcp
 
 import (
 	"fmt"
-	"log"
 	"net/http"
+	"strings"
 
 	"github.com/mark3labs/mcp-go/mcp"
 	"github.com/mark3labs/mcp-go/server"
 	"github.com/portainer/portainer-mcp/pkg/portainer/client"
 	"github.com/portainer/portainer-mcp/pkg/portainer/models"
 	"github.com/portainer/portainer-mcp/pkg/toolgen"
+	"github.com/rs/zerolog/log"
 )
 
 const (
@@ -270,8 +271,8 @@ func NewPortainerMCPServer(serverURL, token, toolsPath string, options ...Server
 			return nil, fmt.Errorf("failed to get Portainer server version: %w", err)
 		}
 
-		if version != SupportedPortainerVersion {
-			return nil, fmt.Errorf("unsupported Portainer server version: %s, only version %s is supported", version, SupportedPortainerVersion)
+		if !isCompatibleVersion(version, SupportedPortainerVersion) {
+			return nil, fmt.Errorf("unsupported Portainer server version: %s, only version %s.x is supported", version, SupportedPortainerVersion)
 		}
 	}
 
@@ -299,6 +300,22 @@ func (s *PortainerMCPServer) addToolIfExists(toolName string, handler server.Too
 	if tool, exists := s.tools[toolName]; exists {
 		s.srv.AddTool(tool, handler)
 	} else {
-		log.Printf("Tool %s not found, will not be registered for MCP usage", toolName)
+		log.Warn().Str("tool", toolName).Msg("Tool not found, will not be registered for MCP usage")
 	}
+}
+
+// isCompatibleVersion checks if the actual version is compatible with the supported version.
+// It compares only the major.minor components, allowing patch version differences.
+func isCompatibleVersion(actual, supported string) bool {
+	return majorMinor(actual) == majorMinor(supported)
+}
+
+// majorMinor extracts the "major.minor" prefix from a version string.
+// For example, "2.31.2" returns "2.31" and "2.31" returns "2.31".
+func majorMinor(version string) string {
+	parts := strings.SplitN(version, ".", 3)
+	if len(parts) < 2 {
+		return version
+	}
+	return parts[0] + "." + parts[1]
 }

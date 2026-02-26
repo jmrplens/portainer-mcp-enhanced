@@ -4,6 +4,7 @@ import (
 	"crypto/tls"
 	"fmt"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/go-openapi/runtime"
@@ -55,6 +56,15 @@ func newHTTPTransport(skipTLSVerify bool) *http.Transport {
 	}
 }
 
+// detectSchemes returns the appropriate HTTP schemes based on the host string.
+// If the host starts with "http://", it returns ["http"]. Otherwise, it defaults to ["https"].
+func detectSchemes(host string) []string {
+	if strings.HasPrefix(strings.ToLower(host), "http://") {
+		return []string{"http"}
+	}
+	return []string{"https"}
+}
+
 // newPortainerAPIAdapter creates a new adapter that embeds the SDK high-level
 // client and also holds a reference to the low-level Swagger client for
 // operations not exposed by the SDK.
@@ -65,7 +75,8 @@ func newPortainerAPIAdapter(host, apiKey string, skipTLSVerify bool) *portainerA
 		Timeout:   defaultHTTPTimeout,
 		Transport: newHTTPTransport(skipTLSVerify),
 	}
-	transport := httptransport.NewWithClient(host, "/api", []string{"https"}, httpClient)
+	schemes := detectSchemes(host)
+	transport := httptransport.NewWithClient(host, "/api", schemes, httpClient)
 	apiKeyAuth := runtime.ClientAuthInfoWriterFunc(func(r runtime.ClientRequest, _ strfmt.Registry) error {
 		return r.SetHeaderParam("x-api-key", apiKey)
 	})

@@ -10,12 +10,19 @@ type User struct {
 	Role     string `json:"role"`
 }
 
-// User role constants
+// User role string constants (used in MCP tool parameters)
 const (
 	UserRoleAdmin     = "admin"
 	UserRoleUser      = "user"
 	UserRoleEdgeAdmin = "edge_admin"
 	UserRoleUnknown   = "unknown"
+)
+
+// User role ID constants as used by the Portainer API
+const (
+	UserRoleIDAdmin    int64 = 1
+	UserRoleIDUser     int64 = 2
+	UserRoleIDEdgeAdmin int64 = 3
 )
 
 func ConvertToUser(rawUser *apimodels.PortainereeUser) User {
@@ -32,11 +39,11 @@ func ConvertToUser(rawUser *apimodels.PortainereeUser) User {
 
 func convertUserRole(rawUser *apimodels.PortainereeUser) string {
 	switch rawUser.Role {
-	case 1:
+	case UserRoleIDAdmin:
 		return UserRoleAdmin
-	case 2:
+	case UserRoleIDUser:
 		return UserRoleUser
-	case 3:
+	case UserRoleIDEdgeAdmin:
 		return UserRoleEdgeAdmin
 	default:
 		return UserRoleUnknown
