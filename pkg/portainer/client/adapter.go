@@ -4,6 +4,7 @@ import (
 	"crypto/tls"
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/go-openapi/runtime"
 	httptransport "github.com/go-openapi/runtime/client"
@@ -31,6 +32,11 @@ import (
 	apimodels "github.com/portainer/client-api-go/v2/pkg/models"
 )
 
+const (
+	// defaultHTTPTimeout is the default timeout for HTTP requests to the Portainer API.
+	defaultHTTPTimeout = 30 * time.Second
+)
+
 // portainerAPIAdapter wraps the SDK PortainerClient and adds methods
 // that are available in the Swagger-generated client but not exposed
 // by the SDK's high-level client (e.g., delete operations).
@@ -40,20 +46,26 @@ type portainerAPIAdapter struct {
 	httpTransport *httptransport.Runtime
 }
 
+// newHTTPTransport creates a configured http.Transport with TLS settings.
+func newHTTPTransport(skipTLSVerify bool) *http.Transport {
+	return &http.Transport{
+		TLSClientConfig: &tls.Config{
+			InsecureSkipVerify: skipTLSVerify,
+		},
+	}
+}
+
 // newPortainerAPIAdapter creates a new adapter that embeds the SDK high-level
 // client and also holds a reference to the low-level Swagger client for
 // operations not exposed by the SDK.
 func newPortainerAPIAdapter(host, apiKey string, skipTLSVerify bool) *portainerAPIAdapter {
 	sdkCli := sdkclient.NewPortainerClient(host, apiKey, sdkclient.WithSkipTLSVerify(skipTLSVerify))
 
-	transport := httptransport.New(host, "/api", []string{"https"})
-	if skipTLSVerify {
-		transport.Transport = &http.Transport{
-			TLSClientConfig: &tls.Config{
-				InsecureSkipVerify: true,
-			},
-		}
+	httpClient := &http.Client{
+		Timeout:   defaultHTTPTimeout,
+		Transport: newHTTPTransport(skipTLSVerify),
 	}
+	transport := httptransport.NewWithClient(host, "/api", []string{"https"}, httpClient)
 	apiKeyAuth := runtime.ClientAuthInfoWriterFunc(func(r runtime.ClientRequest, _ strfmt.Registry) error {
 		return r.SetHeaderParam("x-api-key", apiKey)
 	})

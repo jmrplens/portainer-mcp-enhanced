@@ -13,8 +13,9 @@ import (
 )
 
 const (
-	// MinimumToolsVersion is the minimum supported version of the tools.yaml file
-	MinimumToolsVersion = "1.0"
+	// MinimumToolsVersion is the minimum supported version of the tools.yaml file.
+	// This uses the same "v{major}.{minor}" format as tools.yaml version strings.
+	MinimumToolsVersion = "v1.0"
 	// SupportedPortainerVersion is the version of Portainer that is supported by this tool
 	SupportedPortainerVersion = "2.31.2"
 	// maxProxyResponseSize is the maximum allowed response body size (10MB) for Docker/K8s proxy calls
