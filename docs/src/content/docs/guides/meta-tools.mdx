@@ -1,21 +1,9 @@
 ---
 title: Meta-Tools Guide
-nav_order: 4
+description: Understand how the 15 grouped meta-tools work and what actions are available.
 ---
 
-# Meta-Tools Guide
-{: .no_toc }
-
-Understand how the 15 grouped meta-tools work and what actions are available.
-{: .fs-6 .fw-300 }
-
-## Table of contents
-{: .no_toc .text-delta }
-
-1. TOC
-{:toc}
-
----
+import { Aside, Badge } from '@astrojs/starlight/components';
 
 ## Overview
 
@@ -56,16 +44,13 @@ Each meta-tool call includes:
 }
 ```
 
-Parameters are passed through directly to the underlying handler. Each action accepts the same parameters as its granular tool counterpart — see the [Tools Reference]({% link api-reference.md %}) for parameter details.
+Parameters are passed through directly to the underlying handler. Each action accepts the same parameters as its granular tool counterpart — see the [Tools Reference](/portainer-mcp/reference/api-reference/) for parameter details.
 
 ---
 
 ## Meta-Tool Reference
 
-### manage_environments
-{: .d-inline-block }
-16 actions
-{: .label .label-blue }
+### manage\_environments <Badge text="16 actions" variant="note" />
 
 Manage environments (endpoints), environment groups, and environment tags.
 
@@ -90,10 +75,7 @@ Manage environments (endpoints), environment groups, and environment tags.
 
 ---
 
-### manage_stacks
-{: .d-inline-block }
-13 actions
-{: .label .label-blue }
+### manage\_stacks <Badge text="13 actions" variant="note" />
 
 Manage Docker Compose and Edge stacks.
 
@@ -115,10 +97,7 @@ Manage Docker Compose and Edge stacks.
 
 ---
 
-### manage_access_groups
-{: .d-inline-block }
-7 actions
-{: .label .label-blue }
+### manage\_access\_groups <Badge text="7 actions" variant="note" />
 
 Manage access groups and their user/team access policies.
 
@@ -134,10 +113,7 @@ Manage access groups and their user/team access policies.
 
 ---
 
-### manage_users
-{: .d-inline-block }
-5 actions
-{: .label .label-blue }
+### manage\_users <Badge text="5 actions" variant="note" />
 
 Manage Portainer users.
 
@@ -151,10 +127,7 @@ Manage Portainer users.
 
 ---
 
-### manage_teams
-{: .d-inline-block }
-6 actions
-{: .label .label-blue }
+### manage\_teams <Badge text="6 actions" variant="note" />
 
 Manage teams and team membership.
 
@@ -169,10 +142,7 @@ Manage teams and team membership.
 
 ---
 
-### manage_docker
-{: .d-inline-block }
-2 actions
-{: .label .label-blue }
+### manage\_docker <Badge text="2 actions" variant="note" />
 
 Interact with Docker environments.
 
@@ -183,10 +153,7 @@ Interact with Docker environments.
 
 ---
 
-### manage_kubernetes
-{: .d-inline-block }
-5 actions
-{: .label .label-blue }
+### manage\_kubernetes <Badge text="5 actions" variant="note" />
 
 Interact with Kubernetes environments.
 
@@ -200,10 +167,7 @@ Interact with Kubernetes environments.
 
 ---
 
-### manage_helm
-{: .d-inline-block }
-8 actions
-{: .label .label-blue }
+### manage\_helm <Badge text="8 actions" variant="note" />
 
 Manage Helm repositories, charts, and releases.
 
@@ -220,10 +184,7 @@ Manage Helm repositories, charts, and releases.
 
 ---
 
-### manage_registries
-{: .d-inline-block }
-5 actions
-{: .label .label-blue }
+### manage\_registries <Badge text="5 actions" variant="note" />
 
 Manage Docker registries (Quay, Azure, DockerHub, GitLab, ECR, custom).
 
@@ -237,10 +198,7 @@ Manage Docker registries (Quay, Azure, DockerHub, GitLab, ECR, custom).
 
 ---
 
-### manage_templates
-{: .d-inline-block }
-7 actions
-{: .label .label-blue }
+### manage\_templates <Badge text="7 actions" variant="note" />
 
 Manage custom templates and application templates.
 
@@ -256,10 +214,7 @@ Manage custom templates and application templates.
 
 ---
 
-### manage_backups
-{: .d-inline-block }
-5 actions
-{: .label .label-blue }
+### manage\_backups <Badge text="5 actions" variant="note" />
 
 Manage Portainer server backups (local and S3).
 
@@ -273,10 +228,7 @@ Manage Portainer server backups (local and S3).
 
 ---
 
-### manage_webhooks
-{: .d-inline-block }
-3 actions
-{: .label .label-blue }
+### manage\_webhooks <Badge text="3 actions" variant="note" />
 
 Manage webhooks for services and containers.
 
@@ -288,10 +240,7 @@ Manage webhooks for services and containers.
 
 ---
 
-### manage_edge
-{: .d-inline-block }
-6 actions
-{: .label .label-blue }
+### manage\_edge <Badge text="6 actions" variant="note" />
 
 Manage Edge jobs and Edge update schedules.
 
@@ -306,10 +255,7 @@ Manage Edge jobs and Edge update schedules.
 
 ---
 
-### manage_settings
-{: .d-inline-block }
-5 actions
-{: .label .label-blue }
+### manage\_settings <Badge text="5 actions" variant="note" />
 
 Manage Portainer server settings and SSL configuration.
 
@@ -323,10 +269,7 @@ Manage Portainer server settings and SSL configuration.
 
 ---
 
-### manage_system
-{: .d-inline-block }
-5 actions
-{: .label .label-blue }
+### manage\_system <Badge text="5 actions" variant="note" />
 
 System information, roles, authentication, and message of the day.
 
@@ -354,4 +297,4 @@ To use the 98 individual tools instead:
 ./portainer-mcp -server "..." -token "..." -granular-tools
 ```
 
-In granular mode, each tool is registered separately with its own name (e.g., `get_environments`, `create_stack`, etc.). See the [Tools Reference]({% link api-reference.md %}) for the complete list.
+In granular mode, each tool is registered separately with its own name (e.g., `get_environments`, `create_stack`, etc.). See the [Tools Reference](/portainer-mcp/reference/api-reference/) for the complete list.

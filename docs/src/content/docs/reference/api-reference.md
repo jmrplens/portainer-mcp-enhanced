@@ -1,10 +1,9 @@
 ---
 title: Tools Reference
-nav_order: 5
+description: Complete parameter reference for all 98 Portainer MCP tools.
 ---
 
 # Tools Reference
-{: .no_toc }
 
 Complete reference for all 98 granular MCP tools provided by the Portainer MCP Server.
 

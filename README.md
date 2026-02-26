@@ -166,7 +166,7 @@ This dramatically reduces the tool-selection surface for LLMs while preserving 1
 | `manage_settings` | 5 | Server settings and SSL |
 | `manage_system` | 5 | Version, status, MOTD, roles, auth |
 
-To use the original 98 individual tools, pass `--granular-tools`. See the [Meta-Tools Guide](https://portainer.github.io/portainer-mcp/meta-tools) for the full action reference.
+To use the original 98 individual tools, pass `--granular-tools`. See the [Meta-Tools Guide](https://portainer.github.io/portainer-mcp/guides/meta-tools/) for the full action reference.
 
 ### Read-Only Mode
 
@@ -186,13 +186,13 @@ Run with `-read-only` to restrict to read-only operations. All write, update, an
 
 | Page | Description |
 |------|-------------|
-| [Getting Started](https://portainer.github.io/portainer-mcp/getting-started) | Prerequisites, installation, AI assistant setup |
-| [Configuration](https://portainer.github.io/portainer-mcp/configuration) | CLI flags, tool modes, version compatibility |
-| [Meta-Tools Guide](https://portainer.github.io/portainer-mcp/meta-tools) | All 15 meta-tools with complete action reference |
-| [Tools Reference](https://portainer.github.io/portainer-mcp/api-reference) | All 98 granular tools with parameters |
-| [Architecture](https://portainer.github.io/portainer-mcp/architecture) | Server layers, client model, project structure |
-| [Security](https://portainer.github.io/portainer-mcp/security) | Authentication, TLS, read-only mode, proxy safety |
-| [Contributing](https://portainer.github.io/portainer-mcp/contributing) | Development setup, code style, adding new tools |
+| [Getting Started](https://portainer.github.io/portainer-mcp/getting-started/) | Prerequisites, installation, AI assistant setup |
+| [Configuration](https://portainer.github.io/portainer-mcp/configuration/) | CLI flags, tool modes, version compatibility |
+| [Meta-Tools Guide](https://portainer.github.io/portainer-mcp/guides/meta-tools/) | All 15 meta-tools with complete action reference |
+| [Tools Reference](https://portainer.github.io/portainer-mcp/reference/api-reference/) | All 98 granular tools with parameters |
+| [Architecture](https://portainer.github.io/portainer-mcp/reference/architecture/) | Server layers, client model, project structure |
+| [Security](https://portainer.github.io/portainer-mcp/guides/security/) | Authentication, TLS, read-only mode, proxy safety |
+| [Contributing](https://portainer.github.io/portainer-mcp/development/contributing/) | Development setup, code style, adding new tools |
 
 ## Development
 

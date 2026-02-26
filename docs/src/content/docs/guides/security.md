@@ -1,21 +1,9 @@
 ---
 title: Security
-nav_order: 7
+description: Security considerations and best practices for running Portainer MCP.
 ---
 
-# Security
-{: .no_toc }
-
-Security considerations and best practices for running Portainer MCP.
-{: .fs-6 .fw-300 }
-
-## Table of contents
-{: .no_toc .text-delta }
-
-1. TOC
-{:toc}
-
----
+import { Aside } from '@astrojs/starlight/components';
 
 ## Authentication
 
@@ -44,8 +32,9 @@ The `-skip-tls-verify` flag disables certificate validation. Only use this for:
 - Development environments with self-signed certificates
 - Testing and debugging
 
-{: .warning }
-> Never use `-skip-tls-verify` in production. It makes the connection vulnerable to interception.
+<Aside type="caution">
+Never use `-skip-tls-verify` in production. It makes the connection vulnerable to interception.
+</Aside>
 
 ## Read-Only Mode
 

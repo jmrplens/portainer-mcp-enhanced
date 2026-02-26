@@ -1,0 +1,189 @@
+---
+title: Contributing
+description: How to contribute to the Portainer MCP project.
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+
+## Development Setup
+
+<Steps>
+1. **Prerequisites**: Go 1.24+, Make, Docker (for integration tests)
+
+2. **Clone the repository**:
+   ```bash
+   git clone https://github.com/portainer/portainer-mcp.git
+   cd portainer-mcp
+   ```
+
+3. **Build**:
+   ```bash
+   make build
+   # Binary output: dist/portainer-mcp
+   ```
+
+4. **Run tests**:
+   ```bash
+   go test -v ./...
+   ```
+
+5. **Format and lint**:
+   ```bash
+   gofmt -s -w .
+   go vet ./...
+   ```
+</Steps>
+
+## Project Structure
+
+```
+portainer-mcp/
+├── cmd/portainer-mcp/     # Entry point
+├── internal/
+│   ├── mcp/               # MCP server + handlers
+│   └── k8sutil/           # Kubernetes utilities
+├── pkg/
+│   ├── portainer/
+│   │   ├── client/        # Wrapper client
+│   │   └── models/        # Local models
+│   └── toolgen/           # YAML tool loader
+├── tests/integration/     # Integration tests
+├── tools.yaml             # Tool definitions
+└── docs/                  # Documentation (Starlight)
+```
+
+## Code Style
+
+- **Naming**: PascalCase for exported symbols, camelCase for private
+- **Error handling**: Always wrap errors with context: `fmt.Errorf("failed to X: %w", err)`
+- **Imports**: Group standard library, external packages, and internal packages (separated by blank lines)
+- **Documentation**: All exported functions must have godoc comments with `Parameters` and `Returns` sections
+- **Tests**: Use table-driven tests with descriptive case names
+
+## Adding a New Tool
+
+### 1. Define the tool in `tools.yaml`
+
+```yaml
+- name: myNewTool
+  description: "Description of what the tool does"
+  parameters:
+    - name: id
+      type: number
+      description: "Resource identifier"
+      required: true
+  annotations:
+    readOnlyHint: true
+    idempotentHint: true
+```
+
+### 2. Add the tool constant in `internal/mcp/schema.go`
+
+```go
+const ToolMyNewTool = "myNewTool"
+```
+
+### 3. Create or update the handler
+
+Add a handler function in the appropriate domain file (e.g., `internal/mcp/environments.go`):
+
+```go
+func (s *Server) HandleMyNewTool(params map[string]interface{}) (*mcp.CallToolResult, error) {
+    id, err := toolgen.GetRequiredInt(params, "id")
+    if err != nil {
+        return nil, fmt.Errorf("invalid id parameter: %w", err)
+    }
+
+    result, err := s.client.MyNewMethod(id)
+    if err != nil {
+        return nil, fmt.Errorf("failed to get resource: %w", err)
+    }
+
+    return toolResultJSON(result)
+}
+```
+
+### 4. Register the handler
+
+In the appropriate `AddXxxFeatures()` function:
+
+```go
+func (s *Server) AddMyDomainFeatures(reg ToolRegistrar) {
+    reg.AddTool(tools[ToolMyNewTool], s.HandleMyNewTool)
+}
+```
+
+### 5. Add to a meta-tool group
+
+In `internal/mcp/metatool_registry.go`, add the action to the relevant meta-tool:
+
+```go
+{
+    ActionName:  "my_new_tool",
+    HandlerFunc: s.HandleMyNewTool,
+    ReadOnly:    true,
+},
+```
+
+### 6. Add tests
+
+Write unit tests following the table-driven pattern:
+
+```go
+func TestHandleMyNewTool(t *testing.T) {
+    tests := []struct {
+        name    string
+        params  map[string]interface{}
+        want    *models.MyResource
+        wantErr bool
+    }{
+        {
+            name:   "valid request",
+            params: map[string]interface{}{"id": float64(1)},
+            want:   &models.MyResource{ID: 1, Name: "test"},
+        },
+        {
+            name:    "missing id",
+            params:  map[string]interface{}{},
+            wantErr: true,
+        },
+    }
+    // ...
+}
+```
+
+## Integration Tests
+
+Integration tests use real Portainer instances via Docker:
+
+```bash
+make test-integration
+```
+
+These tests:
+- Spin up a Portainer container
+- Create both a raw SDK client and an MCP server
+- Call MCP handlers and compare results with direct API calls
+- Clean up all resources after tests
+
+<Aside type="note">
+Integration tests require Docker to be running on the host.
+</Aside>
+
+## Pull Request Guidelines
+
+1. **One concern per PR** — keep changes focused
+2. **Tests required** — add or update tests for all code changes
+3. **Linting clean** — `go vet ./...` must pass
+4. **Build clean** — `go build ./...` must succeed
+5. **Descriptive commits** — use clear commit messages
+
+## Makefile Targets
+
+| Target | Description |
+|:-------|:-----------|
+| `make build` | Build for current platform |
+| `make test-all` | Run all tests (unit + integration) |
+| `make test-integration` | Run only integration tests |
+| `make inspector` | Launch MCP Inspector for debugging |
+| `make PLATFORM=linux ARCH=arm64 build` | Cross-compile |

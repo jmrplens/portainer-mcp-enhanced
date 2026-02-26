@@ -1,21 +1,11 @@
 ---
 title: Configuration
-nav_order: 3
+description: All options for running the Portainer MCP server.
+sidebar:
+  order: 3
 ---
 
-# Configuration
-{: .no_toc }
-
-All options for running the Portainer MCP server.
-{: .fs-6 .fw-300 }
-
-## Table of contents
-{: .no_toc .text-delta }
-
-1. TOC
-{:toc}
-
----
+import { Aside } from '@astrojs/starlight/components';
 
 ## Command-Line Flags
 
@@ -72,7 +62,7 @@ By default, the server registers **15 grouped meta-tools**. Each meta-tool cover
 
 This is the recommended mode for AI assistants because it reduces the tool selection surface from 98 to 15, significantly improving LLM tool selection accuracy.
 
-See [Meta-Tools Guide]({% link meta-tools.md %}) for details.
+See the [Meta-Tools Guide](/portainer-mcp/guides/meta-tools/) for details.
 
 ### Granular Tools
 
@@ -101,8 +91,9 @@ The server ships with `tools.yaml` embedded in the binary. To customize tool def
 2. If the file doesn't exist, it creates one from the embedded version
 3. If a file exists, it's validated against the expected version before loading
 
-{: .note }
-> The custom tools file only affects **granular tools mode**. Meta-tools are defined programmatically in Go and are not influenced by `tools.yaml`.
+<Aside type="note">
+The custom tools file only affects **granular tools mode**. Meta-tools are defined programmatically in Go and are not influenced by `tools.yaml`.
+</Aside>
 
 ### Tools YAML Versioning
 
@@ -122,8 +113,9 @@ Each release of the MCP server is validated against a specific Portainer version
 
 Use `-disable-version-check` to bypass this validation when connecting to an unsupported Portainer version.
 
-{: .warning }
-> Running with version check disabled may result in unexpected errors or incomplete data if the Portainer API has changed.
+<Aside type="caution">
+Running with version check disabled may result in unexpected errors or incomplete data if the Portainer API has changed.
+</Aside>
 
 ---
 
