@@ -15,25 +15,51 @@ import { Aside, Steps, Tabs, TabItem } from '@astrojs/starlight/components';
 
 ## Installation
 
-### Download a Pre-built Binary
+Choose any of the methods below:
 
-Grab the latest binary from [GitHub Releases](https://github.com/portainer/portainer-mcp/releases/latest) for your platform:
+<Tabs>
+<TabItem label="Homebrew" icon="apple">
+```bash
+brew install portainer/tap/portainer-mcp
+```
+</TabItem>
 
-| Platform | Architecture | Binary |
-|:---------|:------------|:-------|
-| Linux | amd64 | `portainer-mcp-linux-amd64` |
-| Linux | arm64 | `portainer-mcp-linux-arm64` |
-| macOS | arm64 (Apple Silicon) | `portainer-mcp-darwin-arm64` |
+<TabItem label="Go install" icon="seti:go">
+```bash
+go install github.com/portainer/portainer-mcp/cmd/portainer-mcp@latest
+```
+</TabItem>
+
+<TabItem label="Docker" icon="seti:docker">
+```bash
+docker pull ghcr.io/portainer/portainer-mcp:latest
+```
+</TabItem>
+
+<TabItem label="Binary" icon="down-caret">
+Download from [GitHub Releases](https://github.com/portainer/portainer-mcp/releases/latest):
+
+| Platform | Architecture | Archive |
+|:---------|:------------|:--------|
+| Linux | amd64 | `portainer-mcp_*_linux_amd64.tar.gz` |
+| Linux | arm64 | `portainer-mcp_*_linux_arm64.tar.gz` |
+| macOS | amd64 (Intel) | `portainer-mcp_*_darwin_amd64.tar.gz` |
+| macOS | arm64 (Apple Silicon) | `portainer-mcp_*_darwin_arm64.tar.gz` |
+| Windows | amd64 | `portainer-mcp_*_windows_amd64.zip` |
+| Windows | arm64 | `portainer-mcp_*_windows_arm64.zip` |
 
 ```bash
 # Example: Linux amd64
-curl -L -o portainer-mcp \
-  https://github.com/portainer/portainer-mcp/releases/latest/download/portainer-mcp-linux-amd64
+curl -L -o portainer-mcp.tar.gz \
+  https://github.com/portainer/portainer-mcp/releases/latest/download/portainer-mcp_linux_amd64.tar.gz
+tar xzf portainer-mcp.tar.gz
 chmod +x portainer-mcp
 ```
 
-### Build from Source
+All releases include SHA256 checksums in `checksums.txt`.
+</TabItem>
 
+<TabItem label="From source" icon="github">
 Requires **Go 1.24+** and **Make**:
 
 ```bash
@@ -48,6 +74,8 @@ Cross-compile for a specific platform:
 ```bash
 make PLATFORM=linux ARCH=arm64 build
 ```
+</TabItem>
+</Tabs>
 
 ## Get a Portainer API Token
 

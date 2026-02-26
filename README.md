@@ -45,16 +45,24 @@ A [Model Context Protocol (MCP)](https://modelcontextprotocol.io/introduction) s
 
 ## Quickstart
 
-### 1. Download
+### 1. Install
 
-Grab the latest binary from [Releases](https://github.com/portainer/portainer-mcp/releases/latest) for your platform (Linux amd64/arm64, macOS arm64), or build from source:
-
+**Homebrew** (macOS / Linux):
 ```bash
-git clone https://github.com/portainer/portainer-mcp.git
-cd portainer-mcp
-make build
-# Binary: dist/portainer-mcp
+brew install portainer/tap/portainer-mcp
 ```
+
+**Go install**:
+```bash
+go install github.com/portainer/portainer-mcp/cmd/portainer-mcp@latest
+```
+
+**Docker**:
+```bash
+docker pull ghcr.io/portainer/portainer-mcp:latest
+```
+
+Or download a pre-built binary from [Releases](https://github.com/portainer/portainer-mcp/releases/latest) (Linux, macOS, Windows — amd64/arm64, with SHA256 checksums).
 
 ### 2. Get a Portainer API Token
 

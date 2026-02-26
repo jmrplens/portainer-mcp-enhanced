@@ -52,6 +52,18 @@ import { Aside } from '@astrojs/starlight/components';
   -skip-tls-verify
 ```
 
+**Docker**:
+```bash
+docker run --rm -i \
+  ghcr.io/portainer/portainer-mcp:latest \
+  -server "https://portainer.example.com:9443" \
+  -token "ptr_abc123..."
+```
+
+<Aside type="tip">
+When running in Docker, the MCP server communicates via stdio. Pass `-i` (interactive) to keep stdin open for the MCP client.
+</Aside>
+
 ---
 
 ## Tool Registration Modes
