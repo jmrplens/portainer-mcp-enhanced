@@ -41,6 +41,9 @@ func (s *PortainerMCPServer) HandleCreateAccessGroup() server.ToolHandlerFunc {
 		if err != nil {
 			return mcp.NewToolResultErrorFromErr("invalid name parameter", err), nil
 		}
+		if err := validateName(name); err != nil {
+			return mcp.NewToolResultError(err.Error()), nil
+		}
 
 		environmentIds, err := parser.GetArrayOfIntegers("environmentIds", false)
 		if err != nil {
@@ -68,6 +71,9 @@ func (s *PortainerMCPServer) HandleUpdateAccessGroupName() server.ToolHandlerFun
 		name, err := parser.GetString("name", true)
 		if err != nil {
 			return mcp.NewToolResultErrorFromErr("invalid name parameter", err), nil
+		}
+		if err := validateName(name); err != nil {
+			return mcp.NewToolResultError(err.Error()), nil
 		}
 
 		err = s.cli.UpdateAccessGroupName(id, name)

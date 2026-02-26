@@ -98,9 +98,8 @@ func convertToolDefinition(def ToolDefinition) (mcp.Tool, error) {
 		return mcp.Tool{}, fmt.Errorf("tool description is required for tool '%s'", def.Name)
 	}
 
-	var zeroAnnotations Annotations
-	if def.Annotations == zeroAnnotations {
-		return mcp.Tool{}, fmt.Errorf("annotations block is required for tool '%s'", def.Name)
+	if def.Annotations.Title == "" {
+		return mcp.Tool{}, fmt.Errorf("annotations title is required for tool '%s'", def.Name)
 	}
 
 	options := []mcp.ToolOption{
@@ -157,7 +156,7 @@ func convertParameter(param ParameterDefinition) mcp.ToolOption {
 	case "object":
 		return mcp.WithObject(param.Name, options...)
 	default:
-		// Default to string if type is unknown
+		log.Warn().Str("parameter", param.Name).Str("type", param.Type).Msg("unknown parameter type, defaulting to string")
 		return mcp.WithString(param.Name, options...)
 	}
 }

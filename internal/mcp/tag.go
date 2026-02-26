@@ -37,6 +37,9 @@ func (s *PortainerMCPServer) HandleCreateEnvironmentTag() server.ToolHandlerFunc
 		if err != nil {
 			return mcp.NewToolResultErrorFromErr("invalid name parameter", err), nil
 		}
+		if err := validateName(name); err != nil {
+			return mcp.NewToolResultError(err.Error()), nil
+		}
 
 		id, err := s.cli.CreateEnvironmentTag(name)
 		if err != nil {

@@ -323,7 +323,7 @@ func TestConvertToolDefinition(t *testing.T) {
 				Annotations: Annotations{}, // Zero value simulates missing block
 			},
 			wantErr:       true,
-			wantErrSubstr: "annotations block is required",
+			wantErrSubstr: "annotations title is required",
 		},
 		{
 			name: "with parameters",

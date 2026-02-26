@@ -62,7 +62,7 @@ func (p *ParameterParser) GetInt(name string, required bool) (int, error) {
 		return 0, err
 	}
 
-	if num < math.MinInt64 || num > math.MaxInt64 || math.Trunc(num) != num {
+	if num < math.MinInt || num > math.MaxInt || math.Trunc(num) != num {
 		return 0, fmt.Errorf("%s must be a valid integer", name)
 	}
 

@@ -3,6 +3,7 @@ package mcp
 import (
 	"encoding/json"
 	"fmt"
+	"strings"
 
 	"github.com/mark3labs/mcp-go/mcp"
 )
@@ -14,6 +15,22 @@ func jsonResult(obj any, errMsg string) (*mcp.CallToolResult, error) {
 		return mcp.NewToolResultErrorFromErr(errMsg, err), nil
 	}
 	return mcp.NewToolResultText(string(data)), nil
+}
+
+// validateName checks that a name string is non-empty after trimming whitespace.
+func validateName(name string) error {
+	if strings.TrimSpace(name) == "" {
+		return fmt.Errorf("name cannot be empty or whitespace-only")
+	}
+	return nil
+}
+
+// validatePositiveID checks that an ID is a positive integer.
+func validatePositiveID(name string, id int) error {
+	if id <= 0 {
+		return fmt.Errorf("%s must be a positive integer, got %d", name, id)
+	}
+	return nil
 }
 
 // parseAccessMap parses access entries from an array of objects and returns a map of ID to access level

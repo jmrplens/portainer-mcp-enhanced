@@ -29,6 +29,9 @@ func (s *PortainerMCPServer) HandleCreateTeam() server.ToolHandlerFunc {
 		if err != nil {
 			return mcp.NewToolResultErrorFromErr("invalid name parameter", err), nil
 		}
+		if err := validateName(name); err != nil {
+			return mcp.NewToolResultError(err.Error()), nil
+		}
 
 		teamID, err := s.cli.CreateTeam(name)
 		if err != nil {
@@ -98,6 +101,9 @@ func (s *PortainerMCPServer) HandleUpdateTeamName() server.ToolHandlerFunc {
 		name, err := parser.GetString("name", true)
 		if err != nil {
 			return mcp.NewToolResultErrorFromErr("invalid name parameter", err), nil
+		}
+		if err := validateName(name); err != nil {
+			return mcp.NewToolResultError(err.Error()), nil
 		}
 
 		err = s.cli.UpdateTeamName(id, name)
