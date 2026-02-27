@@ -18,12 +18,6 @@ import { Aside, Steps, Tabs, TabItem } from '@astrojs/starlight/components';
 Choose any of the methods below:
 
 <Tabs>
-<TabItem label="Homebrew" icon="apple">
-```bash
-brew install portainer/tap/portainer-mcp
-```
-</TabItem>
-
 <TabItem label="Go install" icon="seti:go">
 ```bash
 go install github.com/portainer/portainer-mcp/cmd/portainer-mcp@latest
@@ -32,27 +26,27 @@ go install github.com/portainer/portainer-mcp/cmd/portainer-mcp@latest
 
 <TabItem label="Docker" icon="seti:docker">
 ```bash
-docker pull ghcr.io/portainer/portainer-mcp:latest
+docker pull ghcr.io/jmrplens/portainer-mcp-enhanced:latest
 ```
 </TabItem>
 
 <TabItem label="Binary" icon="down-caret">
-Download from [GitHub Releases](https://github.com/portainer/portainer-mcp/releases/latest):
+Download from [GitHub Releases](https://github.com/jmrplens/portainer-mcp-enhanced/releases/latest):
 
 | Platform | Architecture | Archive |
 |:---------|:------------|:--------|
-| Linux | amd64 | `portainer-mcp_*_linux_amd64.tar.gz` |
-| Linux | arm64 | `portainer-mcp_*_linux_arm64.tar.gz` |
-| macOS | amd64 (Intel) | `portainer-mcp_*_darwin_amd64.tar.gz` |
-| macOS | arm64 (Apple Silicon) | `portainer-mcp_*_darwin_arm64.tar.gz` |
-| Windows | amd64 | `portainer-mcp_*_windows_amd64.zip` |
-| Windows | arm64 | `portainer-mcp_*_windows_arm64.zip` |
+| Linux | amd64 | `portainer-mcp-enhanced_*_linux_amd64.tar.gz` |
+| Linux | arm64 | `portainer-mcp-enhanced_*_linux_arm64.tar.gz` |
+| macOS | amd64 (Intel) | `portainer-mcp-enhanced_*_darwin_amd64.tar.gz` |
+| macOS | arm64 (Apple Silicon) | `portainer-mcp-enhanced_*_darwin_arm64.tar.gz` |
+| Windows | amd64 | `portainer-mcp-enhanced_*_windows_amd64.zip` |
+| Windows | arm64 | `portainer-mcp-enhanced_*_windows_arm64.zip` |
 
 ```bash
 # Example: Linux amd64
-curl -L -o portainer-mcp.tar.gz \
-  https://github.com/portainer/portainer-mcp/releases/latest/download/portainer-mcp_linux_amd64.tar.gz
-tar xzf portainer-mcp.tar.gz
+curl -L -o portainer-mcp-enhanced.tar.gz \
+  https://github.com/jmrplens/portainer-mcp-enhanced/releases/latest/download/portainer-mcp-enhanced_linux_amd64.tar.gz
+tar xzf portainer-mcp-enhanced.tar.gz
 chmod +x portainer-mcp
 ```
 
@@ -63,8 +57,8 @@ All releases include SHA256 checksums in `checksums.txt`.
 Requires **Go 1.24+** and **Make**:
 
 ```bash
-git clone https://github.com/portainer/portainer-mcp.git
-cd portainer-mcp
+git clone https://github.com/jmrplens/portainer-mcp-enhanced.git
+cd portainer-mcp-enhanced
 make build
 # Binary: dist/portainer-mcp
 ```
@@ -170,7 +164,7 @@ You should see the assistant call `manage_environments` with `action: list_envir
 
 ## Next Steps
 
-- [Configuration](/portainer-mcp/configuration/) — all CLI flags and options
-- [Meta-Tools Guide](/portainer-mcp/guides/meta-tools/) — understand the 15 grouped tools
-- [Tools Reference](/portainer-mcp/reference/api-reference/) — complete parameter details for all 98 tools
-- [Security](/portainer-mcp/guides/security/) — security considerations and read-only mode
+- [Configuration](/portainer-mcp-enhanced/configuration/) — all CLI flags and options
+- [Meta-Tools Guide](/portainer-mcp-enhanced/guides/meta-tools/) — understand the 15 grouped tools
+- [Tools Reference](/portainer-mcp-enhanced/reference/api-reference/) — complete parameter details for all 98 tools
+- [Security](/portainer-mcp-enhanced/guides/security/) — security considerations and read-only mode

@@ -28,13 +28,11 @@ This triggers:
 
 3. **Checksums** file with SHA256 hashes
 
-4. **Docker images** built and pushed to `ghcr.io/portainer/portainer-mcp`:
+4. **Docker images** built and pushed to `ghcr.io/jmrplens/portainer-mcp-enhanced`:
    - Multi-arch manifest (`latest` + version tag)
    - Based on Alpine Linux
 
-5. **Homebrew formula** updated in `portainer/homebrew-tap`
-
-6. **GitHub Release** created with changelog and all artifacts
+5. **GitHub Release** created with changelog and all artifacts
 
 ### Documentation Workflow
 
@@ -78,33 +76,24 @@ builds:
 ```yaml
 dockers:
   - image_templates:
-      - "ghcr.io/portainer/portainer-mcp:{{ .Tag }}-amd64"
+      - "ghcr.io/jmrplens/portainer-mcp-enhanced:{{ .Tag }}-amd64"
     goarch: amd64
     dockerfile: Dockerfile.goreleaser
   - image_templates:
-      - "ghcr.io/portainer/portainer-mcp:{{ .Tag }}-arm64"
+      - "ghcr.io/jmrplens/portainer-mcp-enhanced:{{ .Tag }}-arm64"
     goarch: arm64
     dockerfile: Dockerfile.goreleaser
 
 docker_manifests:
-  - name_template: "ghcr.io/portainer/portainer-mcp:{{ .Tag }}"
+  - name_template: "ghcr.io/jmrplens/portainer-mcp-enhanced:{{ .Tag }}"
     image_templates:
-      - "ghcr.io/portainer/portainer-mcp:{{ .Tag }}-amd64"
-      - "ghcr.io/portainer/portainer-mcp:{{ .Tag }}-arm64"
+      - "ghcr.io/jmrplens/portainer-mcp-enhanced:{{ .Tag }}-amd64"
+      - "ghcr.io/jmrplens/portainer-mcp-enhanced:{{ .Tag }}-arm64"
 ```
 
 ### Homebrew
 
-```yaml
-brews:
-  - repository:
-      owner: portainer
-      name: homebrew-tap
-    homepage: "https://github.com/portainer/portainer-mcp"
-    description: "MCP server for Portainer container management"
-    install: |
-      bin.install "portainer-mcp"
-```
+> **Note**: Homebrew tap distribution is not currently available for this fork. Use one of the other installation methods (Go install, Docker, or binary download).
 
 ## Creating a Release
 
@@ -179,7 +168,7 @@ docker build -t portainer-mcp .
 
 ```bash
 docker run --rm \
-  ghcr.io/portainer/portainer-mcp:latest \
+  ghcr.io/jmrplens/portainer-mcp-enhanced:latest \
   -server https://portainer:9443 \
   -token ptr_your_api_token
 ```

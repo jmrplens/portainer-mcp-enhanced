@@ -65,7 +65,7 @@ After updating `github.com/portainer/client-api-go/v2`, verify that the raw mode
 
 | Workflow | Trigger | Purpose |
 |----------|---------|---------|
-| `release.yml` | Tag push `v*` | GoReleaser build → GitHub Release + Docker images + Homebrew |
+| `release.yml` | Tag push `v*` | GoReleaser build → GitHub Release + Docker images |
 | `deploy-docs.yml` | Push to `main` (docs/) | Build Starlight → deploy to GitHub Pages |
 
 ### GoReleaser Configuration
@@ -75,8 +75,7 @@ The `.goreleaser.yaml` file defines:
 - **6 build targets**: linux/darwin/windows × amd64/arm64
 - **Checksums**: SHA256 for all archives
 - **Changelog**: Auto-generated from conventional commits
-- **Docker**: Multi-arch images pushed to `ghcr.io/portainer/portainer-mcp`
-- **Homebrew**: Formula published to `portainer/homebrew-tap`
+- **Docker**: Multi-arch images pushed to `ghcr.io/jmrplens/portainer-mcp-enhanced`
 
 ### Build Flags
 
@@ -113,7 +112,6 @@ pnpm run build     # Production build
 | **Portainer API** | Target server managed by MCP | `-server` and `-token` flags |
 | **GitHub Packages** | Docker image registry (`ghcr.io`) | Automatic via GoReleaser |
 | **GitHub Pages** | Documentation hosting | `deploy-docs.yml` workflow |
-| **Homebrew** | Binary distribution | `portainer/homebrew-tap` repo |
 
 ## tools.yaml Versioning
 

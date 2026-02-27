@@ -138,4 +138,4 @@ Starlight/Astro site in `docs/`, built with `pnpm`. Deploy to GitHub Pages via w
 
 ## Release
 
-GoReleaser config in `.goreleaser.yaml`. Multi-platform builds (linux/darwin/windows × amd64/arm64). Docker images pushed to `ghcr.io/portainer/portainer-mcp`. Homebrew tap at `portainer/homebrew-tap`.
+GoReleaser config in `.goreleaser.yaml`. Multi-platform builds (linux/darwin/windows × amd64/arm64). Docker images pushed to `ghcr.io/jmrplens/portainer-mcp-enhanced`.

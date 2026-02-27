@@ -1,17 +1,17 @@
 <div align="center">
 
-# Portainer MCP Server
+# Portainer MCP Server (Enhanced)
 
-**Manage your entire Portainer infrastructure through AI assistants using the Model Context Protocol**
+**Enhanced community fork — Manage your entire Portainer infrastructure through AI assistants using the Model Context Protocol**
 
-[![Go Report Card](https://goreportcard.com/badge/github.com/portainer/portainer-mcp)](https://goreportcard.com/report/github.com/portainer/portainer-mcp)
-[![codecov](https://codecov.io/gh/portainer/portainer-mcp/graph/badge.svg?token=NHTQ5FIPFX)](https://codecov.io/gh/portainer/portainer-mcp)
-![Go Version](https://img.shields.io/github/go-mod/go-version/portainer/portainer-mcp)
-![License](https://img.shields.io/github/license/portainer/portainer-mcp)
+> ⚡ This is an enhanced fork of the [official Portainer MCP Server](https://github.com/portainer/portainer-mcp) with additional features and improvements.
+
+![Go Version](https://img.shields.io/github/go-mod/go-version/jmrplens/portainer-mcp-enhanced)
+![License](https://img.shields.io/github/license/jmrplens/portainer-mcp-enhanced)
 ![Portainer](https://img.shields.io/badge/Portainer-2.31.2-blue)
 ![MCP Tools](https://img.shields.io/badge/MCP_Tools-98-green)
 
-[Documentation](https://portainer.github.io/portainer-mcp/) · [Quickstart](#quickstart) · [Configuration](#configuration) · [Contributing](CONTRIBUTING.md)
+[Documentation](https://jmrplens.github.io/portainer-mcp-enhanced/) · [Quickstart](#quickstart) · [Configuration](#configuration) · [Contributing](CONTRIBUTING.md)
 
 </div>
 
@@ -47,11 +47,6 @@ A [Model Context Protocol (MCP)](https://modelcontextprotocol.io/introduction) s
 
 ### 1. Install
 
-**Homebrew** (macOS / Linux):
-```bash
-brew install portainer/tap/portainer-mcp
-```
-
 **Go install**:
 ```bash
 go install github.com/portainer/portainer-mcp/cmd/portainer-mcp@latest
@@ -59,10 +54,17 @@ go install github.com/portainer/portainer-mcp/cmd/portainer-mcp@latest
 
 **Docker**:
 ```bash
-docker pull ghcr.io/portainer/portainer-mcp:latest
+docker pull ghcr.io/jmrplens/portainer-mcp-enhanced:latest
 ```
 
-Or download a pre-built binary from [Releases](https://github.com/portainer/portainer-mcp/releases/latest) (Linux, macOS, Windows — amd64/arm64, with SHA256 checksums).
+**From source**:
+```bash
+git clone https://github.com/jmrplens/portainer-mcp-enhanced.git
+cd portainer-mcp-enhanced
+make build    # → dist/portainer-mcp
+```
+
+Or download a pre-built binary from [Releases](https://github.com/jmrplens/portainer-mcp-enhanced/releases/latest) (Linux, macOS, Windows — amd64/arm64, with SHA256 checksums).
 
 ### 2. Get a Portainer API Token
 
@@ -174,7 +176,7 @@ This dramatically reduces the tool-selection surface for LLMs while preserving 1
 | `manage_settings` | 5 | Server settings and SSL |
 | `manage_system` | 5 | Version, status, MOTD, roles, auth |
 
-To use the original 98 individual tools, pass `--granular-tools`. See the [Meta-Tools Guide](https://portainer.github.io/portainer-mcp/guides/meta-tools/) for the full action reference.
+To use the original 98 individual tools, pass `--granular-tools`. See the [Meta-Tools Guide](https://jmrplens.github.io/portainer-mcp-enhanced/guides/meta-tools/) for the full action reference.
 
 ### Read-Only Mode
 
@@ -190,17 +192,17 @@ Run with `-read-only` to restrict to read-only operations. All write, update, an
 
 ## Documentation
 
-📖 **[Full Documentation](https://portainer.github.io/portainer-mcp/)** — Installation, configuration, meta-tools guide, architecture, security, and API reference.
+📖 **[Full Documentation](https://jmrplens.github.io/portainer-mcp-enhanced/)** — Installation, configuration, meta-tools guide, architecture, security, and API reference.
 
 | Page | Description |
 |------|-------------|
-| [Getting Started](https://portainer.github.io/portainer-mcp/getting-started/) | Prerequisites, installation, AI assistant setup |
-| [Configuration](https://portainer.github.io/portainer-mcp/configuration/) | CLI flags, tool modes, version compatibility |
-| [Meta-Tools Guide](https://portainer.github.io/portainer-mcp/guides/meta-tools/) | All 15 meta-tools with complete action reference |
-| [Tools Reference](https://portainer.github.io/portainer-mcp/reference/api-reference/) | All 98 granular tools with parameters |
-| [Architecture](https://portainer.github.io/portainer-mcp/reference/architecture/) | Server layers, client model, project structure |
-| [Security](https://portainer.github.io/portainer-mcp/guides/security/) | Authentication, TLS, read-only mode, proxy safety |
-| [Contributing](https://portainer.github.io/portainer-mcp/development/contributing/) | Development setup, code style, adding new tools |
+| [Getting Started](https://jmrplens.github.io/portainer-mcp-enhanced/getting-started/) | Prerequisites, installation, AI assistant setup |
+| [Configuration](https://jmrplens.github.io/portainer-mcp-enhanced/configuration/) | CLI flags, tool modes, version compatibility |
+| [Meta-Tools Guide](https://jmrplens.github.io/portainer-mcp-enhanced/guides/meta-tools/) | All 15 meta-tools with complete action reference |
+| [Tools Reference](https://jmrplens.github.io/portainer-mcp-enhanced/reference/api-reference/) | All 98 granular tools with parameters |
+| [Architecture](https://jmrplens.github.io/portainer-mcp-enhanced/reference/architecture/) | Server layers, client model, project structure |
+| [Security](https://jmrplens.github.io/portainer-mcp-enhanced/guides/security/) | Authentication, TLS, read-only mode, proxy safety |
+| [Contributing](https://jmrplens.github.io/portainer-mcp-enhanced/development/contributing/) | Development setup, code style, adding new tools |
 
 ## Development
 
@@ -212,7 +214,7 @@ make test-all                 # All tests
 make inspector                # Launch MCP Inspector UI
 ```
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for development guidelines. The [Developer Documentation](https://portainer.github.io/portainer-mcp/development/contributing/) covers project structure, adding tools, testing, dependencies, and CI/CD in detail.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for development guidelines. The [Developer Documentation](https://jmrplens.github.io/portainer-mcp-enhanced/development/contributing/) covers project structure, adding tools, testing, dependencies, and CI/CD in detail.
 
 ### Security
 

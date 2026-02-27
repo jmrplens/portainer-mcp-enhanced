@@ -97,12 +97,12 @@ All notable changes to this project are documented in this file.
 - Tag management
 - Basic tool definition system via YAML
 
-[Unreleased]: https://github.com/portainer/portainer-mcp/compare/v0.6.1...HEAD
-[v0.6.1]: https://github.com/portainer/portainer-mcp/compare/v0.6.0...v0.6.1
-[v0.6.0]: https://github.com/portainer/portainer-mcp/compare/v0.5.0...v0.6.0
-[v0.5.0]: https://github.com/portainer/portainer-mcp/compare/v0.4.1...v0.5.0
-[v0.4.1]: https://github.com/portainer/portainer-mcp/compare/v0.4.0...v0.4.1
-[v0.4.0]: https://github.com/portainer/portainer-mcp/compare/v0.3.0...v0.4.0
-[v0.3.0]: https://github.com/portainer/portainer-mcp/compare/v0.2.0...v0.3.0
-[v0.2.0]: https://github.com/portainer/portainer-mcp/compare/v0.1.0...v0.2.0
-[v0.1.0]: https://github.com/portainer/portainer-mcp/releases/tag/v0.1.0
+[Unreleased]: https://github.com/jmrplens/portainer-mcp-enhanced/compare/v0.6.1...HEAD
+[v0.6.1]: https://github.com/jmrplens/portainer-mcp-enhanced/compare/v0.6.0...v0.6.1
+[v0.6.0]: https://github.com/jmrplens/portainer-mcp-enhanced/compare/v0.5.0...v0.6.0
+[v0.5.0]: https://github.com/jmrplens/portainer-mcp-enhanced/compare/v0.4.1...v0.5.0
+[v0.4.1]: https://github.com/jmrplens/portainer-mcp-enhanced/compare/v0.4.0...v0.4.1
+[v0.4.0]: https://github.com/jmrplens/portainer-mcp-enhanced/compare/v0.3.0...v0.4.0
+[v0.3.0]: https://github.com/jmrplens/portainer-mcp-enhanced/compare/v0.2.0...v0.3.0
+[v0.2.0]: https://github.com/jmrplens/portainer-mcp-enhanced/compare/v0.1.0...v0.2.0
+[v0.1.0]: https://github.com/jmrplens/portainer-mcp-enhanced/releases/tag/v0.1.0

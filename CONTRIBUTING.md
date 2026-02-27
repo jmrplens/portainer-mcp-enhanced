@@ -1,15 +1,15 @@
-# Contributing to Portainer MCP Server
+# Contributing to Portainer MCP Server (Enhanced)
 
 Thank you for your interest in contributing! Whether you're fixing a bug, adding a feature, or improving documentation, this guide covers everything you need to know.
 
-> 📖 **Full developer documentation** is available at [portainer.github.io/portainer-mcp/development/](https://portainer.github.io/portainer-mcp/development/contributing/)
+> 📖 **Full developer documentation** is available at [jmrplens.github.io/portainer-mcp-enhanced/development/](https://jmrplens.github.io/portainer-mcp-enhanced/development/contributing/)
 
 ## Quick Start
 
 ```bash
 # Clone and build
-git clone https://github.com/portainer/portainer-mcp.git
-cd portainer-mcp
+git clone https://github.com/jmrplens/portainer-mcp-enhanced.git
+cd portainer-mcp-enhanced
 make build          # → dist/portainer-mcp
 
 # Run tests
@@ -60,7 +60,7 @@ portainer-mcp/
 
 ### Reporting Bugs
 
-- Use [GitHub Issues](https://github.com/portainer/portainer-mcp/issues/new) with the **bug** label
+- Use [GitHub Issues](https://github.com/jmrplens/portainer-mcp-enhanced/issues/new) with the **bug** label
 - Include: Go version, Portainer version, steps to reproduce, expected vs actual behavior
 
 ### Suggesting Features
@@ -72,7 +72,7 @@ portainer-mcp/
 
 1. **Fork** the repository
 2. **Branch** from `main` using a descriptive name: `feat/helm-rollback`, `fix/proxy-timeout`
-3. **Implement** with tests — see the [developer guide](https://portainer.github.io/portainer-mcp/development/contributing/) for patterns
+3. **Implement** with tests — see the [developer guide](https://jmrplens.github.io/portainer-mcp-enhanced/development/contributing/) for patterns
 4. **Verify** — all checks must pass:
    ```bash
    go build ./...
@@ -139,4 +139,4 @@ Be respectful, constructive, and inclusive. We follow the [Contributor Covenant]
 
 ## Questions?
 
-Open an [issue](https://github.com/portainer/portainer-mcp/issues) or [discussion](https://github.com/portainer/portainer-mcp/discussions). We're happy to help!
+Open an [issue](https://github.com/jmrplens/portainer-mcp-enhanced/issues) or [discussion](https://github.com/jmrplens/portainer-mcp-enhanced/discussions). We're happy to help!
