@@ -217,7 +217,7 @@ func (s *PortainerMCPServer) addToolIfExists(toolName string, handler server.Too
 	if tool, exists := s.tools[toolName]; exists {
 		s.srv.AddTool(tool, handler)
 	} else {
-		log.Warn().Str("tool", toolName).Msg("Tool not found, will not be registered for MCP usage")
+		log.Debug().Str("tool", toolName).Msg("Tool not registered for MCP usage (absent from tools.yaml; intentional for trimmed configs)")
 	}
 }
 
