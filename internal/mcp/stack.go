@@ -28,6 +28,7 @@ func (s *PortainerMCPServer) AddStackFeatures() {
 		s.addToolIfExists(ToolStartStack, s.HandleStartStack())
 		s.addToolIfExists(ToolStopStack, s.HandleStopStack())
 		s.addToolIfExists(ToolMigrateStack, s.HandleMigrateStack())
+		s.addToolIfExists(ToolCreateRegularStack, s.HandleCreateRegularStack())
 	}
 }
 
@@ -414,6 +415,78 @@ func (s *PortainerMCPServer) HandleMigrateStack() server.ToolHandlerFunc {
 		stack, err := s.cli.MigrateStack(id, endpointID, targetEndpointID, name)
 		if err != nil {
 			return mcp.NewToolResultErrorFromErr("failed to migrate stack", err), nil
+		}
+
+		return jsonResult(stack, "failed to marshal stack")
+	}
+}
+
+// parseStackEnvVars converts an array of {"name", "value"} objects (as decoded from
+// JSON) into a slice of models.StackEnvVar. An empty/nil input yields an empty slice.
+func parseStackEnvVars(items []any) ([]models.StackEnvVar, error) {
+	env := make([]models.StackEnvVar, 0, len(items))
+
+	for _, item := range items {
+		obj, ok := item.(map[string]any)
+		if !ok {
+			return nil, fmt.Errorf("invalid env entry: %v", item)
+		}
+
+		name, ok := obj["name"].(string)
+		if !ok || name == "" {
+			return nil, fmt.Errorf("env entry missing required 'name' string field: %v", item)
+		}
+
+		value, _ := obj["value"].(string)
+
+		env = append(env, models.StackEnvVar{Name: name, Value: value})
+	}
+
+	return env, nil
+}
+
+// HandleCreateRegularStack returns an MCP tool handler that creates a standalone
+// (non-edge) stack on a specific environment.
+func (s *PortainerMCPServer) HandleCreateRegularStack() server.ToolHandlerFunc {
+	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
+		parser := toolgen.NewParameterParser(request)
+
+		name, err := parser.GetString("name", true)
+		if err != nil {
+			return mcp.NewToolResultErrorFromErr("invalid name parameter", err), nil
+		}
+		if err := validateName(name); err != nil {
+			return mcp.NewToolResultError(err.Error()), nil
+		}
+
+		file, err := parser.GetString("file", true)
+		if err != nil {
+			return mcp.NewToolResultErrorFromErr("invalid file parameter", err), nil
+		}
+		if err := validateComposeYAML(file); err != nil {
+			return mcp.NewToolResultError(err.Error()), nil
+		}
+
+		endpointID, err := parser.GetInt("environmentId", true)
+		if err != nil {
+			return mcp.NewToolResultErrorFromErr("invalid environmentId parameter", err), nil
+		}
+		if err := validatePositiveID("environmentId", endpointID); err != nil {
+			return mcp.NewToolResultError(err.Error()), nil
+		}
+
+		rawEnv, err := parser.GetArrayOfObjects("env", false)
+		if err != nil {
+			return mcp.NewToolResultErrorFromErr("invalid env parameter", err), nil
+		}
+		env, err := parseStackEnvVars(rawEnv)
+		if err != nil {
+			return mcp.NewToolResultErrorFromErr("invalid env parameter", err), nil
+		}
+
+		stack, err := s.cli.CreateRegularStack(name, file, endpointID, env)
+		if err != nil {
+			return mcp.NewToolResultErrorFromErr("failed to create regular stack", err), nil
 		}
 
 		return jsonResult(stack, "failed to marshal stack")

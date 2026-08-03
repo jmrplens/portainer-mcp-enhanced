@@ -493,7 +493,7 @@ tools:
       idempotentHint: true
       openWorldHint: false
 
-  # === REGULAR STACKS (8 tools) === #
+  # === REGULAR STACKS (9 tools) === #
   # Manage regular (non-edge) Docker Compose or Swarm stacks deployed to specific environments.
   # For edge stacks deployed via Edge Groups, see Edge Stacks.
   - name: getStack
@@ -650,6 +650,39 @@ tools:
       title: Migrate Stack
       readOnlyHint: false
       destructiveHint: true
+      idempotentHint: false
+      openWorldHint: false
+  - name: createRegularStack
+    description: "Create a new standalone (non-edge) Docker Compose stack directly on a specific environment. Use 'listEnvironments' to get the environment ID. For edge stacks deployed via Edge Groups, use 'createStack' instead. Example file: \"services:\\n  web:\\n    image: nginx\""
+    parameters:
+      - name: name
+        description: "Stack name: lowercase alphanumeric, hyphens, underscores only. Must start with a letter or number"
+        type: string
+        required: true
+      - name: file
+        description: >-
+          Content of the stack file. The file must be a valid
+          docker-compose.yml file. example: services:
+           web:
+             image:nginx
+        type: string
+        required: true
+      - name: environmentId
+        description: "Numeric ID of the environment to deploy the stack to"
+        type: number
+        required: true
+      - name: env
+        description: >-
+          Environment variables for the stack. Array of objects with 'name' and
+          'value' string fields. Example: [{"name": "FOO", "value": "bar"}]
+        type: array
+        required: false
+        items:
+          type: object
+    annotations:
+      title: Create Regular Stack
+      readOnlyHint: false
+      destructiveHint: false
       idempotentHint: false
       openWorldHint: false
 

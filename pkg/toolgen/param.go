@@ -6,6 +6,7 @@ package toolgen
 import (
 	"fmt"
 	"math"
+	"strconv"
 
 	"github.com/mark3labs/mcp-go/mcp"
 )
@@ -40,7 +41,11 @@ func (p *ParameterParser) GetString(name string, required bool) (string, error) 
 	return strValue, nil
 }
 
-// GetNumber extracts a number parameter from the request
+// GetNumber extracts a number parameter from the request. As a fallback for
+// clients that don't declare (and therefore can't type-check) this parameter
+// — e.g. a grouped meta-tool whose schema only advertised an "action" enum
+// before per-action schemas were merged in — a numeric string like "55" is
+// also accepted.
 func (p *ParameterParser) GetNumber(name string, required bool) (float64, error) {
 	value, ok := p.args[name]
 	if !ok || value == nil {
@@ -50,12 +55,30 @@ func (p *ParameterParser) GetNumber(name string, required bool) (float64, error)
 		return 0, nil
 	}
 
-	numValue, ok := value.(float64)
+	numValue, ok := coerceFloat64(value)
 	if !ok {
 		return 0, fmt.Errorf("%s must be a number", name)
 	}
 
 	return numValue, nil
+}
+
+// coerceFloat64 extracts a float64 from a decoded JSON value, additionally
+// accepting a numeric string (e.g. "55") as a fallback for callers that sent
+// an untyped parameter as text.
+func coerceFloat64(value any) (float64, bool) {
+	switch v := value.(type) {
+	case float64:
+		return v, true
+	case string:
+		f, err := strconv.ParseFloat(v, 64)
+		if err != nil {
+			return 0, false
+		}
+		return f, true
+	default:
+		return 0, false
+	}
 }
 
 // GetInt extracts an integer parameter from the request
@@ -72,7 +95,9 @@ func (p *ParameterParser) GetInt(name string, required bool) (int, error) {
 	return int(num), nil
 }
 
-// GetBoolean extracts a boolean parameter from the request
+// GetBoolean extracts a boolean parameter from the request. As a fallback for
+// clients that can't type-check this parameter (see GetNumber), a boolean
+// string like "true" or "false" is also accepted.
 func (p *ParameterParser) GetBoolean(name string, required bool) (bool, error) {
 	value, ok := p.args[name]
 	if !ok || value == nil {
@@ -82,12 +107,18 @@ func (p *ParameterParser) GetBoolean(name string, required bool) (bool, error) {
 		return false, nil
 	}
 
-	boolValue, ok := value.(bool)
-	if !ok {
+	switch v := value.(type) {
+	case bool:
+		return v, nil
+	case string:
+		b, err := strconv.ParseBool(v)
+		if err != nil {
+			return false, fmt.Errorf("%s must be a boolean", name)
+		}
+		return b, nil
+	default:
 		return false, fmt.Errorf("%s must be a boolean", name)
 	}
-
-	return boolValue, nil
 }
 
 // GetArrayOfIntegers extracts an array of numbers parameter from the request
@@ -127,7 +158,9 @@ func (p *ParameterParser) GetArrayOfObjects(name string, required bool) ([]any, 
 }
 
 // parseArrayOfIntegers converts a slice of any type to a slice of integers.
-// Returns an error if any value cannot be parsed as an integer.
+// Each element may be a JSON number or (as a fallback for untyped callers,
+// see GetNumber) a numeric string. Returns an error if any value cannot be
+// parsed as an integer.
 //
 // Example:
 //
@@ -137,7 +170,7 @@ func parseArrayOfIntegers(array []any) ([]int, error) {
 	result := make([]int, 0, len(array))
 
 	for _, item := range array {
-		idFloat, ok := item.(float64)
+		idFloat, ok := coerceFloat64(item)
 		if !ok {
 			return nil, fmt.Errorf("failed to parse '%v' as integer", item)
 		}

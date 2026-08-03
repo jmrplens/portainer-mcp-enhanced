@@ -17,6 +17,7 @@ const (
 	ToolSnapshotAllEnvironments            = "snapshotAllEnvironments"
 	ToolGetStackFile                       = "getStackFile"
 	ToolCreateStack                        = "createStack"
+	ToolCreateRegularStack                 = "createRegularStack"
 	ToolListStacks                         = "listStacks"
 	ToolListRegularStacks                  = "listRegularStacks"
 	ToolUpdateStack                        = "updateStack"

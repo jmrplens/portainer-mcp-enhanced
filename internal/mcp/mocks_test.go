@@ -280,6 +280,14 @@ func (m *MockPortainerClient) MigrateStack(id int, endpointID int, targetEndpoin
 	return args.Get(0).(models.RegularStack), args.Error(1)
 }
 
+func (m *MockPortainerClient) CreateRegularStack(name string, file string, endpointID int, env []models.StackEnvVar) (models.RegularStack, error) {
+	args := m.Called(name, file, endpointID, env)
+	if args.Get(0) == nil {
+		return models.RegularStack{}, args.Error(1)
+	}
+	return args.Get(0).(models.RegularStack), args.Error(1)
+}
+
 // Team methods
 
 func (m *MockPortainerClient) CreateTeam(name string) (int, error) {

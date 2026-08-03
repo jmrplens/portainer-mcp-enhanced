@@ -23,6 +23,7 @@ func allToolNames() map[string]mcp.Tool {
 		ToolGetStackFile, ToolCreateStack, ToolListStacks, ToolListRegularStacks,
 		ToolUpdateStack, ToolGetStack, ToolDeleteStack, ToolInspectStackFile,
 		ToolUpdateStackGit, ToolRedeployStackGit, ToolStartStack, ToolStopStack, ToolMigrateStack,
+		ToolCreateRegularStack,
 		ToolCreateEnvironmentTag, ToolDeleteEnvironmentTag, ToolListEnvironmentTags,
 		ToolCreateTeam, ToolGetTeam, ToolDeleteTeam, ToolListTeams,
 		ToolUpdateTeamName, ToolUpdateTeamMembers,

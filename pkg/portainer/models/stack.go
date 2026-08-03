@@ -66,6 +66,12 @@ type RedeployStackGitOptions struct {
 	Prune      bool
 }
 
+// StackEnvVar represents an environment variable for a standalone (non-edge) stack.
+type StackEnvVar struct {
+	Name  string
+	Value string
+}
+
 // ConvertRegularStack converts a raw PortainereeStack to a RegularStack
 func ConvertRegularStack(raw *apimodels.PortainereeStack) RegularStack {
 	if raw == nil {

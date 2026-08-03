@@ -99,3 +99,13 @@ func (a *portainerAPIAdapter) StackMigrate(id int64, endpointID int64, body *api
 	}
 	return resp.Payload, nil
 }
+
+// StackCreateStandalone creates a new standalone (non-edge) Docker Compose stack on a specific environment.
+func (a *portainerAPIAdapter) StackCreateStandalone(endpointID int64, body *apimodels.StacksComposeStackFromFileContentPayload) (*apimodels.PortainereeStack, error) {
+	params := stacks.NewStackCreateDockerStandaloneStringParams().WithEndpointID(endpointID).WithBody(body)
+	resp, err := a.swagger.Stacks.StackCreateDockerStandaloneString(params, nil)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create standalone stack: %w", err)
+	}
+	return resp.Payload, nil
+}

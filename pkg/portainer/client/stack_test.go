@@ -663,3 +663,60 @@ func TestMigrateStack(t *testing.T) {
 		})
 	}
 }
+
+// TestCreateRegularStack verifies create regular stack behavior.
+func TestCreateRegularStack(t *testing.T) {
+	now := time.Now().Unix()
+	tests := []struct {
+		name          string
+		stackName     string
+		stackFile     string
+		endpointID    int
+		env           []models.StackEnvVar
+		mockResult    *apimodels.PortainereeStack
+		mockError     error
+		expectedError bool
+	}{
+		{
+			name:       "successful creation with env",
+			stackName:  "test-stack",
+			stackFile:  "services:\n  web:\n    image: nginx",
+			endpointID: 3,
+			env:        []models.StackEnvVar{{Name: "FOO", Value: "bar"}},
+			mockResult: &apimodels.PortainereeStack{ID: 1, Name: "test-stack", EndpointID: 3, CreationDate: now},
+		},
+		{
+			name:       "successful creation without env",
+			stackName:  "test-stack",
+			stackFile:  "services:\n  web:\n    image: nginx",
+			endpointID: 3,
+			mockResult: &apimodels.PortainereeStack{ID: 2, Name: "test-stack", EndpointID: 3, CreationDate: now},
+		},
+		{
+			name:          "API error",
+			stackName:     "test-stack",
+			stackFile:     "services:\n  web:\n    image: nginx",
+			endpointID:    3,
+			mockError:     errors.New("failed to create standalone stack"),
+			expectedError: true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			mockAPI := new(MockPortainerAPI)
+			mockAPI.On("StackCreateStandalone", int64(tt.endpointID), mock.AnythingOfType("*models.StacksComposeStackFromFileContentPayload")).Return(tt.mockResult, tt.mockError)
+
+			c := &PortainerClient{cli: mockAPI}
+			result, err := c.CreateRegularStack(tt.stackName, tt.stackFile, tt.endpointID, tt.env)
+
+			if tt.expectedError {
+				assert.Error(t, err)
+			} else {
+				assert.NoError(t, err)
+				assert.Equal(t, tt.mockResult.ID, int64(result.ID))
+			}
+			mockAPI.AssertExpectations(t)
+		})
+	}
+}

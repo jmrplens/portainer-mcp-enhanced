@@ -161,7 +161,7 @@ func TestHandleCreateAccessGroup(t *testing.T) {
 			setupParams: func(request *mcp.CallToolRequest) {
 				request.Params.Arguments = map[string]any{
 					"name":           "group1",
-					"environmentIds": []any{"1", "2", "3"},
+					"environmentIds": []any{"abc", "def", "ghi"},
 				}
 			},
 		},
@@ -173,7 +173,19 @@ func TestHandleCreateAccessGroup(t *testing.T) {
 			setupParams: func(request *mcp.CallToolRequest) {
 				request.Params.Arguments = map[string]any{
 					"name":           "group1",
-					"environmentIds": []any{float64(1), "2", float64(3)},
+					"environmentIds": []any{float64(1), "abc", float64(3)},
+				}
+			},
+		},
+		{
+			name:        "numeric string environmentIds coerced",
+			inputName:   "group1",
+			inputEnvIDs: []int{1, 2, 3},
+			mockID:      1,
+			setupParams: func(request *mcp.CallToolRequest) {
+				request.Params.Arguments = map[string]any{
+					"name":           "group1",
+					"environmentIds": []any{"1", "2", "3"},
 				}
 			},
 		},

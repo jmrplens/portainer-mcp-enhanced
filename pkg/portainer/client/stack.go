@@ -266,3 +266,37 @@ func (c *PortainerClient) MigrateStack(id int, endpointID int, targetEndpointID 
 
 	return models.ConvertRegularStack(raw), nil
 }
+
+// CreateRegularStack creates a new standalone (non-edge) Docker Compose stack on a
+// specific environment. Unlike CreateStack (which deploys an edge stack to one or
+// more environment groups), this targets a single docker-local or docker-edge-agent
+// environment directly.
+//
+// Parameters:
+//   - name: The name of the stack
+//   - file: The file content of the stack (Compose file)
+//   - endpointID: The ID of the environment to deploy the stack to
+//   - env: Environment variables to set on the stack
+//
+// Returns:
+//   - The created RegularStack
+//   - An error if the operation fails
+func (c *PortainerClient) CreateRegularStack(name, file string, endpointID int, env []models.StackEnvVar) (models.RegularStack, error) {
+	pairs := make([]*apimodels.PortainerPair, len(env))
+	for i, e := range env {
+		pairs[i] = &apimodels.PortainerPair{Name: e.Name, Value: e.Value}
+	}
+
+	body := &apimodels.StacksComposeStackFromFileContentPayload{
+		Name:             &name,
+		StackFileContent: &file,
+		Env:              pairs,
+	}
+
+	raw, err := c.cli.StackCreateStandalone(int64(endpointID), body)
+	if err != nil {
+		return models.RegularStack{}, fmt.Errorf("failed to create regular stack: %w", err)
+	}
+
+	return models.ConvertRegularStack(raw), nil
+}

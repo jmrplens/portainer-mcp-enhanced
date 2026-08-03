@@ -736,3 +736,11 @@ func (m *MockPortainerAPI) StackMigrate(id int64, endpointID int64, body *apimod
 	}
 	return args.Get(0).(*apimodels.PortainereeStack), args.Error(1)
 }
+
+func (m *MockPortainerAPI) StackCreateStandalone(endpointID int64, body *apimodels.StacksComposeStackFromFileContentPayload) (*apimodels.PortainereeStack, error) {
+	args := m.Called(endpointID, body)
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
+	return args.Get(0).(*apimodels.PortainereeStack), args.Error(1)
+}

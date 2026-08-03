@@ -11,7 +11,9 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
+	"github.com/jmrplens/portainer-mcp-enhanced/internal/tooldef"
 	"github.com/jmrplens/portainer-mcp-enhanced/pkg/portainer/models"
+	"github.com/jmrplens/portainer-mcp-enhanced/pkg/toolgen"
 )
 
 // newTestMetaServer creates a PortainerMCPServer wired for meta-tool testing.
@@ -61,7 +63,7 @@ func listRegisteredTools(t *testing.T, srv *server.MCPServer) []string {
 }
 
 // TestMetaToolDefinitionsCount verifies that metaToolDefinitions returns
-// exactly 15 groups with 98 total actions.
+// exactly 15 groups with 99 total actions.
 func TestMetaToolDefinitionsCount(t *testing.T) {
 	defs := metaToolDefinitions()
 	assert.Equal(t, 15, len(defs), "expected 15 meta-tool groups")
@@ -70,7 +72,7 @@ func TestMetaToolDefinitionsCount(t *testing.T) {
 	for _, def := range defs {
 		totalActions += len(def.actions)
 	}
-	assert.Equal(t, 98, totalActions, "expected 98 total actions across all meta-tools")
+	assert.Equal(t, 99, totalActions, "expected 99 total actions across all meta-tools")
 }
 
 // TestMetaToolUniqueActionNames verifies that all action names within each
@@ -540,7 +542,7 @@ func TestMetaToolRegistryActionNames(t *testing.T) {
 		},
 		"manage_stacks": {
 			"list_stacks", "list_regular_stacks", "get_stack", "get_stack_file",
-			"inspect_stack_file", "create_stack", "update_stack", "delete_stack",
+			"inspect_stack_file", "create_stack", "create_regular_stack", "update_stack", "delete_stack",
 			"update_stack_git", "redeploy_stack_git", "start_stack", "stop_stack",
 			"migrate_stack",
 		},
@@ -682,4 +684,96 @@ func TestMetaToolDescriptionsListActions(t *testing.T) {
 			}
 		})
 	}
+}
+
+// newTestMetaServerWithRealSchemas is like newTestMetaServer, but loads the
+// real embedded tools.yaml into s.tools so registerOneMetaTool has real
+// per-action parameter schemas to merge into each meta-tool's inputSchema.
+func newTestMetaServerWithRealSchemas(t *testing.T, readOnly bool) *PortainerMCPServer {
+	t.Helper()
+
+	tools, err := toolgen.LoadToolsFromBytes(tooldef.ToolsFile, MinimumToolsVersion)
+	require.NoError(t, err)
+
+	return &PortainerMCPServer{
+		srv: server.NewMCPServer(
+			"test-meta-server",
+			"0.0.1",
+			server.WithToolCapabilities(true),
+		),
+		cli:      &MockPortainerClient{},
+		readOnly: readOnly,
+		tools:    tools,
+	}
+}
+
+// TestMetaToolSchemaMergeStackParams is a regression test for the meta-tool
+// stringification bug: previously a meta-tool's inputSchema declared only the
+// "action" enum, so MCP clients had no declared type for per-action params
+// like "id" and sent them as strings, which the strict toolgen parsers then
+// rejected with e.g. "id must be a number". It verifies that registerOneMetaTool
+// merges each action's real parameter schema (from tools.yaml) into
+// manage_stacks' inputSchema.
+func TestMetaToolSchemaMergeStackParams(t *testing.T) {
+	s := newTestMetaServerWithRealSchemas(t, false)
+	s.RegisterMetaTools()
+
+	reqJSON := `{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}`
+	resp := s.srv.HandleMessage(context.Background(), json.RawMessage(reqJSON))
+
+	respBytes, err := json.Marshal(resp)
+	require.NoError(t, err)
+
+	var rpcResp struct {
+		Result struct {
+			Tools []mcp.Tool `json:"tools"`
+		} `json:"result"`
+	}
+	require.NoError(t, json.Unmarshal(respBytes, &rpcResp))
+
+	var stacksTool *mcp.Tool
+	for i, tool := range rpcResp.Result.Tools {
+		if tool.Name == "manage_stacks" {
+			stacksTool = &rpcResp.Result.Tools[i]
+			break
+		}
+	}
+	require.NotNil(t, stacksTool, "manage_stacks tool should exist")
+
+	// "id" is shared by several stack actions (get_stack, delete_stack, ...) and
+	// must be typed as a number, not left undeclared (which forced clients to
+	// send it as a string).
+	idProp, ok := stacksTool.InputSchema.Properties["id"]
+	require.True(t, ok, "manage_stacks schema should declare an 'id' property")
+	idMap, ok := idProp.(map[string]any)
+	require.True(t, ok, "'id' property should be a schema object")
+	assert.Equal(t, "number", idMap["type"], "'id' should be typed as a number")
+
+	// "environmentId" is used by create_regular_stack, delete_stack, start_stack, etc.
+	envIDProp, ok := stacksTool.InputSchema.Properties["environmentId"]
+	require.True(t, ok, "manage_stacks schema should declare an 'environmentId' property")
+	envIDMap, ok := envIDProp.(map[string]any)
+	require.True(t, ok, "'environmentId' property should be a schema object")
+	assert.Equal(t, "number", envIDMap["type"], "'environmentId' should be typed as a number")
+
+	// "removeVolumes" (delete_stack) must be typed as a boolean.
+	removeVolumesProp, ok := stacksTool.InputSchema.Properties["removeVolumes"]
+	require.True(t, ok, "manage_stacks schema should declare a 'removeVolumes' property")
+	removeVolumesMap, ok := removeVolumesProp.(map[string]any)
+	require.True(t, ok, "'removeVolumes' property should be a schema object")
+	assert.Equal(t, "boolean", removeVolumesMap["type"], "'removeVolumes' should be typed as a boolean")
+
+	// "environmentGroupIds" (create_stack) must be typed as an array.
+	groupIDsProp, ok := stacksTool.InputSchema.Properties["environmentGroupIds"]
+	require.True(t, ok, "manage_stacks schema should declare an 'environmentGroupIds' property")
+	groupIDsMap, ok := groupIDsProp.(map[string]any)
+	require.True(t, ok, "'environmentGroupIds' property should be a schema object")
+	assert.Equal(t, "array", groupIDsMap["type"], "'environmentGroupIds' should be typed as an array")
+
+	// None of the merged properties should be marked required at the meta-tool
+	// level: required-ness is action-specific (e.g. 'id' is required for
+	// get_stack but meaningless for create_stack) and is enforced per-action
+	// inside each handler instead.
+	assert.NotContains(t, stacksTool.InputSchema.Required, "id")
+	assert.NotContains(t, stacksTool.InputSchema.Required, "environmentId")
 }

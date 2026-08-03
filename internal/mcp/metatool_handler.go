@@ -71,6 +71,26 @@ func (s *PortainerMCPServer) registerOneMetaTool(def metaToolDef) {
 		),
 	)
 
+	// Merge each action's own parameter schema (from tools.yaml, keyed by
+	// toolName) into the meta-tool's inputSchema as optional properties. Every
+	// merged property is left optional here — required-ness is action-specific
+	// (e.g. "id" is required for get_stack but not for create_stack) and is
+	// already enforced inside each handler via toolgen.ParameterParser. Without
+	// this merge, the meta-tool's schema only ever declared "action", so MCP
+	// clients had no declared type for id/environmentId/etc. and would send them
+	// as strings, which the strict toolgen parsers then rejected.
+	for _, a := range available {
+		src, ok := s.tools[a.toolName]
+		if !ok {
+			continue
+		}
+		for name, propSchema := range src.InputSchema.Properties {
+			if _, exists := tool.InputSchema.Properties[name]; !exists {
+				tool.InputSchema.Properties[name] = propSchema
+			}
+		}
+	}
+
 	// Register the meta-tool with a routing handler
 	s.srv.AddTool(tool, makeMetaHandler(def.name, handlers))
 }

@@ -8,6 +8,7 @@ import (
 
 	"github.com/mark3labs/mcp-go/mcp"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
 
 	"github.com/jmrplens/portainer-mcp-enhanced/pkg/portainer/models"
 )
@@ -1171,6 +1172,126 @@ func TestHandleMigrateStack(t *testing.T) {
 			req := mcp.CallToolRequest{}
 			req.Params.Arguments = tt.params
 			result, err := handler(context.Background(), req)
+
+			assert.NoError(t, err)
+			if tt.expectError {
+				assert.True(t, result.IsError)
+			} else {
+				assert.False(t, result.IsError)
+			}
+			mockClient.AssertExpectations(t)
+		})
+	}
+}
+
+// TestHandleCreateRegularStack verifies the HandleCreateRegularStack MCP tool handler.
+func TestHandleCreateRegularStack(t *testing.T) {
+	mockStack := models.RegularStack{ID: 1, Name: "test-stack", EndpointID: 3}
+
+	tests := []struct {
+		name        string
+		params      map[string]any
+		mockStack   models.RegularStack
+		mockError   error
+		expectError bool
+	}{
+		{
+			name: "successful creation with env",
+			params: map[string]any{
+				"name":          "test-stack",
+				"file":          "services:\n  web:\n    image: nginx",
+				"environmentId": float64(3),
+				"env":           []any{map[string]any{"name": "FOO", "value": "bar"}},
+			},
+			mockStack: mockStack,
+		},
+		{
+			name: "successful creation without env",
+			params: map[string]any{
+				"name":          "test-stack",
+				"file":          "services:\n  web:\n    image: nginx",
+				"environmentId": float64(3),
+			},
+			mockStack: mockStack,
+		},
+		{
+			name: "missing name",
+			params: map[string]any{
+				"file":          "services:\n  web:\n    image: nginx",
+				"environmentId": float64(3),
+			},
+			expectError: true,
+		},
+		{
+			name: "missing file",
+			params: map[string]any{
+				"name":          "test-stack",
+				"environmentId": float64(3),
+			},
+			expectError: true,
+		},
+		{
+			name: "missing environmentId",
+			params: map[string]any{
+				"name": "test-stack",
+				"file": "services:\n  web:\n    image: nginx",
+			},
+			expectError: true,
+		},
+		{
+			name: "invalid environmentId",
+			params: map[string]any{
+				"name":          "test-stack",
+				"file":          "services:\n  web:\n    image: nginx",
+				"environmentId": float64(0),
+			},
+			expectError: true,
+		},
+		{
+			name: "invalid env entry missing name",
+			params: map[string]any{
+				"name":          "test-stack",
+				"file":          "services:\n  web:\n    image: nginx",
+				"environmentId": float64(3),
+				"env":           []any{map[string]any{"value": "bar"}},
+			},
+			expectError: true,
+		},
+		{
+			name: "api error",
+			params: map[string]any{
+				"name":          "test-stack",
+				"file":          "services:\n  web:\n    image: nginx",
+				"environmentId": float64(3),
+			},
+			mockError:   fmt.Errorf("create failed"),
+			expectError: true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			mockClient := &MockPortainerClient{}
+			name, hasName := tt.params["name"].(string)
+			file, hasFile := tt.params["file"].(string)
+			envID, hasEnvID := tt.params["environmentId"].(float64)
+			rawEnv, hasEnvParam := tt.params["env"].([]any)
+			validEnv := true
+			if hasEnvParam {
+				for _, e := range rawEnv {
+					if m, ok := e.(map[string]any); !ok || m["name"] == nil {
+						validEnv = false
+					}
+				}
+			}
+			if hasName && name != "" && hasFile && file != "" && hasEnvID && envID > 0 && validEnv {
+				mockClient.On("CreateRegularStack", name, file, int(envID), mock.Anything).Return(tt.mockStack, tt.mockError)
+			}
+
+			s := &PortainerMCPServer{cli: mockClient}
+			req := mcp.CallToolRequest{}
+			req.Params.Arguments = tt.params
+			result, err := s.HandleCreateRegularStack()(context.Background(), req)
 
 			assert.NoError(t, err)
 			if tt.expectError {
